@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Anas second test, sorry ^^ 
+=======
+Hello everybody!
+>>>>>>> 44afe056a4feee1b3e48be599486d7c2fe9eea96

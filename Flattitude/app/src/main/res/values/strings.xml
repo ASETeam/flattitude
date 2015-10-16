@@ -20,4 +20,8 @@
     <string name="prompt_username">Username</string>
     <string name="action_register">Register</string>
     <string name="title_activity_register">Register</string>
+    <string name="title_activity_create_group">CreateGroup</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

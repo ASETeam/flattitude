@@ -3,6 +3,7 @@ package com.aseupc.flattitude;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -29,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.aseupc.databasefacade.userFacade;
+import com.aseupc.databasefacade.UserFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +88,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        mRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), RegisterActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -320,7 +329,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             // AUTHENTICATION HERE
 
-        if (userFacade.verifyCredentials((String) mEmail, (String) mPassword))
+        if (UserFacade.verifyCredentials((String) mEmail, (String) mPassword))
             return true;
             else
             return false;
@@ -342,9 +351,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
+            Button registerB = (Button) findViewById(R.id.register_button);
 
             if (success) {
-                finish();
+               // finish();
+                Intent intent = new Intent(registerB.getContext(), CreateGroup.class);
+                startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

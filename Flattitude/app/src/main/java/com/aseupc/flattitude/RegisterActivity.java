@@ -29,6 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aseupc.databasefacade.UserFacade;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,10 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mFirstnameView;
+    private EditText mLastnameView;
+    private EditText mPhonenumberView;
+
     private View mProgressView;
     private View mLoginFormView;
 
@@ -83,6 +89,9 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 return false;
             }
         });
+        mFirstnameView = (EditText) findViewById(R.id.firstname);
+        mLastnameView = (EditText) findViewById(R.id.lastname);
+        mPhonenumberView = (EditText) findViewById(R.id.phonenumber);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -153,10 +162,19 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mFirstnameView.setError(null);
+        mLastnameView.setError(null);
+        mPhonenumberView.setError(null);
+
+
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String firstname = mFirstnameView.getText().toString();
+        String lastname = mLastnameView.getText().toString();
+        String phonenumber = mPhonenumberView.getText().toString();
+
 
         boolean cancel = false;
         View focusView = null;
@@ -187,7 +205,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, firstname, lastname, phonenumber);
             mAuthTask.execute((Void) null);
         }
     }
@@ -300,10 +318,17 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
         private final String mEmail;
         private final String mPassword;
+        private final String mFirstname;
+        private final String mLastname;
+        private final String mPhonenumber;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, String firstname, String lastname, String phonenumber) {
             mEmail = email;
             mPassword = password;
+            mFirstname = firstname;
+            mLastname = lastname;
+            mPhonenumber = phonenumber;
+
         }
 
         @Override
@@ -317,16 +342,21 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
+            if (UserFacade.registerUser(mEmail, mPassword, mFirstname, mLastname, mPhonenumber))
+                return true;
+            else
+            return false;
+
+        /*    for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
             // TODO: register the new account here.
-            return true;
+            // return true;
         }
 
         @Override

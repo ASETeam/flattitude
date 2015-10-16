@@ -29,8 +29,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aseupc.databasefacade.userFacade;
+
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -314,17 +318,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } catch (InterruptedException e) {
                 return false;
             }
+            // AUTHENTICATION HERE
 
-            for (String credential : DUMMY_CREDENTIALS) {
+        if (userFacade.verifyCredentials((String) mEmail, (String) mPassword))
+            return true;
+            else
+            return false;
+
+
+          /*  for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
-            }
+            }*/
 
             // TODO: register the new account here.
-            return true;
+
         }
 
         @Override

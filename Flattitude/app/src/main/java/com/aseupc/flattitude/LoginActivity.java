@@ -351,11 +351,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            Button registerB = (Button) findViewById(R.id.register_button);
+            Button loginB = (Button) findViewById(R.id.email_sign_in_button);
 
             if (success) {
                // finish();
-                Intent intent = new Intent(registerB.getContext(), CreateGroup.class);
+                Intent intent = new Intent(loginB.getContext(), HomeActivity.class);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

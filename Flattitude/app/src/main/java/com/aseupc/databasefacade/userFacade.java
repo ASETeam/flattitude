@@ -11,7 +11,8 @@ public class UserFacade {
 public static boolean verifyCredentials(String email, String password)
 {
     //call function in webservice
-    boolean result = User_Web_Services.ws_verifyCredentials(email, password);
+    User_Web_Services WS_user = new User_Web_Services();
+    boolean result = WS_user.ws_verifyCredentials(email, password);
 
 
 

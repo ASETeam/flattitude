@@ -22,7 +22,7 @@ public static boolean verifyCredentials(String email, String password)
 
 public static boolean registerUser(String email, String password, String firstname, String lastname, String phonenumber)
 {
-    boolean result = User_Web_Services.ws_registerUser(email, password, firstname, lastname, phonenumber);
+    boolean result  = User_Web_Services.ws_registerUser(email, password, firstname, lastname, phonenumber);
     //call function in webservice
 
     return result;

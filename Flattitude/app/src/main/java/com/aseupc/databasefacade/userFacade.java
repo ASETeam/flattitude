@@ -1,14 +1,18 @@
 package com.aseupc.databasefacade;
+import com.aseupc.database.*;
 
 /**
- * Created by MetzoDell on 16-10-15.
+ * Created by AnasHel on 16-10-15.
+ * This class serves as a facade between the database and the application layer. This allows for a flexible implementation of the
+ * database transactions. (See Facade Design Pattern)
  */
 public class UserFacade {
 
 public static boolean verifyCredentials(String email, String password)
 {
-    boolean result = true;
     //call function in webservice
+    boolean result = User_Web_Services.ws_verifyCredentials(email, password);
+
 
 
     return result;
@@ -17,7 +21,7 @@ public static boolean verifyCredentials(String email, String password)
 
 public static boolean registerUser(String email, String password, String firstname, String lastname, String phonenumber)
 {
-    boolean result = false;
+    boolean result = User_Web_Services.ws_registerUser(email, password, firstname, lastname, phonenumber);
     //call function in webservice
 
     return result;

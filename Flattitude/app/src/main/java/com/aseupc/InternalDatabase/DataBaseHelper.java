@@ -12,7 +12,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "db";
 
 
+    //----------------------USER TABLE--------------------------
     public static final String USER_TABLENAME = "userprofile";
+
     public static final String USER_EMAIL = "email";
     public static final String USER_ID = "id";
     public static final String USER_FIRSTNAME = "firstname";
@@ -26,7 +28,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLENAME + " (" +
                     USER_ID + " INT PRIMARY KEY NOT NULL, " +
+
                     USER_EMAIL + " TEXT NOT NULL," +
+
+                    USER_EMAIL + "TEXT NOT NULL," +
+
                     USER_FIRSTNAME + " TEXT NOT NULL," +
                     USER_LASTNAME + " TEXT NOT NULL," +
                     USER_PHONENBR + " TEXT," +
@@ -35,6 +41,23 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //                    USER_PICTURE + " TEXT," +
                     USER_LOGGEDIN + " INT" +
                     ");";
+
+
+    //----------------------FLAT TABLE--------------------------
+    public static final String FLAT_TABLENAME = "flatprofile";
+
+    public static final String FLAT_ID = "flatid";
+    public static final String FLAT_SERVERID = "serverid";
+    public static final String FLAT_NAME = "name";
+    public static final String FLAT_COUNTRY = "country";
+    public static final String FLAT_CITY = "city";
+    public static final String FLAT_POSTCODE = "postcode";
+    public static final String FLAT_ADDRESS = "address";
+    public static final String FLAT_IBAN = "iban";
+
+
+
+
 
 
     private static DataBaseHelper instance;

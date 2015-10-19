@@ -5,6 +5,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -38,7 +39,13 @@ public class DBDAO {
     }
 
     protected Date parseDate(String date){
-        return new Date();
+        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+        try {
+            return df.parse(date); //It have to be verified which format the database returns!
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     protected int formatBoolean(boolean b){

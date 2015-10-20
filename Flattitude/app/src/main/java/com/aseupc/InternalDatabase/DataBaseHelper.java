@@ -109,7 +109,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(USER_TABLE_CREATE);
-       // db.execSQL(FLAT_TABLE_CREATE);
+        db.execSQL(FLAT_TABLE_CREATE);
+        db.execSQL(MATE_TABLE_CREATE);
     }
 
     @Override

@@ -22,7 +22,6 @@ public class UserDAO extends DBDAO {
 
     public long save(User user) {
         ContentValues values = new ContentValues();
-        ContentValues values = new ContentValues();
         values.put(DataBaseHelper.USER_ID, user.getId());
         values.put(DataBaseHelper.USER_SERVERID, user.getServerid());
         values.put(DataBaseHelper.USER_EMAIL, user.getEmail());

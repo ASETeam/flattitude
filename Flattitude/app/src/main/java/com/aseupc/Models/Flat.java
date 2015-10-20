@@ -13,6 +13,8 @@ public class Flat {
     private String address;
     private String iban;
 
+    public Flat(){}
+
     public int getId() {
         return id;
     }

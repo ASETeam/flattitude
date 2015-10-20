@@ -1,12 +1,7 @@
-package com.aseupc.utility_REST;
+package com.example.metzodell.postcall;
 
-import android.app.Activity;
-import android.os.AsyncTask;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -17,15 +12,12 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-
 /**
  * Created by AnasHel on 19-10-15.
  * Copyright for this code :
  * http://blog.strikeiron.com/bid/73189/Integrate-a-REST-API-into-Android-Application-in-less-than-15-minutes
  */
-public class CallAPI  {
-
+public class CallAPI {
 
     public static String  performPostCall(String requestURL,
                                    HashMap<String, String> postDataParams) {

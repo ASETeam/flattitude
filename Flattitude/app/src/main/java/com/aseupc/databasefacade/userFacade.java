@@ -13,16 +13,14 @@ public static boolean verifyCredentials(String email, String password)
     //call function in webservice
     User_Web_Services WS_user = new User_Web_Services();
     boolean result = WS_user.ws_verifyCredentials(email, password);
-
-
-
     return result;
 }
 
 
 public static boolean registerUser(String email, String password, String firstname, String lastname, String phonenumber)
 {
-    boolean result  = User_Web_Services.ws_registerUser(email, password, firstname, lastname, phonenumber);
+    User_Web_Services User_WS = new User_Web_Services();
+    boolean result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
     //call function in webservice
 
     return result;

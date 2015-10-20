@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.aseupc.InternalDatabase.DAO.UserDAO;
 import com.aseupc.Models.User;
+import com.aseupc.databasefacade.UserFacade;
 
 public class RegisteringActivity extends AppCompatActivity {
 
@@ -41,13 +42,15 @@ public class RegisteringActivity extends AppCompatActivity {
                 String lname = mLastnameView.getText().toString();
                 String pnumber = mPhonenumberView.getText().toString();
 
-                User user = new User(email_address, fname, lname);
+             /*   User user = new User(email_address, fname, lname);
                 UserDAO userDAO = new UserDAO(mRegisterButton.getContext());
                 userDAO.save(user);
                // Intent TestIntent = new Intent(mRegisterButton.getContext(), TestActivity.class);
               //  startActivity(TestIntent);
                 User retrievedUser = userDAO.getUser();
-                Log.i("RETRIEVED USER", retrievedUser.getEmail());
+                Log.i("RETRIEVED USER", retrievedUser.getEmail());*/
+
+                UserFacade.registerUser(email_address, password, fname, lname, pnumber);
 
 
 

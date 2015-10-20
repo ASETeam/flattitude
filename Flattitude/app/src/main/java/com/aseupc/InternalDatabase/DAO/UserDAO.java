@@ -3,6 +3,7 @@ package com.aseupc.InternalDatabase.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 
 import com.aseupc.InternalDatabase.DBDAO;
 import com.aseupc.InternalDatabase.DataBaseHelper;
@@ -21,6 +22,8 @@ public class UserDAO extends DBDAO {
 
     public long save(User user) {
         ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.USER_ID, user.getId());
         values.put(DataBaseHelper.USER_SERVERID, user.getServerid());
         values.put(DataBaseHelper.USER_EMAIL, user.getEmail());
         values.put(DataBaseHelper.USER_FIRSTNAME, user.getFirstname());

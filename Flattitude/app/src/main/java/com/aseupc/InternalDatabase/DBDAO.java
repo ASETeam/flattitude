@@ -31,8 +31,11 @@ public class DBDAO {
     }
 
     protected String formatDate(Date date){
+        if (date == null)
+            return "";
+       else  {
         DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
-        return df.format(date);
+        return df.format(date);}
     }
 
     protected Date parseDate(String date){

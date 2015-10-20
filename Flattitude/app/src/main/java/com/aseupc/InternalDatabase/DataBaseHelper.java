@@ -33,11 +33,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     USER_EMAIL + " TEXT NOT NULL," +
                     USER_FIRSTNAME + " TEXT NOT NULL," +
                     USER_LASTNAME + " TEXT NOT NULL," +
-                    USER_PHONENBR + " TEXT NOT NULL," +
+                    USER_PHONENBR + " TEXT," +
                     USER_BIRTHDATE + " DATETIME," +
                     USER_IBAN + " TEXT," +
 //                    USER_PICTURE + " TEXT," +
-                    USER_LOGGEDIN + " INT NOT NULL" +
+                    USER_LOGGEDIN + " INT" +
                     ");";
 
 
@@ -94,8 +94,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static DataBaseHelper instance;
 
     public static synchronized DataBaseHelper getHelper(Context context) {
-        if (instance == null)
+        if (instance == null) {
+            context.deleteDatabase(DATABASE_NAME);
             instance = new DataBaseHelper(context);
+        }
+
         return instance;
     }
 

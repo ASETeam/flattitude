@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.aseupc.InternalDatabase.DAO.UserDAO;
 import com.aseupc.Models.User;
 import com.aseupc.databasefacade.UserFacade;
+import com.aseupc.utility_REST.ResultContainer;
 
 public class RegisteringActivity extends AppCompatActivity {
 
@@ -21,6 +23,8 @@ public class RegisteringActivity extends AppCompatActivity {
     private EditText mLastnameView;
     private EditText mPhonenumberView;
     private EditText mEmailView;
+    private TextView mFeedback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,7 @@ public class RegisteringActivity extends AppCompatActivity {
         mFirstnameView = (EditText) findViewById(R.id.first_name);
         mLastnameView = (EditText) findViewById(R.id.last_name);
         mPhonenumberView = (EditText) findViewById(R.id.phone_number);
+        mFeedback = (TextView) findViewById(R.id.feedback);
 
         final Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -50,9 +55,23 @@ public class RegisteringActivity extends AppCompatActivity {
                 User retrievedUser = userDAO.getUser();
                 Log.i("RETRIEVED USER", retrievedUser.getEmail());*/
 
-                UserFacade.registerUser(email_address, password, fname, lname, pnumber);
+                ResultContainer<User> result = UserFacade.registerUser(email_address, password, fname, lname, pnumber);
+                if (result.getSucces() == true)
+                {
+                    UserDAO userConn = new UserDAO(mPhonenumberView.getContext());
+                    userConn.save(result.getTemplate());
+                    Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
+                    startActivity(valideIntent);
+                    Log.i("Registering ", "Correct");
+                }
+                else
+                {
+                   if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0))
+                   { String reason = result.getReturnDescriptions().get(0);
+                    mFeedback.setText(reason); }
 
-
+                    Log.i("Registering", "Incorrect");
+                }
 
             }
         });

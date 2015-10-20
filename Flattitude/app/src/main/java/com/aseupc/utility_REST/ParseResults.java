@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by AnasHel on 19-10-15.
@@ -12,6 +16,15 @@ import java.io.InputStreamReader;
  */
 public class ParseResults {
 
+    public static Date parseDate(String date){
+        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+        try {
+            return df.parse(date); //It have to be verified which format the database returns!
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static String getStringFromInputStream(InputStream is) {
 

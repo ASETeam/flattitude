@@ -1,5 +1,10 @@
 package com.aseupc.databasefacade;
+import android.util.Log;
+
+import com.aseupc.InternalDatabase.DAO.UserDAO;
+import com.aseupc.Models.User;
 import com.aseupc.database.*;
+import com.aseupc.utility_REST.ResultContainer;
 
 /**
  * Created by AnasHel on 16-10-15.
@@ -8,19 +13,21 @@ import com.aseupc.database.*;
  */
 public class UserFacade {
 
-public static boolean verifyCredentials(String email, String password)
+public static ResultContainer<User> verifyCredentials(String email, String password)
 {
     //call function in webservice
     User_Web_Services WS_user = new User_Web_Services();
-    boolean result = WS_user.ws_verifyCredentials(email, password);
+    ResultContainer<User> result = WS_user.ws_verifyCredentials(email, password);
+    if (result.getSucces())
+    Log.i("In facade loggin", "TRUE" );
     return result;
 }
 
 
-public static boolean registerUser(String email, String password, String firstname, String lastname, String phonenumber)
+public static ResultContainer<User> registerUser(String email, String password, String firstname, String lastname, String phonenumber)
 {
     User_Web_Services User_WS = new User_Web_Services();
-    boolean result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
+    ResultContainer<User> result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
     //call function in webservice
 
     return result;

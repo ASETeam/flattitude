@@ -211,7 +211,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 3;
     }
 
     /**
@@ -330,7 +330,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             // AUTHENTICATION HERE
 
-        if (UserFacade.verifyCredentials((String) mEmail, (String) mPassword))
+        if (UserFacade.verifyCredentials((String) mEmail, (String) mPassword).getSucces() == true)
             return true;
             else
             return false;
@@ -357,6 +357,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                // finish();
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
+
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

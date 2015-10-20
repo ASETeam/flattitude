@@ -86,7 +86,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     MATE_FIRSTNAME + " TEXT NOT NULL," +
                     MATE_LASTNAME + " TEXT NOT NULL," +
                     MATE_PHONENBR + " TEXT NOT NULL," +
-                    MATE_BIRTHDATE + " DATETIME," +
+                    MATE_BIRTHDATE + " DATETIME" +
 //                    MATE_PICTURE + " TEXT," +
                     ");";
 

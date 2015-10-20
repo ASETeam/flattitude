@@ -3,6 +3,11 @@ package com.aseupc.utility_REST;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import com.aseupc.Models.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +31,52 @@ import javax.net.ssl.HttpsURLConnection;
  * http://blog.strikeiron.com/bid/73189/Integrate-a-REST-API-into-Android-Application-in-less-than-15-minutes
  */
 public class CallAPI  {
+
+    public static User getUser(String userID)
+    {
+        User user = new User();
+        user.setServerid(userID);
+        String resultToDisplay = null;
+        String urlString = "REST STRING HERE";
+        ParseResults result = null;
+        InputStream in = null;
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            in = new BufferedInputStream(urlConnection.getInputStream());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        // resultToDisplay = (String) in.toString();
+        resultToDisplay = ParseResults.getStringFromInputStream(in);
+        try {
+            JSONObject mainObject = new JSONObject(resultToDisplay);
+            String success = mainObject.getString("success");
+            if (success == "true")
+            {
+                String firstname = mainObject.getString("firstname");
+                String lastname = mainObject.getString("lastname");
+                String email = mainObject.getString("email");
+                String phonenumber  = mainObject.getString("phonenbr");
+                Date birthdate = ParseResults.parseDate(mainObject.getString("birthdate"));
+                String iban = mainObject.getString("iban");
+
+                user.setFirstname(firstname);
+                user.setLastname(lastname);
+                user.setEmail(email);
+                user.setBirthdate(birthdate);
+                user.setIban(iban);
+                user.setPhonenbr(phonenumber);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
 
 
     public static String  performPostCall(String requestURL,

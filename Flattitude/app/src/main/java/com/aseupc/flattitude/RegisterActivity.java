@@ -342,10 +342,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 return false;
             }
 
-            if (UserFacade.registerUser(mEmail, mPassword, mFirstname, mLastname, mPhonenumber))
-                return true;
-            else
-            return false;
+           return false;
 
         /*    for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");

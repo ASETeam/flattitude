@@ -15,6 +15,7 @@ public class User {
     private String phonenbr;
     private Date birthdate;
     private String iban;
+    private String password;
     //private String picture;
     private boolean loggedin;
 
@@ -22,7 +23,7 @@ public class User {
     public User() {
     }
 
-    public User(String serverid, String email, String firstname, String lastname) {
+    public User( String email, String firstname, String lastname) {
         this.setServerid(new String(serverid));
         this.setEmail(new String(email));
         this.setFirstname(new String(firstname));
@@ -35,6 +36,13 @@ public class User {
     }
 
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public int getId() {
         return id;

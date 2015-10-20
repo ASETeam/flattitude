@@ -8,6 +8,7 @@ import java.util.Date;
 public class User {
 
     private final int id = 0; //This is an special case for this model, since we will have only one user
+    private String serverid;
     private String email;
     private String firstname;
     private String lastname;
@@ -21,7 +22,8 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstname, String lastname) {
+    public User(String serverid, String email, String firstname, String lastname) {
+        this.setServerid(new String(serverid));
         this.setEmail(new String(email));
         this.setFirstname(new String(firstname));
         this.setLastname(new String(lastname));
@@ -90,5 +92,13 @@ public class User {
 
     public void setLoggedin(boolean loggedin) {
         this.loggedin = loggedin;
+    }
+
+    public String getServerid() {
+        return serverid;
+    }
+
+    public void setServerid(String serverid) {
+        this.serverid = new String(serverid);
     }
 }

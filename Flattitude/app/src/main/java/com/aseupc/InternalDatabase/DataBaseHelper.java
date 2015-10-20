@@ -15,8 +15,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //----------------------USER TABLE--------------------------
     public static final String USER_TABLENAME = "userprofile";
 
-    public static final String USER_EMAIL = "email";
     public static final String USER_ID = "id";
+    public static final String USER_SERVERID = "serverid";
+    public static final String USER_EMAIL = "email";
     public static final String USER_FIRSTNAME = "firstname";
     public static final String USER_LASTNAME = "lastname";
     public static final String USER_PHONENBR = "phonenbr";
@@ -28,7 +29,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLENAME + " (" +
                     USER_ID + " INT PRIMARY KEY NOT NULL, " +
-                    USER_EMAIL + "TEXT NOT NULL," +
+                    USER_SERVERID + "STRING NOT NULL, " +
+                    USER_EMAIL + " TEXT NOT NULL," +
                     USER_FIRSTNAME + " TEXT NOT NULL," +
                     USER_LASTNAME + " TEXT NOT NULL," +
                     USER_PHONENBR + " TEXT NOT NULL," +
@@ -42,7 +44,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //----------------------FLAT TABLE--------------------------
     public static final String FLAT_TABLENAME = "flatprofile";
 
-    public static final String FLAT_ID = "flatid";
+    public static final String FLAT_ID = "id";
     public static final String FLAT_SERVERID = "serverid";
     public static final String FLAT_NAME = "name";
     public static final String FLAT_COUNTRY = "country";
@@ -51,9 +53,42 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String FLAT_ADDRESS = "address";
     public static final String FLAT_IBAN = "iban";
 
+    public static final String FLAT_TABLE_CREATE =
+            "CREATE TABLE " + FLAT_TABLENAME + " (" +
+                    FLAT_ID + " INT PRIMARY KEY NOT NULL, " +
+                    FLAT_SERVERID + " STRING NOT NULL, " +
+                    FLAT_NAME + " STRING NOT NULL, " +
+                    FLAT_COUNTRY + " STRING NOT NULL, " +
+                    FLAT_CITY + " STRING NOT NULL, " +
+                    FLAT_POSTCODE + " STRING NOT NULL, " +
+                    FLAT_ADDRESS + " STRING NOT NULL, " +
+                    FLAT_IBAN + " STRING" +
+                    ");";
 
 
+    //----------------------MATE TABLE--------------------------
+    public static final String MATE_TABLENAME = "mate";
 
+    public static final String MATE_ID = "id";
+    public static final String MATE_SERVERID = "serverid";
+    public static final String MATE_EMAIL = "email";
+    public static final String MATE_FIRSTNAME = "firstname";
+    public static final String MATE_LASTNAME = "lastname";
+    public static final String MATE_PHONENBR = "phonenbr";
+    public static final String MATE_BIRTHDATE = "birthdate";
+    //public static final String MATE_PICTURE = "picture";
+
+    private static final String MATE_TABLE_CREATE =
+            "CREATE TABLE " + MATE_TABLENAME + " (" +
+                    MATE_ID + " INT PRIMARY KEY NOT NULL, " +
+                    MATE_SERVERID + "STRING NOT NULL, " +
+                    MATE_EMAIL + " TEXT NOT NULL," +
+                    MATE_FIRSTNAME + " TEXT NOT NULL," +
+                    MATE_LASTNAME + " TEXT NOT NULL," +
+                    MATE_PHONENBR + " TEXT NOT NULL," +
+                    MATE_BIRTHDATE + " DATETIME," +
+//                    MATE_PICTURE + " TEXT," +
+                    ");";
 
 
     private static DataBaseHelper instance;
@@ -71,6 +106,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(USER_TABLE_CREATE);
+       // db.execSQL(FLAT_TABLE_CREATE);
     }
 
     @Override

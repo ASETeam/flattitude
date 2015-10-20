@@ -20,8 +20,8 @@ public class UserDAO extends DBDAO {
     }
 
     public long save(User user) {
-
         ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.USER_SERVERID, user.getServerid());
         values.put(DataBaseHelper.USER_EMAIL, user.getEmail());
         values.put(DataBaseHelper.USER_FIRSTNAME, user.getFirstname());
         values.put(DataBaseHelper.USER_LASTNAME, user.getLastname());
@@ -36,6 +36,7 @@ public class UserDAO extends DBDAO {
 
     public long update(User user) {
         ContentValues values = new ContentValues();
+        values.put(DataBaseHelper.USER_SERVERID,user.getServerid());
         values.put(DataBaseHelper.USER_EMAIL, user.getEmail());
         values.put(DataBaseHelper.USER_FIRSTNAME, user.getFirstname());
         values.put(DataBaseHelper.USER_LASTNAME, user.getLastname());
@@ -58,6 +59,7 @@ public class UserDAO extends DBDAO {
     public User getUser() {
         Cursor cursor = database.query(DataBaseHelper.USER_TABLENAME,
                 new String[] { DataBaseHelper.USER_ID,
+                        DataBaseHelper.USER_SERVERID,
                         DataBaseHelper.USER_EMAIL,
                         DataBaseHelper.USER_FIRSTNAME,
                         DataBaseHelper.USER_LASTNAME,
@@ -69,13 +71,14 @@ public class UserDAO extends DBDAO {
 
         if(cursor.moveToNext()) {
             User user = new User();
-            user.setEmail(cursor.getString(1));
-            user.setFirstname(cursor.getString(2));
-            user.setLastname(cursor.getString(3));
-            user.setPhonenbr(cursor.getString(4));
-            user.setBirthdate(parseDate(cursor.getString(5)));
-            user.setIban(cursor.getString(6));
-            user.setLoggedin(parseBoolean(cursor.getInt(7)));
+            user.setServerid(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
+            user.setFirstname(cursor.getString(3));
+            user.setLastname(cursor.getString(4));
+            user.setPhonenbr(cursor.getString(5));
+            user.setBirthdate(parseDate(cursor.getString(6)));
+            user.setIban(cursor.getString(7));
+            user.setLoggedin(parseBoolean(cursor.getInt(8)));
             return user;
         }
         else return null;

@@ -1,9 +1,12 @@
 package com.aseupc.flattitude;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class GroupActivity extends AppCompatActivity {
 
@@ -11,6 +14,17 @@ public class GroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        final Button mGoHome = (Button) findViewById(R.id.go_button);
+        mGoHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeIntent = new Intent(mGoHome.getContext(), HomeActivity.class);
+                startActivity(homeIntent);
+            }
+
+    } );
+
     }
 
     @Override

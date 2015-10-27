@@ -31,6 +31,10 @@ public class HomeActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
 
+    public CharSequence getmTitle() {
+        return mTitle;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +62,13 @@ public class HomeActivity extends AppCompatActivity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = "Home";
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = "Localize object";
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = "Manage budget";
                 break;
         }
     }

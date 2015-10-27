@@ -13,24 +13,24 @@ import com.aseupc.utility_REST.ResultContainer;
  */
 public class UserFacade {
 
-public static ResultContainer<User> verifyCredentials(String email, String password)
-{
-    //call function in webservice
-    User_Web_Services WS_user = new User_Web_Services();
-    ResultContainer<User> result = WS_user.ws_verifyCredentials(email, password);
-    if (result.getSucces())
-    Log.i("In facade loggin", "TRUE" );
-    return result;
-}
+    public static ResultContainer<User> verifyCredentials(String email, String password)
+    {
+        //call function in webservice
+        User_Web_Services WS_user = new User_Web_Services();
+        ResultContainer<User> result = WS_user.ws_verifyCredentials(email, password);
+        if (result.getSucces())
+            Log.i("In facade loggin", "TRUE" );
+        return result;
+    }
 
 
-public static ResultContainer<User> registerUser(String email, String password, String firstname, String lastname, String phonenumber)
-{
-    User_Web_Services User_WS = new User_Web_Services();
-    ResultContainer<User> result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
-    //call function in webservice
+    public static ResultContainer<User> registerUser(String email, String password, String firstname, String lastname, String phonenumber)
+    {
+        User_Web_Services User_WS = new User_Web_Services();
+        ResultContainer<User> result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
+        //call function in webservice
 
-    return result;
-}
+        return result;
+    }
 
 }

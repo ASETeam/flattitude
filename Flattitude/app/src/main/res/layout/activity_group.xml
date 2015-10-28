@@ -10,17 +10,18 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go"
-        android:id="@+id/go_button"
-        android:layout_marginTop="64dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Create new Flat"
+        android:id="@+id/home_button"
+        android:layout_marginTop="58dp"
+        android:layout_below="@+id/create_flat_button"
+        android:layout_centerHorizontal="true" />
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current flat"
-        android:id="@+id/textView"
-        android:layout_alignTop="@+id/go_button"
-        android:layout_alignParentStart="true" />
+        android:text="Home"
+        android:id="@+id/create_flat_button"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp" />
 </RelativeLayout>

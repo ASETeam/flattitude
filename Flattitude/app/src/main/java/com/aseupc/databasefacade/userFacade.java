@@ -18,7 +18,7 @@ public class UserFacade {
         //call function in webservice
         User_Web_Services WS_user = new User_Web_Services();
         ResultContainer<User> result = WS_user.ws_verifyCredentials(email, password);
-        if (result.getSucces())
+        if (result.getSucces() == true)
             Log.i("In facade loggin", "TRUE" );
         return result;
     }

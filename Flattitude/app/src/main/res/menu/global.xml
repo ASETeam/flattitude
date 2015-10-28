@@ -7,7 +7,7 @@
         android:title="Action1"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_compose"
-        android:icon="@drawable/ic_drawer"
+        android:icon="@drawable/ic_message"
         android:title="Action2"
         app:showAsAction="ifRoom"
         />

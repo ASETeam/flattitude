@@ -33,17 +33,23 @@ public class SynchzonizationService extends Service {
 
     private static Timer timer = new Timer();
     private Context ctx;
+    Intent intent;
+    public static final String BROADCAST_ACTION = "com.websmithing.broadcasttest.displayevent";
+    private static final String TAG = "BroadcastService";
 
     @Override
     public void onCreate() {
         super.onCreate();
         ctx = this;
+        Log.i("Anas", "SynchoService onCreate is ok ");
+        intent = new Intent(BROADCAST_ACTION);
         startService();
 
     }
 
     private void startService() {
         timer.scheduleAtFixedRate(new mainTask(), 0, 5000);
+        
     }
     private class mainTask extends TimerTask
     {

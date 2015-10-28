@@ -17,6 +17,7 @@ public class LandingActivity extends AppCompatActivity {
 
         Button mLoginButton = (Button) findViewById(R.id.login_button);
         Button mRegisterButton = (Button) findViewById(R.id.register_button);
+        Button mHomeButton = (Button) findViewById(R.id.home_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,7 +32,13 @@ public class LandingActivity extends AppCompatActivity {
                 startActivity(intentRegister);
             }
         });
-
+        mHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent HomeIntent = new Intent(view.getContext(), MainActivity.class);
+                startActivity(HomeIntent);
+            }
+        });
     }
 
     @Override

@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aseupc.flattitude" >
+    package="com.aseupc.flattitude">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <service
             android:name="com.aseupc.synchronization.SynchzonizationService"
             android:enabled="true"
@@ -22,25 +26,22 @@
             android:name="com.aseupc.synchronization.ChangeUI"
             android:enabled="true"
             android:permission="com.paad.MY_SERVICE_PERMISSION" />
+
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register" >
-        </activity>
+            android:label="@string/title_activity_register"></activity>
         <activity
             android:name=".GroupActivity"
-            android:label="@string/title_activity_create_group" >
-        </activity>
+            android:label="@string/title_activity_create_group"></activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
-        </activity>
+            android:label="@string/title_activity_home"></activity>
         <activity
             android:name=".LandingActivity"
-            android:label="@string/title_activity_landing" >
+            android:label="@string/title_activity_landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,18 +50,21 @@
         </activity>
         <activity
             android:name=".RegisteringActivity"
-            android:label="@string/title_activity_registering" >
-        </activity>
+            android:label="@string/title_activity_registering"></activity>
         <activity
             android:name=".TestActivity"
-            android:label="@string/title_activity_test" >
-        </activity>
+            android:label="@string/title_activity_test"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:uiOptions="splitActionBarWhenNarrow"
-            >
-        </activity>
+            android:uiOptions="splitActionBarWhenNarrow"></activity>
+        <activity
+            android:name=".LocateObjectsActivity"
+            android:label="@string/title_activity_locate_objects"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA4ELvDScoAPqOL78TS57VVhuCL62QXC84"/>
     </application>
 
 </manifest>

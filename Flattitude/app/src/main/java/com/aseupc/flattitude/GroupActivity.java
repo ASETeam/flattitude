@@ -19,7 +19,7 @@ public class GroupActivity extends AppCompatActivity {
         mGoHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeIntent = new Intent(mGoHome.getContext(), HomeActivity.class);
+                Intent homeIntent = new Intent(mGoHome.getContext(), MainActivity.class);
                 startActivity(homeIntent);
             }
 

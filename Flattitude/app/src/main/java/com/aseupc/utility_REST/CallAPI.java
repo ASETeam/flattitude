@@ -35,6 +35,20 @@ public class CallAPI  {
     public static User getUser(String userID)
     {
         User user = new User();
+        user.setEmail("okokk@lol.com");
+        user.setIban("okokok");
+        user.setFirstname("Jacques");
+        user.setLastname("Verges");
+        user.setPhonenbr("0489202123");
+        user.setBirthdate(new Date());
+        user.setServerid(userID);
+
+        return user;
+    }
+
+    public static User getUser1(String userID)
+    {
+        User user = new User();
         user.setServerid(userID);
         String resultToDisplay = null;
         String urlString = "REST STRING HERE";
@@ -139,5 +153,7 @@ public class CallAPI  {
 
         return result.toString();
     }
+
+
 
 }

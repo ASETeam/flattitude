@@ -1,12 +1,17 @@
 package com.aseupc.flattitude;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.aseupc.InternalDatabase.DAO.UserDAO;
+import com.aseupc.Models.User;
 
 public class LandingActivity extends AppCompatActivity {
 
@@ -14,39 +19,49 @@ public class LandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
-
-        Button mLoginButton = (Button) findViewById(R.id.login_button);
-        Button mRegisterButton = (Button) findViewById(R.id.register_button);
-        Button mHomeButton = (Button) findViewById(R.id.home_button);
-        Button mMapButton = (Button) findViewById(R.id.map_button);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            Intent intentLogin = new Intent(view.getContext(), LoginActivity.class);
-                startActivity(intentLogin);
-            }
-        });
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentRegister = new Intent(view.getContext(), RegisteringActivity.class);
-                startActivity(intentRegister);
-            }
-        });
-        mHomeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent HomeIntent = new Intent(view.getContext(), MainActivity.class);
-                startActivity(HomeIntent);
-            }
-        });
-        mMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent MapIntent = new Intent(view.getContext(), LocateObjectsActivity.class);
-                startActivity(MapIntent);
-            }
-        });
+        Context context = getApplicationContext();
+        UserDAO userDAO = new UserDAO(context);
+        User user = userDAO.getUser();
+        //User user = null;
+        if (user == null) {
+            Log.i("Anas", "The user has not been saved to localDB");
+            Button mLoginButton = (Button) findViewById(R.id.login_button);
+            Button mRegisterButton = (Button) findViewById(R.id.register_button);
+            Button mHomeButton = (Button) findViewById(R.id.home_button);
+            Button mMapButton = (Button) findViewById(R.id.map_button);
+            mLoginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intentLogin = new Intent(view.getContext(), LoginActivity.class);
+                    startActivity(intentLogin);
+                }
+            });
+            mRegisterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intentRegister = new Intent(view.getContext(), RegisteringActivity.class);
+                    startActivity(intentRegister);
+                }
+            });
+            mHomeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent HomeIntent = new Intent(view.getContext(), MainActivity.class);
+                    startActivity(HomeIntent);
+                }
+            });
+            mMapButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent MapIntent = new Intent(view.getContext(), LocateObjectsActivity.class);
+                    startActivity(MapIntent);
+                }
+            });
+        }
+        else {
+            Intent goHome = new Intent(context, MainActivity.class);
+            startActivity(goHome);
+        }
     }
 
     @Override
@@ -69,5 +84,18 @@ public class LandingActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Context context = getApplicationContext();
+        UserDAO userDAO = new UserDAO(context);
+        User user = userDAO.getUser();
+        //User user = null;
+        if (user != null) {
+            Intent goHome = new Intent(context, MainActivity.class);
+            startActivity(goHome);
+        }
     }
 }

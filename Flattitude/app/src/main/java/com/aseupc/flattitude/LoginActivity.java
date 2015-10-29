@@ -3,6 +3,7 @@ package com.aseupc.flattitude;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -30,6 +31,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aseupc.InternalDatabase.DAO.UserDAO;
+import com.aseupc.Models.User;
+import com.aseupc.databasefacade.UserFacade;
+import com.aseupc.utility_REST.ResultContainer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +47,16 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    private User currentUser;
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -266,6 +282,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Context context = getApplicationContext();
+        UserDAO userDAO = new UserDAO(context);
+        User user = userDAO.getUser();
+        //User user = null;
+        if (user != null) {
+            Intent goHome = new Intent(context, MainActivity.class);
+            startActivity(goHome);
+        }
+    }
+
+    @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
@@ -328,8 +357,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
             // AUTHENTICATION HERE
 
-        if (UserFacade.verifyCredentials((String) mEmail, (String) mPassword).getSucces() == true)
-            return true;
+            ResultContainer<User> result = UserFacade.verifyCredentials((String) mEmail, (String) mPassword);
+            if (result.getSucces() == true)
+            {
+               setCurrentUser(result.getTemplate());
+                return true;}
             else
             return false;
 
@@ -351,11 +383,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
             Button loginB = (Button) findViewById(R.id.email_sign_in_button);
-
+            Context context = loginB.getContext();
             if (success) {
                // finish();
-                Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
+                // Put user in local DB
 
+                UserDAO userDAO = new UserDAO(context);
+                userDAO.save(currentUser);
+
+                Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
                 startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -368,6 +404,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
+
     }
 }
 

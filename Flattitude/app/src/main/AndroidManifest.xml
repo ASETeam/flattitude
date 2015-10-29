@@ -7,10 +7,16 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
-    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" />
 
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -29,16 +35,16 @@
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_activity_register"></activity>
+            android:label="@string/title_activity_register" />
         <activity
             android:name=".GroupActivity"
-            android:label="@string/title_activity_create_group"></activity>
+            android:label="@string/title_activity_create_group" />
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home"></activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".LandingActivity"
             android:label="@string/title_activity_landing">
@@ -50,25 +56,26 @@
         </activity>
         <activity
             android:name=".RegisteringActivity"
-            android:label="@string/title_activity_registering"></activity>
+            android:label="@string/title_activity_registering" />
         <activity
             android:name=".TestActivity"
-            android:label="@string/title_activity_test"></activity>
+            android:label="@string/title_activity_test" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:uiOptions="splitActionBarWhenNarrow"></activity>
-		<activity
+            android:uiOptions="splitActionBarWhenNarrow" />
+        <activity
             android:name=".CreateFlat"
-            android:label="@string/title_activity_create_flat" >
-        </activity>
+            android:label="@string/title_activity_create_flat"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA4ELvDScoAPqOL78TS57VVhuCL62QXC84" />
+
         <activity
             android:name=".LocateObjectsActivity"
             android:label="@string/title_activity_locate_objects"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA4ELvDScoAPqOL78TS57VVhuCL62QXC84"/>
     </application>
 
 </manifest>

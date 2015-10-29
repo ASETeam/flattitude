@@ -101,12 +101,13 @@ public class ChangeUI extends Service {
         @Override
         protected ResultContainer<User> doInBackground(User... params) {
             User_Web_Services User_Ws = new User_Web_Services();
-            ResultContainer<User> response = User_Ws.ws_verifyCredentials("work1@work.com", "work");
+            ResultContainer<User> response = User_Ws.ws_verifyCredentials("po2@po.com", "popo");
             if (response.getSucces() == true)
                 Log.i("Anas", "Login is successfull");
             Log.i("Anas", "Login is NOT successfull");
             return response;
         }
     }
+
 
 }

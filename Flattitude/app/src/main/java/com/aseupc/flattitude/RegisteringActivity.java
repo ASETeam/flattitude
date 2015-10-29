@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.aseupc.InternalDatabase.DAO.UserDAO;
 import com.aseupc.Models.User;
-import com.aseupc.databasefacade.UserFacade;
 import com.aseupc.utility_REST.ResultContainer;
 
 public class RegisteringActivity extends AppCompatActivity {

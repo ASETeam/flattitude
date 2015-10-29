@@ -15,7 +15,7 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        final Button mGoHome = (Button) findViewById(R.id.go_button);
+        final Button mGoHome = (Button) findViewById(R.id.home_button);
         mGoHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -23,7 +23,16 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(homeIntent);
             }
 
-    } );
+        });
+        final Button mCreateFlat = (Button) findViewById(R.id.create_flat_button);
+        mGoHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createIntent = new Intent(mCreateFlat.getContext(), CreateFlat.class);
+                startActivity(createIntent);
+            }
+
+        } );
 
     }
 

@@ -58,6 +58,10 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow"></activity>
+		<activity
+            android:name=".CreateFlat"
+            android:label="@string/title_activity_create_flat" >
+        </activity>
         <activity
             android:name=".LocateObjectsActivity"
             android:label="@string/title_activity_locate_objects"

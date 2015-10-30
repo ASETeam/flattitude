@@ -60,9 +60,12 @@ public class User_Web_Services {
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
+            String userid = mainObject.getString("id");
 
-            if (success.equals("true"))
-            resultContainer.setSuccess(true);
+            if (success.equals("true")) {
+                resultContainer.setSuccess(true);
+                resultContainer.setTemplate(CallAPI.getUser(userid));
+            }
             else
             resultContainer.setSuccess(false);
         } catch (JSONException e) {

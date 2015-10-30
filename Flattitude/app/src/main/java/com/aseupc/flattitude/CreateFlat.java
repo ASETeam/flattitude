@@ -16,7 +16,7 @@ import com.aseupc.databasefacade.FlatFacade;
 import com.aseupc.utility_REST.ResultContainer;
 
 public class CreateFlat extends AppCompatActivity {
-
+//nothing here
     // UI references.
     private EditText mName;
     private EditText mAddress;

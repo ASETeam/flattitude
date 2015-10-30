@@ -19,11 +19,15 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:id="@+id/linearLayout">
+
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
             android:name="com.google.android.gms.maps.MapFragment"
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="406dp"/>
+            android:layout_height="406dp"
+            map:uiRotateGestures="false"
+            />
 
         <Button
             android:layout_width="wrap_content"

@@ -7,13 +7,14 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
-
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -25,28 +26,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="com.aseupc.synchronization.SynchzonizationService"
+            android:name=".synchronization.SynchzonizationService"
             android:enabled="true"
             android:permission="com.paad.MY_SERVICE_PERMISSION" />
         <service
-            android:name="com.aseupc.synchronization.ChangeUI"
+            android:name=".synchronization.ChangeUI"
             android:enabled="true"
             android:permission="com.paad.MY_SERVICE_PERMISSION" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".GroupActivity"
+            android:name=".Activities.GroupActivity"
             android:label="@string/title_activity_create_group" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".Activities.HomeActivity"
             android:label="@string/title_activity_home" />
         <activity
-            android:name=".LandingActivity"
+            android:name=".Activities.LandingActivity"
             android:label="@string/title_activity_landing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,17 +56,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisteringActivity"
+            android:name=".Activities.RegisteringActivity"
             android:label="@string/title_activity_registering" />
         <activity
-            android:name=".TestActivity"
+            android:name=".Activities.TestActivity"
             android:label="@string/title_activity_test" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
-            android:name=".CreateFlat"
+            android:name=".Activities.CreateFlat"
             android:label="@string/title_activity_create_flat"></activity>
 
         <meta-data
@@ -73,7 +74,7 @@
             android:value="AIzaSyA4ELvDScoAPqOL78TS57VVhuCL62QXC84" />
 
         <activity
-            android:name=".LocateObjectsActivity"
+            android:name=".Activities.ObjectLocation.LocateObjectsActivity"
             android:label="@string/title_activity_locate_objects"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:choiceMode="singleChoice"
     android:divider="#4cffa3" android:dividerHeight="1dp"
-    android:background="#cccc3528" tools:context="com.aseupc.flattitude.NavigationDrawerFragment"
+    android:background="#cccc3528" tools:context=".Activities.NavigationDrawerFragment"
     android:id="@+id/navigation"
     android:cacheColorHint="#eeff61"
     android:backgroundTint="#ff7675"

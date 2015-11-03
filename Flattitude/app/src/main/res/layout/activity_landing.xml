@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.aseupc.flattitude.LandingActivity"
+    tools:context=".Activities.LandingActivity"
     android:id="@+id/LandingActivityPane"
     android:theme="@style/Base.V7.Widget.AppCompat.EditText">
 
@@ -49,7 +49,8 @@
         android:text="MAP"
         android:id="@+id/map_button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:clickable="false" />
 
 
 </RelativeLayout>

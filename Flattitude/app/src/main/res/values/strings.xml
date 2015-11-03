@@ -40,5 +40,11 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_locate_objects">LocateObjects</string>
     <string name="title_activity_create_flat">CreateFlat</string>
+<<<<<<< HEAD
     <string name="title_activity_invitation">InvitationActivity</string>
+=======
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+>>>>>>> a7e0573337ec2abf77da736874f42f57bbcc14ca
 </resources>

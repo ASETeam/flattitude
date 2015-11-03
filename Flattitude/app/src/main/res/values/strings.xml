@@ -40,4 +40,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_locate_objects">LocateObjects</string>
     <string name="title_activity_create_flat">CreateFlat</string>
+    <string name="title_activity_invitation">InvitationActivity</string>
 </resources>

@@ -11,9 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -36,21 +38,42 @@ public class User_Web_Services {
 
     public  ResultContainer<User> ws_verifyCredentials(String email, String password) {
         ResultContainer<User> resultContainer = new ResultContainer<User>();
-        String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/user/login/" + email + "/" + password;
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/login/" + email + "/" + password;
+        Log.i("Json Input Str", urlString);
         String resultToDisplay = "";
         ParseResults result = null;
         InputStream in = null;
         // HTTP Get
         try {
             URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+           /* urlConnection.setRequestMethod("GET");
+            urlConnection.setInstanceFollowRedirects(true);
+            HttpURLConnection.setFollowRedirects(true);*/
             in = new BufferedInputStream(urlConnection.getInputStream());
+
+            URLConnection con = url.openConnection();
+            System.out.println("Orignal URL: " + con.getURL());
+            con.connect();
+            System.out.println("Connected URL: " + con.getURL());
+            InputStream is = con.getInputStream();
+            System.out.println("Redirected URL: " + con.getURL());
+            is.close();
+
+
+            Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
+
         } catch (Exception e) {
          //   System.out.println(e.getMessage());
         }
         // resultToDisplay = (String) in.toString();
-        resultToDisplay = ParseResults.getStringFromInputStream(in);
+        try {
+            resultToDisplay = ParseResults.getStringFromInputStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Log.i("Json Result string :", resultToDisplay);
         try {
@@ -60,6 +83,7 @@ public class User_Web_Services {
 
             if (success.equals("true")) {
                 resultContainer.setSuccess(true);
+                Log.i("EMAIL return", CallAPI.getUser(userid).getEmail());
                 resultContainer.setTemplate(CallAPI.getUser(userid));
             }
             else
@@ -67,38 +91,8 @@ public class User_Web_Services {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return resultContainer; /*
-        User user = new User();
-        user.setPassword(password);
-        user.setEmail(email);
-        executeLogin call = new executeLogin();
-        String resultString = null;
-        try {
-            resultString = call.execute(user).get(50000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        ResultContainer<User> resultContainer = new ResultContainer<>();
-        resultContainer.setTemplate(user);
-        try {
-            JSONObject mainObject = new JSONObject(resultString);
-            String success = mainObject.getString("success");
+        return resultContainer;
 
-            if (success.equals("true"))
-                resultContainer.setSuccess(true);
-            else
-                resultContainer.setSuccess(false);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-        return resultContainer;*/
     }
 
 
@@ -107,10 +101,7 @@ public class User_Web_Services {
     public ResultContainer<User> ws_registerUser(String email, String password, String firstname, String lastname, String phonenumber) {
         ResultContainer<User> resultContainer = new ResultContainer<User>();
         String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
-
-            callPost call = new callPost();
-
-
+        callPost call = new callPost();
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
@@ -173,7 +164,7 @@ public class User_Web_Services {
 
         protected String doInBackground(User... users) {
             String response = "";
-            String urlStr = "http://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
             HashMap<String, String> values = new HashMap<>();
             User user = users[0];
             values.put("email", user.getEmail());
@@ -228,7 +219,11 @@ public class User_Web_Services {
                 //   System.out.println(e.getMessage());
             }
             // resultToDisplay = (String) in.toString();
-            resultToDisplay = ParseResults.getStringFromInputStream(in);
+            try {
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             Log.i("Json Result string :", resultToDisplay);
             try {
@@ -281,11 +276,17 @@ public class User_Web_Services {
                 //   System.out.println(e.getMessage());
             }
             // resultToDisplay = (String) in.toString();
-            resultToDisplay = ParseResults.getStringFromInputStream(in);
+            try {
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
             return resultToDisplay;
         }
     }
+
+
 
 }

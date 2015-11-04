@@ -1,15 +1,12 @@
 package com.aseupc.flattitude.databasefacade;
 
-<<<<<<< HEAD:Flattitude/app/src/main/java/com/aseupc/databasefacade/FlatFacade.java
-import com.aseupc.Models.Flat;
-import com.aseupc.database.Flat_Web_Services;
-import com.aseupc.database.Invitation_Web_Services;
-import com.aseupc.utility_REST.ResultContainer;
-=======
+
+
+import com.aseupc.flattitude.database.Invitation_Web_Services;
+
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.database.Flat_Web_Services;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
->>>>>>> a7e0573337ec2abf77da736874f42f57bbcc14ca:Flattitude/app/src/main/java/com/aseupc/flattitude/databasefacade/FlatFacade.java
 
 /**
  * Created by MetzoDell on 28-10-15.

@@ -47,13 +47,10 @@
             android:name=".Activities.HomeActivity"
             android:label="@string/title_activity_home" />
         <activity
-<<<<<<< HEAD
-            android:name=".LandingActivity"
-            android:label="@string/title_activity_landing" >
-=======
+
             android:name=".Activities.LandingActivity"
             android:label="@string/title_activity_landing">
->>>>>>> a7e0573337ec2abf77da736874f42f57bbcc14ca
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -71,13 +68,10 @@
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
-<<<<<<< HEAD
-            android:name=".CreateFlat"
-            android:label="@string/title_activity_create_flat" />
-=======
+
             android:name=".Activities.CreateFlat"
             android:label="@string/title_activity_create_flat"></activity>
->>>>>>> a7e0573337ec2abf77da736874f42f57bbcc14ca
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -88,7 +82,7 @@
             android:label="@string/title_activity_locate_objects"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InvitationActivity"
+            android:name=".Activities.InvitationActivity"
             android:label="@string/title_activity_invitation" >
         </activity>
     </application>

@@ -82,7 +82,7 @@ public class UserDAO extends DBDAO {
             user.setPhonenbr(cursor.getString(5));
 //            user.setBirthdate(parseDate(cursor.getString(6)));
             user.setBirthdate(new Date());
-            user.setIban(cursor.getString(7));
+//            user.setIban(cursor.getString(7));
             user.setLoggedin(parseBoolean(cursor.getInt(8)));
             return user;
         }

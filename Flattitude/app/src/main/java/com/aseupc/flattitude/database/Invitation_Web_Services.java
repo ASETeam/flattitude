@@ -1,6 +1,5 @@
 package com.aseupc.flattitude.database;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,22 +16,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Created by MetzoDell on 28-10-15.
+ * Created by MetzoDell on 29-10-15.
  */
-public class Flat_Web_Services {
+public class Invitation_Web_Services {
 
-
-    public ResultContainer<Flat> ws_createFlat(Flat flat) {
+    public ResultContainer<Flat> ws_inviteMember(int userID, int flatID) {
         ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
-        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
-
-        callPostCreateFlat call = new callPostCreateFlat();
-
-
-
-        String FinalizeThread ="Call not executed";
+        callPostInviteMember call = new callPostInviteMember();
+        String ResponseString =null;
+        String str_userID = Integer.toString(userID);
+        String str_flatID = Integer.toString(flatID);
         try {
-            FinalizeThread = call.execute(flat).get(50000, TimeUnit.MILLISECONDS);
+            ResponseString = call.execute(str_userID, str_flatID).get(50000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -41,19 +36,14 @@ public class Flat_Web_Services {
             e.printStackTrace();
         }
 
-
-        Log.i("We Before with Json: ", FinalizeThread);
-        if (FinalizeThread != null)
+        if (ResponseString != null)
         {
-            Log.i("FLAT JSON: ", FinalizeThread);
+            Log.i("We start with Json: ", ResponseString);
             try {
-                JSONObject mainObject = new JSONObject(FinalizeThread);
+                JSONObject mainObject = new JSONObject(ResponseString);
                 String success = mainObject.getString("success");
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
-                    //String userId = mainObject.getString("id");
-                    String flatID = mainObject.getString("id");
-                    flat.setServerid(flatID);
                     resultContainer.setSuccess(true);
                     // Temporary solution : dummy user
                     // resultContainer.setTemplate(CallAPI.getUser(userId));
@@ -70,29 +60,25 @@ public class Flat_Web_Services {
             }
         }
 
-        return resultContainer;
+
+        return null;
     }
 
-
-
-
-    class callPostCreateFlat extends AsyncTask<Flat, Void, String> {
+    class callPostInviteMember extends AsyncTask<String, Void, String> {
 
         private Exception exception;
 
 
-        protected String doInBackground(Flat... flats) {
+        protected String doInBackground(String... contents) {
             String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
+            String urlStr = "http://flattiserver-flattitude.rhcloud.com/flattiserver/invitation/create";
             HashMap<String, String> values = new HashMap<>();
-            Flat flat = flats[0];
-            values.put("name", flat.getName());
-            values.put("address", flat.getAddress());
-            values.put("city", flat.getCity());
-            values.put("country", flat.getCountry());
-            values.put("postcode", flat.getPostcode());
-            values.put("IBAN", flat.getIban());
-            values.put("masterid", "2");
+            String userId = contents[0];
+            String flatId = contents[1];
+
+            values.put("name", userId);
+            values.put("address", flatId);
+
             response = CallAPI.performPostCall(urlStr, values);
             try {
                 JSONObject mainObject = new JSONObject(response);
@@ -112,6 +98,5 @@ public class Flat_Web_Services {
 
         }
     }
-
 
 }

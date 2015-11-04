@@ -4,32 +4,58 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.MainActivity"
+    android:id="@+id/rel_main">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/txtDateTime"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_toEndOf="@+id/flat_id" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/txtCounter"
-        android:layout_below="@+id/txtDateTime"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="33dp" />
+        android:layout_toEndOf="@+id/invite_button" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Invite members to this Flat"
         android:id="@+id/invite_button"
-        android:layout_below="@+id/txtCounter"
-        android:layout_toEndOf="@+id/txtCounter"
-        android:layout_marginTop="71dp" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/flat_id"
+        android:text="Flat number and name"
+        android:layout_below="@+id/txtDateTime"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="34dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="User ID and Email"
+        android:id="@+id/user_id"
+        android:layout_below="@+id/flat_id"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="User and flat : "
+        android:id="@+id/textView13"
+        android:layout_below="@+id/txtDateTime"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

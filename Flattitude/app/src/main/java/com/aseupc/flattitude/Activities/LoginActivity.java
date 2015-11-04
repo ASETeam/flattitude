@@ -382,7 +382,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Put user in local DB
 
                 UserDAO userDAO = new UserDAO(context);
-                userDAO.save(currentUser);
+                userDAO.save(getCurrentUser());
 
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
                 startActivity(intent);

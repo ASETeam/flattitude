@@ -64,6 +64,7 @@
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
+
             android:name=".Activities.CreateFlat"
             android:label="@string/title_activity_create_flat"></activity>
         <meta-data

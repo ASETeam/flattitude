@@ -29,7 +29,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLENAME + " (" +
                     USER_ID + " INT PRIMARY KEY NOT NULL, " +
-                    USER_SERVERID + "STRING, " +  // NOT NULL !!!
+                    USER_SERVERID + " STRING, " +  // NOT NULL !!!
                     USER_EMAIL + " TEXT NOT NULL," +
                     USER_FIRSTNAME + " TEXT NOT NULL," +
                     USER_LASTNAME + " TEXT NOT NULL," +

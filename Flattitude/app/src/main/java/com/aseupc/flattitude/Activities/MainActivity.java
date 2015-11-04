@@ -15,6 +15,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
@@ -51,6 +55,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+        FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+        Flat flat = flatDAO.getFlat();
+        UserDAO userDAO = new UserDAO(getApplicationContext());
+        User user = userDAO.getUser();
+        TextView mUser = (TextView) findViewById(R.id.user_id);
+        TextView mFlat = (TextView) findViewById(R.id.flat_id);
+        if ((flat != null) && (user != null)) {
+            mUser.setText(user.getServerid() + " - " + user.getEmail());
+            mFlat.setText(flat.getServerid() + " - " + flat.getName());
+        }
+
 
     }
 

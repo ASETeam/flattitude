@@ -24,7 +24,7 @@ public class Flat_Web_Services {
 
     public ResultContainer<Flat> ws_createFlat(Flat flat) {
         ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
-        String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
 
         callPostCreateFlat call = new callPostCreateFlat();
 
@@ -45,13 +45,15 @@ public class Flat_Web_Services {
         Log.i("We Before with Json: ", FinalizeThread);
         if (FinalizeThread != null)
         {
-            Log.i("We start with Json: ", FinalizeThread);
+            Log.i("FLAT JSON: ", FinalizeThread);
             try {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
-                    String userId = mainObject.getString("id");
+                    //String userId = mainObject.getString("id");
+                    String flatID = mainObject.getString("id");
+                    flat.setServerid(flatID);
                     resultContainer.setSuccess(true);
                     // Temporary solution : dummy user
                     // resultContainer.setTemplate(CallAPI.getUser(userId));
@@ -81,7 +83,7 @@ public class Flat_Web_Services {
 
         protected String doInBackground(Flat... flats) {
             String response = "";
-            String urlStr = "http://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
             HashMap<String, String> values = new HashMap<>();
             Flat flat = flats[0];
             values.put("name", flat.getName());

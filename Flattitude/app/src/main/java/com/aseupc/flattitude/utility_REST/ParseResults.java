@@ -1,5 +1,9 @@
 package com.aseupc.flattitude.utility_REST;
 
+import android.util.Log;
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +30,8 @@ public class ParseResults {
         }
     }
 
-    public static String getStringFromInputStream(InputStream is) {
-
+    public static String getStringFromInputStream(InputStream is) throws IOException {
+/*
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
 
@@ -37,6 +41,7 @@ public class ParseResults {
             br = new BufferedReader(new InputStreamReader(is));
             while ((line = br.readLine()) != null) {
                 sb.append(line);
+                Log.i("Line", line);
             }
 
         } catch (IOException e) {
@@ -52,6 +57,21 @@ public class ParseResults {
         }
 
         return sb.toString();
+*/
 
+        BufferedReader streamReader = new BufferedReader(new InputStreamReader(is));
+
+        StringBuilder responseStrBuilder = new StringBuilder();
+
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
+            Log.i("Anas 5", inputStr);
+
+        }
+
+
+
+        return responseStrBuilder.toString();
     }
 }

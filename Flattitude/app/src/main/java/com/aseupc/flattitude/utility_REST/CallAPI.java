@@ -1,5 +1,7 @@
 package com.aseupc.flattitude.utility_REST;
 
+import android.util.Log;
+
 import com.aseupc.flattitude.Models.User;
 
 import org.json.JSONException;
@@ -8,6 +10,7 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,7 +30,9 @@ import java.util.Map;
  */
 public class CallAPI  {
 
-    public static User getUser(String userID)
+
+
+    public static User getUser1(String userID)
     {
         User user = new User();
         user.setEmail("okokk@lol.com");
@@ -41,12 +46,13 @@ public class CallAPI  {
         return user;
     }
 
-    public static User getUser1(String userID)
+
+    public static User getUser(String userID)
     {
         User user = new User();
         user.setServerid(userID);
         String resultToDisplay = null;
-        String urlString = "REST STRING HERE";
+        String urlString =  "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/getinfo/" + userID;
         ParseResults result = null;
         InputStream in = null;
         try {
@@ -57,7 +63,12 @@ public class CallAPI  {
             System.out.println(e.getMessage());
         }
         // resultToDisplay = (String) in.toString();
-        resultToDisplay = ParseResults.getStringFromInputStream(in);
+        try {
+            resultToDisplay = ParseResults.getStringFromInputStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("The GetUser", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
@@ -67,14 +78,14 @@ public class CallAPI  {
                 String lastname = mainObject.getString("lastname");
                 String email = mainObject.getString("email");
                 String phonenumber  = mainObject.getString("phonenbr");
-                Date birthdate = ParseResults.parseDate(mainObject.getString("birthdate"));
-                String iban = mainObject.getString("iban");
+               // Date birthdate = ParseResults.parseDate(mainObject.getString("birthdate"));
+               // String iban = mainObject.getString("iban");
 
                 user.setFirstname(firstname);
                 user.setLastname(lastname);
                 user.setEmail(email);
-                user.setBirthdate(birthdate);
-                user.setIban(iban);
+               // user.setBirthdate(birthdate);
+                //.setIban(iban);
                 user.setPhonenbr(phonenumber);
 
             }

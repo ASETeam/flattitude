@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
@@ -55,12 +56,15 @@ public class CreateFlat extends AppCompatActivity {
                 flat.setPostcode(postal_code);
                 ResultContainer<Flat> response = FlatFacade.createFlat(flat);
                 if (response.getSucces() == true)
-                {Context context = getApplicationContext();
-                CharSequence text = "Flat created !";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();}
+                {
+                    Context context = getApplicationContext();
+                    CharSequence text = "Flat created !";
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                    FlatDAO flatDao = new FlatDAO(getApplicationContext());
+                    flatDao.save(flat);
+                }
         }
 
     }); }

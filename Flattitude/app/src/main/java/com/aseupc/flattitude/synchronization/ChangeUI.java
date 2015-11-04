@@ -68,7 +68,7 @@ public class ChangeUI extends Service {
         verifyUser call = new verifyUser();
         ResultContainer<User> response = new ResultContainer<>();
         try {
-            response = call.execute(user).get(50000, TimeUnit.MILLISECONDS);
+            response = call.execute(user).get(50000000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

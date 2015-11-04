@@ -71,7 +71,7 @@ public class Invitation_Web_Services {
 
         protected String doInBackground(String... contents) {
             String response = "";
-            String urlStr = "http://flattiserver-flattitude.rhcloud.com/flattiserver/invitation/create";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/invitation/create";
             HashMap<String, String> values = new HashMap<>();
             String userId = contents[0];
             String flatId = contents[1];

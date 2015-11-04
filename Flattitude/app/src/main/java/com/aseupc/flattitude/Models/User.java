@@ -93,7 +93,7 @@ public class User {
     }
 
     public void setIban(String iban) {
-        this.iban = new String(iban);
+     if (iban != null)   this.iban = new String(iban);
     }
 
     public boolean isLoggedin() {

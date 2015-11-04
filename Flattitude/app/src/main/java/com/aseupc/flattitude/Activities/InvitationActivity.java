@@ -33,10 +33,13 @@ public class InvitationActivity extends AppCompatActivity {
                 String toInvite = (String) mInvitee.getText().toString();
                 int toInviteID = 0; // CREATE WS TO GET USER INFO VIA MAIL (SEE LOWER)
                 int meID = 0; // Call USERDAO to get currentUSER
-                /*
+
+/*
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 User me = userDAO.getUser();
-                int meID = me.getId();
+                meID = me.getId();
+
+
                 ResultContainer<Flat> result = FlatFacade.inviteMember(toInviteID, meID);
                 boolean processed = result.getSucces(); */
 

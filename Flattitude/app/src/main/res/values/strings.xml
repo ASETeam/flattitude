@@ -31,8 +31,8 @@
     <string name="title_section3">Section 3</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="title_activity_landing">LandingActivity</string>
     <string name="title_activity_registering">RegisteringActivity</string>
@@ -40,8 +40,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_locate_objects">LocateObjects</string>
     <string name="title_activity_create_flat">CreateFlat</string>
-
+    <string name="title_activity_invitation">InvitationActivity</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_testing">TestingActivity</string>
 </resources>

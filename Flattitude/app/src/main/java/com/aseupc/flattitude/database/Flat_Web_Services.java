@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.database;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -25,7 +26,7 @@ public class Flat_Web_Services {
         ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
         String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
 
-        callPost call = new callPost();
+        callPostCreateFlat call = new callPostCreateFlat();
 
 
 
@@ -70,7 +71,10 @@ public class Flat_Web_Services {
         return resultContainer;
     }
 
-    class callPost extends AsyncTask<Flat, Void, String> {
+
+
+
+    class callPostCreateFlat extends AsyncTask<Flat, Void, String> {
 
         private Exception exception;
 
@@ -106,4 +110,6 @@ public class Flat_Web_Services {
 
         }
     }
+
+
 }

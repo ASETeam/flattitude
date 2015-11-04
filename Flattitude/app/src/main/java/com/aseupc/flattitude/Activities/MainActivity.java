@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,16 @@ public class MainActivity extends AppCompatActivity {
         ui_intent = new Intent(this, ChangeUI.class);
         Intent changeUIintent = new Intent(this, ChangeUI.class);
         startService(changeUIintent);
+
+        final Button mInvite = (Button) findViewById(R.id.invite_button);
+        mInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeIntent = new Intent(mInvite.getContext(), InvitationActivity.class);
+                startActivity(homeIntent);
+            }
+
+        });
 
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aseupc.flattitude">
+    package="com.aseupc.flattitude" >
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -25,7 +25,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <service
             android:name=".synchronization.SynchzonizationService"
             android:enabled="true"
@@ -65,16 +65,18 @@
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity
             android:name=".Activities.CreateFlat"
-            android:label="@string/title_activity_create_flat" />
-
+            android:label="@string/title_activity_create_flat"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA4ELvDScoAPqOL78TS57VVhuCL62QXC84" />
-
         <activity
             android:name=".Activities.ObjectLocation.LocateObjectsActivity"
             android:label="@string/title_activity_locate_objects"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.InvitationActivity"
+            android:label="@string/title_activity_invitation" >
+        </activity>
     </application>
 
 </manifest>

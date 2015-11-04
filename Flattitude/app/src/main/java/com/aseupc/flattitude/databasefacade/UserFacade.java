@@ -27,7 +27,8 @@ public class UserFacade {
     {
         User_Web_Services User_WS = new User_Web_Services();
         ResultContainer<User> result  = User_WS.ws_registerUser(email, password, firstname, lastname, phonenumber);
-        //call function in webservice
+
+        // Add notification to server
 
         return result;
     }

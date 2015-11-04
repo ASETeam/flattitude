@@ -108,6 +108,8 @@ public class CallAPI  {
             url = new URL(requestURL);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+           // String token;
+            //conn.setRequestProperty("Auth",token);
             conn.setReadTimeout(15000);
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("POST");

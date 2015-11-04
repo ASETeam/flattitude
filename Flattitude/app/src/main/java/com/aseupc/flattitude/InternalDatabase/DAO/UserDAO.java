@@ -24,7 +24,7 @@ public class UserDAO extends DBDAO {
     public long save(User user) {
         ContentValues values = new ContentValues();
         values.put(DataBaseHelper.USER_ID, user.getId());
-    //     values.put("serverid", user.getServerid());
+        values.put(DataBaseHelper.USER_SERVERID, user.getServerid());
         values.put(DataBaseHelper.USER_EMAIL, user.getEmail());
         values.put(DataBaseHelper.USER_FIRSTNAME, user.getFirstname());
         values.put(DataBaseHelper.USER_LASTNAME, user.getLastname());
@@ -63,7 +63,7 @@ public class UserDAO extends DBDAO {
     public User getUser() {
         Cursor cursor = database.query(DataBaseHelper.USER_TABLENAME,
                 new String[] { DataBaseHelper.USER_ID,
-                        DataBaseHelper.USER_ID, // !!!!!!------ NEEDS TO BE REPLACED TO SERVER_ID AGAIN
+                        DataBaseHelper.USER_SERVERID, // !!!!!!------ NEEDS TO BE REPLACED TO SERVER_ID AGAIN
                         DataBaseHelper.USER_EMAIL,
                         DataBaseHelper.USER_FIRSTNAME,
                         DataBaseHelper.USER_LASTNAME,
@@ -75,7 +75,7 @@ public class UserDAO extends DBDAO {
 
         if(cursor.moveToNext()) {
             User user = new User();
-            user.setServerid(cursor.getString(0));
+            user.setServerid(cursor.getString(1));
             user.setEmail(cursor.getString(2));
             user.setFirstname(cursor.getString(3));
             user.setLastname(cursor.getString(4));

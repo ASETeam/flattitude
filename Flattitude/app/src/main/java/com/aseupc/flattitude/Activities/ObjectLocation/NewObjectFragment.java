@@ -83,6 +83,7 @@ public class NewObjectFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener.onFragmentDetached();
         mListener = null;
     }
 
@@ -104,6 +105,7 @@ public class NewObjectFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         public void onAddObjectPressed(String name);
         public void onCurrentLocationPressed();
+        public void onFragmentDetached();
     }
 
 }

@@ -46,12 +46,16 @@ public class User_Web_Services {
         // HTTP Get
         try {
             URL url = new URL(urlString);
+<<<<<<< HEAD
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
            /* urlConnection.setRequestMethod("GET");
             urlConnection.setInstanceFollowRedirects(true);
             HttpURLConnection.setFollowRedirects(true);*/
+=======
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+>>>>>>> 2e0b097c148910118269b8b1b6ebb9314d798e30
             in = new BufferedInputStream(urlConnection.getInputStream());
 
             URLConnection con = url.openConnection();
@@ -173,6 +177,7 @@ public class User_Web_Services {
             values.put("lastname", user.getLastname());
             values.put("phonenbr", user.getPhonenbr());
             response = CallAPI.performPostCall(urlStr, values);
+
             try {
                 JSONObject mainObject = new JSONObject(response);
                 Log.i("GUILLE RESPONSE", mainObject.toString());

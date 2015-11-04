@@ -1,11 +1,15 @@
 package com.aseupc.flattitude.databasefacade;
 
 
+<<<<<<< HEAD
 
 import com.aseupc.flattitude.database.Invitation_Web_Services;
 
+=======
+>>>>>>> 2e0b097c148910118269b8b1b6ebb9314d798e30
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.database.Flat_Web_Services;
+import com.aseupc.flattitude.database.Invitation_Web_Services;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 /**

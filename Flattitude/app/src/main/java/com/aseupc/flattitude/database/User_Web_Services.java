@@ -44,7 +44,6 @@ public class User_Web_Services {
         try {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
             in = new BufferedInputStream(urlConnection.getInputStream());
         } catch (Exception e) {
          //   System.out.println(e.getMessage());
@@ -182,6 +181,7 @@ public class User_Web_Services {
             values.put("lastname", user.getLastname());
             values.put("phonenbr", user.getPhonenbr());
             response = CallAPI.performPostCall(urlStr, values);
+
             try {
                 JSONObject mainObject = new JSONObject(response);
                 Log.i("GUILLE RESPONSE", mainObject.toString());

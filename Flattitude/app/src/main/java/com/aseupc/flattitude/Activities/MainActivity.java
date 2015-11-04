@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,15 +13,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 
@@ -47,28 +48,47 @@ public class MainActivity extends AppCompatActivity {
         ui_intent = new Intent(this, ChangeUI.class);
         Intent changeUIintent = new Intent(this, ChangeUI.class);
         startService(changeUIintent);
-
-        final Button mInvite = (Button) findViewById(R.id.invite_button);
-        mInvite.setOnClickListener(new View.OnClickListener() {
+        final ImageButton sendInvite = (ImageButton) findViewById(R.id.add_button);
+        sendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeIntent = new Intent(mInvite.getContext(), InvitationActivity.class);
+                Intent homeIntent = new Intent(view.getContext(), InvitationActivity.class);
                 startActivity(homeIntent);
             }
-
         });
+
+        final ImageButton goMap = (ImageButton) findViewById(R.id.map_button);
+        goMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent MapIntent = new Intent(view.getContext(), LocateObjectsActivity.class);
+                startActivity(MapIntent);
+            }
+        });
+        final ImageButton goGroup = (ImageButton) findViewById(R.id.leave_button);
+        sendInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent homeIntent = new Intent(view.getContext(), GroupActivity.class);
+                startActivity(homeIntent);
+            }
+        });
+
+
+
 
         FlatDAO flatDAO = new FlatDAO(getApplicationContext());
         Flat flat = flatDAO.getFlat();
         UserDAO userDAO = new UserDAO(getApplicationContext());
         User user = userDAO.getUser();
-        TextView mUser = (TextView) findViewById(R.id.user_id);
-        TextView mFlat = (TextView) findViewById(R.id.flat_id);
+       /*TextView mUser = (TextView) findViewById(R.id.user_id);
+        TextView mFlat = (TextView) findViewById(R.id.flat_id);*/
+
         if ((flat != null) && (user != null)) {
             thisFlat = flat;
             thisUser = user;
-            mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
-            mFlat.setText(flat.getServerid() + " - " + flat.getName());
+          /*  mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
+            mFlat.setText(flat.getServerid() + " - " + flat.getName());*/
         }
 
 
@@ -88,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, counter);
         Log.d(TAG, time);
 
-        TextView txtDateTime = (TextView) findViewById(R.id.txtDateTime);
+       /* TextView txtDateTime = (TextView) findViewById(R.id.txtDateTime);
         TextView txtCounter = (TextView) findViewById(R.id.txtCounter);
         txtDateTime.setText(time);
-        txtCounter.setText(counter);
+        txtCounter.setText(counter); */
         if (change.equals("yes"))
         {
             //mItem.setIcon(getApplicationContext().getDrawable(R.drawable.ic_alert));

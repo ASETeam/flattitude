@@ -16,10 +16,6 @@
         android:title="logout"
         app:showAsAction="always"
         />
-    <item android:id="@+id/home"
-        android:icon="@drawable/ic_home"
-        android:title="logout"
-        app:showAsAction="always"
-        />
+
 
 </menu>

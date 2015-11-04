@@ -7,55 +7,82 @@
     tools:context=".Activities.MainActivity"
     android:id="@+id/rel_main">
 
-    <TextView
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/txtDateTime"
-        android:layout_toEndOf="@+id/flat_id" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/txtCounter"
-        android:layout_toEndOf="@+id/invite_button" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Invite members to this Flat"
-        android:id="@+id/invite_button"
+        android:stretchColumns="no"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/flat_id"
-        android:text="Flat number and name"
-        android:layout_below="@+id/txtDateTime"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="34dp" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="User ID and Email"
-        android:id="@+id/user_id"
-        android:layout_below="@+id/flat_id"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="35dp" />
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/chat_button"
+                android:src="@drawable/ic_chat"
+                android:layout_below="@+id/invitation_button"
+                android:layout_alignParentStart="true"
+                android:layout_column="14" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="User and flat : "
-        android:id="@+id/textView13"
-        android:layout_below="@+id/txtDateTime"
-        android:layout_alignParentStart="true" />
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/home_button"
+                android:src="@drawable/ic_home"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_column="15" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/calendar_button"
+                android:layout_column="14"
+                android:src="@drawable/ic_calendar" />
+
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/map_button"
+                android:src="@drawable/ic_map"
+                android:layout_above="@+id/invitation_button"
+                android:layout_alignParentEnd="true"
+                android:layout_column="15" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/add_button"
+                android:layout_below="@+id/home_button"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_add"
+                android:layout_column="14" />
+
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/leave_button"
+                android:src="@drawable/ic_leave"
+                android:layout_below="@+id/map_button"
+                android:layout_alignParentEnd="true"
+                android:layout_column="15" />
+        </TableRow>
+
+    </TableLayout>
 
 </RelativeLayout>

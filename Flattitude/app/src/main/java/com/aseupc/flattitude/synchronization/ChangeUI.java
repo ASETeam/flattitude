@@ -37,13 +37,13 @@ public class ChangeUI extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+        handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+        handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
     }
@@ -53,7 +53,7 @@ public class ChangeUI extends Service {
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
             DisplayLoggingInfo();
-            handler.postDelayed(this, 5000); // 5 seconds
+            handler.postDelayed(this, 5000000); // 5 seconds
         }
     };
 
@@ -82,6 +82,7 @@ public class ChangeUI extends Service {
         else {
             intent.putExtra("change", "no");
         }
+        intent.putExtra("change", "yes");
 
         sendBroadcast(intent);
     }

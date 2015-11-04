@@ -6,11 +6,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.aseupc.flattitude.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GroupActivity extends AppCompatActivity {
+    private ListView invitations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +41,17 @@ public class GroupActivity extends AppCompatActivity {
             }
 
         } );
+        invitations = (ListView) findViewById(R.id.invitations);
+        List<String> population = new ArrayList<String>();
+        population.add("foo");
+        population.add("bar");
 
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                population );
+
+        invitations.setAdapter(arrayAdapter);
     }
 
     @Override

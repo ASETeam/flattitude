@@ -1,6 +1,8 @@
 package com.aseupc.flattitude.databasefacade;
 
 
+import com.aseupc.flattitude.Models.Flat;
+
 
 
 import com.aseupc.flattitude.database.Invitation_Web_Services;

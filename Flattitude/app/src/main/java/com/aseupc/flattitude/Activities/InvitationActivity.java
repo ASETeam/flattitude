@@ -13,8 +13,8 @@ import android.widget.Toast;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
-import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
+import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 public class InvitationActivity extends AppCompatActivity {
@@ -33,10 +33,12 @@ public class InvitationActivity extends AppCompatActivity {
                 String toInvite = (String) mInvitee.getText().toString();
                 int toInviteID = 0; // CREATE WS TO GET USER INFO VIA MAIL (SEE LOWER)
                 int meID = 0; // Call USERDAO to get currentUSER
+
 /*
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 User me = userDAO.getUser();
                 meID = me.getId();
+
 
                 ResultContainer<Flat> result = FlatFacade.inviteMember(toInviteID, meID);
                 boolean processed = result.getSucces(); */

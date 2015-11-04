@@ -93,6 +93,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     ");";
 
 
+    //--------------SHARED OBJECTS TABLE----------------
+    public static final String MAPOBJECT_TABLENAME = "sharnigobjectlist";
+
+    public static final String MAPOBJECT_ID = "objectid";
+    public static final String MAPOBJECT_NAME = "objectname";
+    public static final String MAPOBJECT_DESCRIPTION = "objectdescription";
+    public static final String MAPOBJECT_LATITUDE = "lat";
+    public static final String MAPOBJECT_LONGITUDE = "lng";
+
+
+    private static final String MAPOBJECT_TABLE_CREATE =
+            "CREATE TABLE " + MAPOBJECT_TABLENAME + " (" +
+                    MAPOBJECT_ID + " INT PRIMARY KEY NOT NULL, " +
+                    MAPOBJECT_NAME + " TEXT NOT NULL, " +
+                    MAPOBJECT_DESCRIPTION + " TEXT," +
+                    MAPOBJECT_LATITUDE + " REAL NOT NULL," +
+                    MAPOBJECT_LONGITUDE + " REAL NOT NULL" +
+                    ");";
+
     private static DataBaseHelper instance;
 
     public static synchronized DataBaseHelper getHelper(Context context) {
@@ -113,6 +132,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(USER_TABLE_CREATE);
         db.execSQL(FLAT_TABLE_CREATE);
         db.execSQL(MATE_TABLE_CREATE);
+        db.execSQL(MAPOBJECT_TABLE_CREATE);
     }
 
 

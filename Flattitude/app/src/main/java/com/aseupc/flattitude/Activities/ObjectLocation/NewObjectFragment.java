@@ -59,7 +59,7 @@ public class NewObjectFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String objectName = objectNameTE.getText().toString();
-                mListener.onAddObjectPressed(objectName);
+                mListener.onAddObjectConfirmed(objectName);
             }
         });
 
@@ -83,7 +83,6 @@ public class NewObjectFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener.onFragmentDetached();
         mListener = null;
     }
 
@@ -103,9 +102,8 @@ public class NewObjectFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onAddObjectPressed(String name);
+        public void onAddObjectConfirmed(String name);
         public void onCurrentLocationPressed();
-        public void onFragmentDetached();
     }
 
 }

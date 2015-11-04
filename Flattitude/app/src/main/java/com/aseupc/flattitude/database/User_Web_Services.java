@@ -65,11 +65,13 @@ public class User_Web_Services {
             URL url = new URL(urlString);
 
 
+
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
            /* urlConnection.setRequestMethod("GET");
             urlConnection.setInstanceFollowRedirects(true);
             HttpURLConnection.setFollowRedirects(true);*/
+
 
             in = new BufferedInputStream(urlConnection.getInputStream());
 

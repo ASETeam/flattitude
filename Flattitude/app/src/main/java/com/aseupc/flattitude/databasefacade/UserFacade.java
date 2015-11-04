@@ -22,6 +22,12 @@ public class UserFacade {
         return result;
     }
 
+    public static ResultContainer<User> logoutUser(String userID, String token)
+    {
+        User_Web_Services WS_user = new User_Web_Services();
+        ResultContainer<User> result = WS_user.ws_logoutUser(userID, token);
+        return result;
+    }
 
     public static ResultContainer<User> registerUser(String email, String password, String firstname, String lastname, String phonenumber)
     {

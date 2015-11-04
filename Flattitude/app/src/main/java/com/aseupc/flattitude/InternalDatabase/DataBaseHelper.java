@@ -25,6 +25,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String USER_IBAN = "iban";
     //public static final String USER_PICTURE = "picture";
     public static final String USER_LOGGEDIN = "loggedin";
+    public static final String USER_TOKEN = "token";
 
     private static final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLENAME + " (" +
@@ -37,7 +38,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     USER_BIRTHDATE + " DATETIME," +
                     USER_IBAN + " TEXT," +
 //                    USER_PICTURE + " TEXT," +
-                    USER_LOGGEDIN + " INT" +
+                    USER_LOGGEDIN + " INT, " +
+                    USER_TOKEN + " TEXT" +
                     ");";
 
 
@@ -95,7 +97,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static synchronized DataBaseHelper getHelper(Context context) {
         if (instance == null) {
-            context.deleteDatabase(DATABASE_NAME);
+         //   context.deleteDatabase(DATABASE_NAME);
             instance = new DataBaseHelper(context);
         }
 
@@ -112,6 +114,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(FLAT_TABLE_CREATE);
         db.execSQL(MATE_TABLE_CREATE);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

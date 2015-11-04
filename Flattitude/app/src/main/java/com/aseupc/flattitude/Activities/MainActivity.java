@@ -20,11 +20,13 @@ import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 
 public class MainActivity extends AppCompatActivity {
-
+    private User thisUser;
+    private Flat thisFlat;
     public static Menu menu;
     public static Context currentContext;
     public static MenuItem mItem;
@@ -63,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
         TextView mUser = (TextView) findViewById(R.id.user_id);
         TextView mFlat = (TextView) findViewById(R.id.flat_id);
         if ((flat != null) && (user != null)) {
-            mUser.setText(user.getServerid() + " - " + user.getEmail());
+            thisFlat = flat;
+            thisUser = user;
+            mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
             mFlat.setText(flat.getServerid() + " - " + flat.getName());
         }
 
@@ -149,6 +153,19 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_message));
+
+        }
+
+        if (id == R.id.logout)
+        {
+            if (thisUser != null)
+            {
+               // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
+                UserDAO userDAO = new UserDAO(getApplicationContext());
+                userDAO.deleteDept(thisUser);
+            }
+            Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
+            startActivity(ReturnHome);
 
         }
 

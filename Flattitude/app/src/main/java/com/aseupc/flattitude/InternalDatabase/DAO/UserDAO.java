@@ -33,6 +33,7 @@ public class UserDAO extends DBDAO {
         values.put(DataBaseHelper.USER_BIRTHDATE, "01/06/1990"); // !!!!!---- NEEDS TO BE CORRECTED
         values.put(DataBaseHelper.USER_IBAN, user.getIban());
         values.put(DataBaseHelper.USER_LOGGEDIN, user.isLoggedin());
+        values.put(DataBaseHelper.USER_TOKEN, user.getToken());
 
         return database
                 .insert(DataBaseHelper.USER_TABLENAME, null, values);
@@ -48,6 +49,7 @@ public class UserDAO extends DBDAO {
         values.put(DataBaseHelper.USER_BIRTHDATE, formatDate(user.getBirthdate()));
         values.put(DataBaseHelper.USER_IBAN, user.getIban());
         values.put(DataBaseHelper.USER_LOGGEDIN, formatBoolean(user.isLoggedin()));
+        values.put(DataBaseHelper.USER_TOKEN, user.getToken());
 
         long result = database.update(DataBaseHelper.USER_TABLENAME,
                 values, WHERE_ID_EQUALS,
@@ -70,7 +72,8 @@ public class UserDAO extends DBDAO {
                         DataBaseHelper.USER_PHONENBR,
                         DataBaseHelper.USER_BIRTHDATE,
                         DataBaseHelper.USER_IBAN,
-                        DataBaseHelper.USER_LOGGEDIN},
+                        DataBaseHelper.USER_LOGGEDIN,
+                        DataBaseHelper.USER_TOKEN},
                 null, null, null, null, null);
 
         if(cursor.moveToNext()) {
@@ -84,6 +87,7 @@ public class UserDAO extends DBDAO {
             user.setBirthdate(new Date());
 //            user.setIban(cursor.getString(7));
             user.setLoggedin(parseBoolean(cursor.getInt(8)));
+            user.setToken(cursor.getString(9));
             return user;
         }
         else return null;

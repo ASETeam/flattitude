@@ -36,6 +36,23 @@ public class User_Web_Services {
         this.statusRegister = statusRegister;
     }
 
+    public  ResultContainer<User> ws_logoutUser(String userID, String token) {
+        callLogout call = new callLogout();
+
+        ResultContainer<User> response = null;
+        try {
+            response = call.execute(userID, token).get(50000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
     public  ResultContainer<User> ws_verifyCredentials(String email, String password) {
         ResultContainer<User> resultContainer = new ResultContainer<User>();
         String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/login/" + email + "/" + password;
@@ -46,16 +63,14 @@ public class User_Web_Services {
         // HTTP Get
         try {
             URL url = new URL(urlString);
-<<<<<<< HEAD
+
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
            /* urlConnection.setRequestMethod("GET");
             urlConnection.setInstanceFollowRedirects(true);
             HttpURLConnection.setFollowRedirects(true);*/
-=======
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
->>>>>>> 2e0b097c148910118269b8b1b6ebb9314d798e30
+
             in = new BufferedInputStream(urlConnection.getInputStream());
 
             URLConnection con = url.openConnection();
@@ -88,7 +103,10 @@ public class User_Web_Services {
             if (success.equals("true")) {
                 resultContainer.setSuccess(true);
                 Log.i("EMAIL return", CallAPI.getUser(userid).getEmail());
-                resultContainer.setTemplate(CallAPI.getUser(userid));
+                String token = mainObject.getString("token");
+                User user = CallAPI.getUser(userid);
+                user.setToken(token);
+                resultContainer.setTemplate(user);
             }
             else
             resultContainer.setSuccess(false);
@@ -104,7 +122,7 @@ public class User_Web_Services {
 
     public ResultContainer<User> ws_registerUser(String email, String password, String firstname, String lastname, String phonenumber) {
         ResultContainer<User> resultContainer = new ResultContainer<User>();
-        String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
         callPost call = new callPost();
         User user = new User();
         user.setEmail(email);
@@ -197,7 +215,7 @@ public class User_Web_Services {
         }
     }
 
-    class callGet extends AsyncTask<User, Void, ResultContainer<User>> {
+    class callLogout extends AsyncTask<String, Void, ResultContainer<User>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -205,20 +223,26 @@ public class User_Web_Services {
         }
 
         @Override
-        protected ResultContainer<User> doInBackground(User... users) {
+        protected ResultContainer<User> doInBackground(String... strings) {
             ResultContainer<User> resultContainer = new ResultContainer<User>();
-            User user = users[0];
-            String urlString = "http://flattiserver-flattitude.rhcloud.com/flattiserver/user/login/" + user.getEmail() + "/" + user.getPassword();
+            String userID = strings[0];
+            String token = strings [1];
+            String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/logout/"+ userID;
+            Log.i("Json Input Str", urlString);
             String resultToDisplay = "";
             ParseResults result = null;
             InputStream in = null;
             // HTTP Get
-            Log.i("Anas", "Before HTTP");
             try {
                 URL url = new URL(urlString);
+
+
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.connect();
+                urlConnection.setRequestProperty("Auth", token);
                 in = new BufferedInputStream(urlConnection.getInputStream());
-                Log.i("Anas", "After HTTP");
+
+                Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
 
             } catch (Exception e) {
                 //   System.out.println(e.getMessage());
@@ -235,14 +259,18 @@ public class User_Web_Services {
                 JSONObject mainObject = new JSONObject(resultToDisplay);
                 String success = mainObject.getString("success");
 
-                if (success.equals("true"))
+
+                if (success.equals("true")) {
                     resultContainer.setSuccess(true);
+
+                }
                 else
                     resultContainer.setSuccess(false);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return resultContainer;
+
         }
 
         @Override

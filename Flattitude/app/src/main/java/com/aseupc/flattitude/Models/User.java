@@ -18,6 +18,7 @@ public class User {
     private String password;
     //private String picture;
     private boolean loggedin;
+    private String token;
 
 
     public User() {
@@ -35,6 +36,13 @@ public class User {
         this.setLoggedin(false);
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getPassword() {
         return password;

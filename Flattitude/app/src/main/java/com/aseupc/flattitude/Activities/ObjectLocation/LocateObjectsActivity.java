@@ -1,5 +1,7 @@
 package com.aseupc.flattitude.Activities.ObjectLocation;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,18 +9,28 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.MapObject;
+import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.database.Map_Web_Services;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -28,6 +40,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -47,8 +61,8 @@ public class LocateObjectsActivity extends AppCompatActivity
     private NewObjectFragment newObjectFragment;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    ArrayAdapter<MapObject> adapter;
-    private FloatingActionButton addButton;
+    private ArrayAdapter<MapObject> adapter;
+    private Button addButton;
     private ActionBarDrawerToggle mDrawerToggle;
     private List<MapObject> objects;
     private Marker addedMarker;
@@ -114,29 +128,43 @@ public class LocateObjectsActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(newObjectFragment);
         transaction.commit();
-        if(addedMarker != null)
+        if(addedMarker != null) {
             addedMarker.remove();
+            addedMarker = null;
+        }
         addObjectMenuDisplayed = false;
         addButton.setVisibility(View.VISIBLE);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
     }
 
-    public void addObject(LatLng coords,String name){
-        MapObject object = new MapObject();
-        object.setId(0);
-        object.setName(name);
-        object.setCoordinates(coords.latitude, coords.longitude);
-        adapter.add(object);
+    public void showObjectNotAdded()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Addition failed")
+                .setMessage("The object couldn't be added. Check your internet connection and try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override
     public void onAddObjectConfirmed(String name) {
-        addedMarker.setTitle(name);
-        addObject(addedMarker.getPosition(),name);
-        AsyncAddObjectTask async = new AsyncAddObjectTask();
+        MapObject object = new MapObject(addedMarker.getPosition(),name);
+        AsyncAddObjectTask async = new AsyncAddObjectTask(object);
+        async.execute();
+        addedMarker.remove();
         addedMarker = null;
+        objects.add(object);
         newObjectFragment.reset();
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         quitNewObjectFragment();
     }
 
@@ -158,33 +186,43 @@ public class LocateObjectsActivity extends AppCompatActivity
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        location, 13));
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(location)      // Sets the center of the map to location user
-                        .zoom(17)                   // Sets the zoom
-                        .bearing(0)                // Sets the orientation of the camera to north
-                        .build();                   // Creates a CameraPosition from the builder
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                fixMapPosition(location, googleMap);
             }
         });
     }
 
+    public void fixMapPosition(final LatLng location, GoogleMap googleMap){
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                location, 13));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(location)      // Sets the center of the map to location user
+                .zoom(17)                   // Sets the zoom
+                .bearing(0)                // Sets the orientation of the camera to north
+                .build();                   // Creates a CameraPosition from the builder
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
     public synchronized void addButtonClicked() {
-        if(addButton.getVisibility()==View.VISIBLE) {
+        if(!addObjectMenuDisplayed) {
             setNewObjectFragment();
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    final Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                        mGoogleApiClient);
-                    addedMarker = googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                        .draggable(true));
-                }
-            });
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            final LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            addMarker(pos);
         }
+    }
+
+    public void addMarker(final LatLng pos){
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                fixMapPosition(pos, googleMap);
+                addedMarker = googleMap.addMarker(new MarkerOptions()
+                        .position(pos)
+                        .draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.define_location)));
+            }
+        });
     }
 
     @Override
@@ -227,15 +265,17 @@ public class LocateObjectsActivity extends AppCompatActivity
             mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
 
-            //objects = MapObjectDAO.getObjects();
-            objects = debugObjects();
+            MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
+            objects = objectDAO.getMapObjects();
+            objects.addAll(debugObjects());
             markers = new LinkedList<>();
 
             for(MapObject object: objects) {
                 markers.add(new MarkerOptions()
                         .position(new LatLng(object.getLatitude(), object.getLongitude()))
                         .title(object.getName())
-                        .draggable(true));
+                        .draggable(true)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)));
             }
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -249,7 +289,8 @@ public class LocateObjectsActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean result) {
-            addButton= (FloatingActionButton) findViewById(R.id.fab);
+            //addButton= (FloatingActionButton) findViewById(R.id.fab);
+            addButton = (Button) findViewById(R.id.add_button);
             addButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -266,6 +307,12 @@ public class LocateObjectsActivity extends AppCompatActivity
                     objectClicked(parent, view, position, id);
                 }
             });
+            mDrawerList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    return false;
+                }
+            });
             mDrawerLayout.setDrawerListener(mDrawerToggle);
 
             mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -275,13 +322,26 @@ public class LocateObjectsActivity extends AppCompatActivity
                     for (MarkerOptions marker : markers) {
                         googleMap.addMarker(marker);
                     }
+                    googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                        @Override
+                        public void onMapLongClick(LatLng latLng) {
+                            final LatLng pos = new LatLng(latLng.latitude, latLng.longitude);
+                            if(addObjectMenuDisplayed){
+                                addedMarker.setPosition(pos);
+                            }
+                            else{
+                                setNewObjectFragment();
+                                addMarker(pos);
+                            }
+                        }
+                    });
                 }
             });
 
         }
 
         List<MapObject> debugObjects(){
-            int nobjects = 10;
+            int nobjects = 5;
             Random r = new Random();
             List<MapObject> objects = new LinkedList<>();
             for(int i = 0; i < nobjects; i++){
@@ -300,14 +360,69 @@ public class LocateObjectsActivity extends AppCompatActivity
         }
     }
 
-    private class AsyncAddObjectTask extends AsyncTask<MapObject,Integer,Boolean>{
+    private class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject>{
+
+        private MapObject o;
+
+        public AsyncAddObjectTask(MapObject object){
+            this.o = object;
+        }
 
         @Override
-        protected Boolean doInBackground(MapObject... params) {
-            //Store to database
+        protected MapObject doInBackground(String... params) {
 
+            //-----Test-------
+            o.setServerId("123");
+            MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
+            objectDAO.save(o);
+            return o;
+            //----------------
+
+/*
             //Synchronize with server
-            return true;
+            MapObject o = params[0];
+            UserDAO uDAO = new UserDAO(getApplicationContext());
+            User u = uDAO.getUser();
+            FlatDAO fDAO = new FlatDAO(getApplicationContext());
+            Flat f = fDAO.getFlat();
+            Map_Web_Services ws = new Map_Web_Services();
+            ResultContainer<MapObject> res;
+            res = ws.ws_addObject(o, u.getServerid(), u.getToken(), f.getServerid());
+
+            if(res.getSucces()){
+                //Store to database
+                o = res.getTemplate();
+                MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
+                objectDAO.save(o);
+                return o;
+            }
+            else{
+                return null;
+            }*/
+        }
+
+        @Override
+        public void onPostExecute(MapObject o){
+            if(o == null){
+                //Notify that object couldn't be added
+                showObjectNotAdded();
+            }
+            else{
+                //Add to the map
+                final double lat = o.getLatitude();
+                final double lng = o.getLongitude();
+                final String name = o.getName();
+
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.addMarker(new MarkerOptions().draggable(true)
+                                .position(new LatLng(lat, lng))
+                                .title(name)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)));
+                    }
+                });
+            }
         }
     }
 }

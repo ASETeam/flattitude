@@ -7,43 +7,61 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="124dp">
+        android:layout_height="100dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Object name"
-            android:id="@+id/textView11" />
-
-        <LinearLayout
+        <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="1">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/objectName"
-                android:layout_weight="0.53" />
+                android:hint="Object name"
+                android:singleLine="true"
+                android:layout_toLeftOf="@+id/addButton"
+                android:id="@+id/objectName" />
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add object"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:id="@+id/addButton"
-                android:clickable="false" />
+                android:clickable="false"
+                android:layout_gravity="right"
+                android:background="@null"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="5dp"
+                android:drawableEnd="@android:drawable/ic_input_add"
+                />
 
-        </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Object description"
+            android:layout_toLeftOf="@+id/currentLocationButton"
+            android:id="@+id/objectDescription" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CurrentLocation"
-            android:id="@+id/currentLocationButton"
-            android:clickable="false" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="false"
+            android:layout_gravity="right"
+            android:background="@null"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:drawableEnd="@android:drawable/ic_input_add"
+            android:id="@+id/currentLocationButton">
 
+        </Button>
+        </RelativeLayout>
     </LinearLayout>
 
 </FrameLayout>

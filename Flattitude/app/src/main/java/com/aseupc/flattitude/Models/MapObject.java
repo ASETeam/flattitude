@@ -1,5 +1,7 @@
 package com.aseupc.flattitude.Models;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 
 /**
@@ -8,6 +10,7 @@ import java.util.Date;
 public class MapObject {
 
     private int id;
+    private String serverId;
     private String name;
     private String description;
     private double latitude;
@@ -15,6 +18,13 @@ public class MapObject {
 
     public MapObject(){
 
+    }
+
+    public MapObject(LatLng coords,String name){
+        this.name = name;
+        this.description = "";
+        this.latitude = coords.latitude;
+        this.longitude = coords.longitude;
     }
 
     public int getId() {
@@ -67,4 +77,11 @@ public class MapObject {
         return name;
     }
 
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
 }

@@ -8,8 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Jordi on 19/10/2015.
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "db";
+    private Context context;
 
 
     //----------------------USER TABLE--------------------------
@@ -97,6 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String MAPOBJECT_TABLENAME = "sharnigobjectlist";
 
     public static final String MAPOBJECT_ID = "objectid";
+    public static final String MAPOBJECT_SERVERID = "objectserverid";
     public static final String MAPOBJECT_NAME = "objectname";
     public static final String MAPOBJECT_DESCRIPTION = "objectdescription";
     public static final String MAPOBJECT_LATITUDE = "lat";
@@ -106,6 +108,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String MAPOBJECT_TABLE_CREATE =
             "CREATE TABLE " + MAPOBJECT_TABLENAME + " (" +
                     MAPOBJECT_ID + " INT PRIMARY KEY NOT NULL, " +
+                    MAPOBJECT_SERVERID + " TEXT NOT NULL, " +
                     MAPOBJECT_NAME + " TEXT NOT NULL, " +
                     MAPOBJECT_DESCRIPTION + " TEXT," +
                     MAPOBJECT_LATITUDE + " REAL NOT NULL," +
@@ -145,15 +148,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static synchronized DataBaseHelper getHelper(Context context) {
         if (instance == null) {
-         //   context.deleteDatabase(DATABASE_NAME);
             instance = new DataBaseHelper(context);
         }
-
         return instance;
     }
 
     private DataBaseHelper(Context context){
         super(context, DATABASE_NAME,null,DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -168,6 +170,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        context.deleteDatabase(DATABASE_NAME);
     }
 }

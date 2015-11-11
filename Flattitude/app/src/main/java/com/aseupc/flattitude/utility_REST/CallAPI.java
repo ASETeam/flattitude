@@ -32,7 +32,7 @@ public class CallAPI  {
 
 
 
-    public static User getUser1(String userID)
+    public static User getUser(String userID)
     {
         User user = new User();
         user.setEmail("okokk@lol.com");
@@ -47,7 +47,7 @@ public class CallAPI  {
     }
 
 
-    public static User getUser(String userID)
+    public static User getUser1(String userID)
     {
         User user = new User();
         user.setServerid(userID);

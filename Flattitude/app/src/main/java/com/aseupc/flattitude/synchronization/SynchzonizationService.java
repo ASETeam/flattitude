@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -12,67 +13,86 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.Models.User;
+import com.aseupc.flattitude.database.User_Web_Services;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
+
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by MetzoDell on 27-10-15.
  */
 public class SynchzonizationService extends Service {
-
-    private static Timer timer = new Timer();
-    private Context ctx;
-    Intent intent;
-    public static final String BROADCAST_ACTION = "com.websmithing.broadcasttest.displayevent";
     private static final String TAG = "BroadcastService";
+    public static final String BROADCAST_ACTION = "com.websmithing.broadcasttest.displayevent";
+    private final Handler handler = new Handler();
+    Intent intent;
+    int counter = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        ctx = this;
-        Log.i("Anas", "SynchoService onCreate is ok ");
         intent = new Intent(BROADCAST_ACTION);
-        startService();
-
+        Log.i("Anas", "ChangeUI Service created here !  onCreate");
     }
 
-    private void startService() {
-        timer.scheduleAtFixedRate(new mainTask(), 0, 5000);
-        
+    @Override
+    public void onStart(Intent intent, int startId) {
+        handler.removeCallbacks(sendUpdatesToUI);
+        handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
     }
-    private class mainTask extends TimerTask
-    {
-        public void run()
-        {
-            toastHandler.sendEmptyMessage(0);
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handler.removeCallbacks(sendUpdatesToUI);
+        handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
+        Log.i("Anas", "Service started here !  onStartCommand");
+        return START_STICKY;
+    }
+
+
+
+    private Runnable sendUpdatesToUI = new Runnable() {
+        public void run() {
+            DisplayLoggingInfo();
+            handler.postDelayed(this, 5000000); // 5 seconds
         }
-    }
-
-    public void onDestroy()
-    {
-        super.onDestroy();
-        Toast.makeText(this, "Service Stopped ...", Toast.LENGTH_SHORT).show();
-    }
-
-    private final Handler toastHandler = new Handler()
-    {
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void handleMessage(Message msg)
-        {
-          //  Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-            CharSequence text = "Background action EXECUTED !";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(ctx, text, duration);
-           // toast.show();
-           // MainActivity.mItem.setIcon(getResources().getDrawable(R.drawable.ic_alert));
-
-        }
-
-
-
     };
 
+    private void DisplayLoggingInfo() {
+        Log.d(TAG, "entered DisplayLoggingInfo");
+
+        intent.putExtra("time", new Date().toLocaleString());
+        intent.putExtra("counter", String.valueOf(++counter));
+        User user = new User();
+        user.setPassword("works");
+        user.setEmail("works@lol.com");
+        verifyUser call = new verifyUser();
+        ResultContainer<User> response = new ResultContainer<>();
+        try {
+            response = call.execute(user).get(50000000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        if (response.getSucces() == true) {
+            intent.putExtra("change", "yes");}
+        else {
+            intent.putExtra("change", "no");
+        }
+        intent.putExtra("change", "yes");
+
+        sendBroadcast(intent);
+    }
 
     @Nullable
     @Override
@@ -80,48 +100,33 @@ public class SynchzonizationService extends Service {
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //startBackgroundTask(intent, startId);
 
+    class verifyUser extends AsyncTask<User, Void, ResultContainer<User>> {
 
-        Log.i("call", "The background task has been called from service");
-
-
-        return Service.START_STICKY;
+        @Override
+        protected ResultContainer<User> doInBackground(User... params) {
+            User_Web_Services User_Ws = new User_Web_Services();
+            ResultContainer<User> response = User_Ws.ws_verifyCredentials("po2@po.com", "popo");
+            if (response.getSucces() == true)
+                Log.i("Anas", "Login is successfull");
+            Log.i("Anas", "Login is NOT successfull");
+            return response;
+        }
     }
 
+    class registerUser extends AsyncTask<User, Void, ResultContainer<User>> {
 
-
-    private void startBackgroundTask() {
-        Log.i("starBckgtask", "The background task has been started");
-        Context context = getApplicationContext();
-        CharSequence text = "Background action EXECUTED !";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-        /*
-        Handler mHandler = new Handler();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                MainActivity.mItem.setIcon(getResources().
-                        getDrawable(R.drawable.ic_alert));
-
-                /*Context context = MainActivity.currentContext;
-                CharSequence text = "Background action EXECUTED !";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-
-            }
-        });   */
-        Log.i("In background", "Activity in the background thread");
-
-
+        @Override
+        protected ResultContainer<User> doInBackground(User... params) {
+            User_Web_Services User_Ws = new User_Web_Services();
+            ResultContainer<User> response = User_Ws.ws_registerUser("Anas", "popo", "kokok", "okok","okokok");
+            if (response.getSucces() == true)
+                Log.i("Anas", "Login is successfull");
+           else { Log.i("Anas", "Login is NOT successfull");}
+            return response;
+        }
     }
+
 
 
 }

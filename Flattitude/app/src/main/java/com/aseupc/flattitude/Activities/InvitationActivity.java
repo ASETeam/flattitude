@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
@@ -29,21 +30,34 @@ public class InvitationActivity extends AppCompatActivity {
         mSendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean processed = false;
                 mInvitee = (EditText) findViewById(R.id.invitee);
                 String toInvite = (String) mInvitee.getText().toString();
-                int toInviteID = 0; // CREATE WS TO GET USER INFO VIA MAIL (SEE LOWER)
-                int meID = 0; // Call USERDAO to get currentUSER
+                String userID;
+                String flatID;
 
-/*
+
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 User me = userDAO.getUser();
-                meID = me.getId();
+                if (me != null) {
+                 userID = me.getServerid();}
+                else{
+                     userID = "2";
+                }
 
 
-                ResultContainer<Flat> result = FlatFacade.inviteMember(toInviteID, meID);
-                boolean processed = result.getSucces(); */
+                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                Flat flat = flatDAO.getFlat();
+                if (flat != null)
+                { flatID = flat.getServerid();
+                }else {
+                 flatID = "0";}
 
-                boolean processed = false;
+
+                ResultContainer<Flat> result = FlatFacade.inviteMember(userID, flatID, toInvite);
+                processed = result.getSucces();
+
+
                 if (processed)
                 {
                     CharSequence text = "Invitation sent !";

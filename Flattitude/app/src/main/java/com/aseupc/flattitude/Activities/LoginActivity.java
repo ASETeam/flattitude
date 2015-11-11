@@ -31,7 +31,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
@@ -383,9 +385,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 UserDAO userDAO = new UserDAO(context);
                 userDAO.save(getCurrentUser());
-
+                ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
+                if (resultFlat.getSucces() == false){
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
-                startActivity(intent);
+                startActivity(intent);}
+                else {
+                    Flat flat = resultFlat.getTemplate();
+                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    flatDAO.save(flat);
+                    Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
+                    startActivity(mainIntent);
+                }
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

@@ -1,10 +1,15 @@
 package com.aseupc.flattitude.Activities;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.Image;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +19,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
+import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
+import com.aseupc.flattitude.utility_REST.ParseResults;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private User thisUser;
@@ -43,11 +61,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // ---
+        NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
+
+        for(int i=0; i < 5; i++)
+        { Notification notif = new Notification();
+        Random random = new Random();
+        notif.setId(random.nextInt(2000000));
+
+        notif.setType("Add");
+        notif.setSeennotification(false);
+        notif.setBody("This is a message posted by me");
+        notDao.save(notif);
+    }
+        List<Notification> retrieved = notDao.getNotifications();
+        for (int i = 0; i< retrieved.size(); i++)
+        {
+            Log.i("NOTIFICATION ", retrieved.get(i).getId() + " " + retrieved.get(i).getTime().toString());
+        }
+        //--
+
+
         Intent serviceIntent = new Intent(this, SynchzonizationService.class);
-        startService(serviceIntent);
-        ui_intent = new Intent(this, ChangeUI.class);
-        Intent changeUIintent = new Intent(this, ChangeUI.class);
-        startService(changeUIintent);
+        //startService(serviceIntent);
+        //ui_intent = new Intent(this, ChangeUI.class);
+       // Intent changeUIintent = new Intent(this, ChangeUI.class);
+       // startService(changeUIintent);
         final ImageButton sendInvite = (ImageButton) findViewById(R.id.add_button);
         sendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,11 +105,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final ImageButton goGroup = (ImageButton) findViewById(R.id.leave_button);
-        sendInvite.setOnClickListener(new View.OnClickListener() {
+        goGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent homeIntent = new Intent(view.getContext(), GroupActivity.class);
-                startActivity(homeIntent);
+                confirmFireMissiles();
+
+
             }
         });
 
@@ -83,10 +123,11 @@ public class MainActivity extends AppCompatActivity {
         User user = userDAO.getUser();
        /*TextView mUser = (TextView) findViewById(R.id.user_id);
         TextView mFlat = (TextView) findViewById(R.id.flat_id);*/
-
+        getSupportActionBar().setIcon(R.drawable.logoflattitude);
         if ((flat != null) && (user != null)) {
             thisFlat = flat;
             thisUser = user;
+            setTitle(user.getFirstname() + " " + user.getLastname());
           /*  mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
             mFlat.setText(flat.getServerid() + " - " + flat.getName());*/
         }
@@ -97,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateUI(intent);
+         //   updateUI(intent);
         }
     };
 
@@ -120,16 +161,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void confirmFireMissiles() {
+        DialogFragment newFragment = new LeaveConfirmationFragment();
+        newFragment.show(getSupportFragmentManager(), "confirmation");
+    }
+    public void showNotifications() {
+        DialogFragment newFragment = new ShowNotifications();
+        newFragment.show(getSupportFragmentManager(), "notifs");
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        startService(ui_intent);
-        registerReceiver(broadcastReceiver, new IntentFilter(ChangeUI.BROADCAST_ACTION));
+       // startService(ui_intent);
+        //registerReceiver(broadcastReceiver, new IntentFilter(ChangeUI.BROADCAST_ACTION));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        menu.add("User Anas");
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
         this.menu = menu;
@@ -143,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(broadcastReceiver);
-        stopService(ui_intent);
+     //   unregisterReceiver(broadcastReceiver);
+      //  stopService(ui_intent);
     }
 
     @Override
@@ -164,7 +216,10 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
 
         }
-
+        if (id == R.id.notif_received)
+        {
+            showNotifications();
+        }
         if (id == R.id.action_search) {
             Context context = getApplicationContext();
             CharSequence text = "Search action!";
@@ -180,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         {
             if (thisUser != null)
             {
-               // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
+                UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 userDAO.deleteDept(thisUser);
             }
@@ -191,4 +246,106 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+        Flat flat = flatDAO.getFlat();
+        if (flat == null) //|| (thisUser == null))
+        {
+            Intent returnGroup = new Intent(getApplicationContext(), GroupActivity.class);
+            startActivity(returnGroup);
+        }
+
+
+
+
+
+    }
+
+    public class LeaveConfirmationFragment extends DialogFragment {
+        @NonNull
+        @Override
+            public Dialog onCreateDialog (Bundle savedInstanceState) {
+                // Use the Builder class for convenient dialog construction
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure you want to leave this flat ?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                                flatDAO.deleteDept(flatDAO.getFlat());
+                                Intent homeIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                                startActivity(homeIntent);
+                            }
+                        })
+                        .setNeutralButton("Test", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent homeIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                                startActivity(homeIntent);
+                            }
+                        })
+
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                // Create the AlertDialog object and return it
+                return builder.create();
+
+
+        }
+    }
+
+    public class ShowNotifications extends DialogFragment {
+
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog (Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            final String [] items = new String[] {"Invitation received by Anas Helalouch to join appartment", "A new event Red Party has been planned by Red John on December 15th"};
+            final Integer[] icons = new Integer[] {R.drawable.ic_add, R.drawable.ic_calendar};
+
+            NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
+            List<Notification> notifs = notDao.getNotifications();
+            ArrayList<String> notifbody = new ArrayList<String>();
+            ArrayList<Integer> notificon = new ArrayList<Integer>();
+            for(int i= 0; i < notifs.size(); i++)
+            {
+                notifbody.add(ParseResults.makePhrase(notifs.get(i)));
+            }
+            for(int i= 0; i < notifs.size(); i++)
+            {
+                notificon.add(notifs.get(i).getMyIcon());
+            }
+            int x = notifbody.size();
+            String []notifArray = new String[x];
+            notifArray =notifbody.toArray(notifArray);
+
+            int y = notificon.size();
+            Integer []notifIconArray = new Integer[y];
+            notifIconArray =notificon.toArray(notifIconArray);
+            final Integer[] a = notifIconArray;
+            final String[] b = notifArray;
+            ListAdapter adapter = new ArrayAdapterWithIcon(getActivity(), b, a);
+
+            for (int i = 0; i < a.length; i++)
+            {
+                Log.i("Notif type", a[i].toString());
+            }
+            builder.setTitle("Notifications").setAdapter(adapter, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item ) {
+                    Toast.makeText(getActivity(), "Item Selected: " + item, Toast.LENGTH_SHORT).show();
+                }
+            });
+            // Create the AlertDialog object and return it
+            return builder.create();
+
+
+        }
+    }
+
 }

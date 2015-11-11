@@ -2,6 +2,8 @@ package com.aseupc.flattitude.utility_REST;
 
 import android.util.Log;
 
+import com.aseupc.flattitude.Models.Notification;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -73,5 +75,31 @@ public class ParseResults {
 
 
         return responseStrBuilder.toString();
+    }
+
+    public static String makePhrase(Notification notification)
+    {
+        String response ="";
+        if (notification.getType() == null)
+            return "Wrong info";
+        switch (notification.getType().toUpperCase()) {
+            case "CHAT":
+                response = notification.getAuthor() + " posted a message in the chat on " + notification.getTime();
+                break;
+            case "ADD":
+                response = notification.getAuthor() + " posted a message in the chat on " + notification.getTime();
+                break;
+            case "INVITATION":
+                response = notification.getAuthor() + " invited you to join a flat on " + notification.getTime();
+                break;
+            case "LOCALIZATION":
+                response = notification.getAuthor() + " shared an object with you on " + notification.getTime();
+                break;
+            default:
+                response = "A new notification has been posted about " + notification.getType();
+        }
+
+
+        return response;
     }
 }

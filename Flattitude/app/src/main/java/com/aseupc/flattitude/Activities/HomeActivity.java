@@ -144,6 +144,8 @@ public class HomeActivity extends AppCompatActivity
             ((HomeActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
+
     }
 
 }

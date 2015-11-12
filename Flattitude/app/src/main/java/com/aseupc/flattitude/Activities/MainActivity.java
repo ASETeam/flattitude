@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 userDAO.deleteDept(thisUser);
                 userDAO.deleteAll();
-                Log.i("AfterDeletion", userDAO.getUser().getEmail());
+             //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
                 FlatDAO flatDAO = new FlatDAO(getApplicationContext());
                 flatDAO.deleteAll();
                 if (thisFlat != null)

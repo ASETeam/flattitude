@@ -77,7 +77,8 @@ public class NotificationsDAO extends DBDAO {
                         DataBaseHelper.NOTIFICATION_TYPE,
                         DataBaseHelper.NOTIFICATION_TIME,
                         DataBaseHelper.NOTIFICATION_OBJECTNAME},
-                null, null, DataBaseHelper.NOTIFICATION_TIME, null,null, null);
+                null, null, DataBaseHelper.NOTIFICATION_TIME, null,null, "5");
+
 
         List<Notification> list = new LinkedList<>();
         while(cursor.moveToNext()) {

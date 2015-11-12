@@ -235,10 +235,20 @@ public class MainActivity extends AppCompatActivity {
         {
             if (thisUser != null)
             {
-                UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
+               // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 userDAO.deleteDept(thisUser);
+                userDAO.deleteAll();
+                Log.i("AfterDeletion", userDAO.getUser().getEmail());
+                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                flatDAO.deleteAll();
+                if (thisFlat != null)
+                flatDAO.deleteDept(thisFlat);
             }
+            UserDAO userDAO = new UserDAO(getApplicationContext());
+            userDAO.deleteAll();
+            FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+            flatDAO.deleteAll();
             Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
             startActivity(ReturnHome);
 
@@ -251,11 +261,12 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         FlatDAO flatDAO = new FlatDAO(getApplicationContext());
         Flat flat = flatDAO.getFlat();
-        if (flat == null) //|| (thisUser == null))
+     /*   if (flat == null) //|| (thisUser == null))
         {
             Intent returnGroup = new Intent(getApplicationContext(), GroupActivity.class);
             startActivity(returnGroup);
         }
+        */
 
 
 

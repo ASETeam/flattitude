@@ -46,7 +46,8 @@
             android:label="@string/title_activity_home" />
         <activity
             android:name=".Activities.LandingActivity"
-            android:label="Flattitude" >
+            android:label="Flattitude"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

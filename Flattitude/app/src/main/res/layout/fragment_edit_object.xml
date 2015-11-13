@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".Activities.ObjectLocation.NewObjectFragment">
+    tools:context=".Activities.ObjectLocation.EditObjectFragment">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,20 +19,20 @@
                 android:layout_height="wrap_content"
                 android:hint="Object name"
                 android:singleLine="true"
-                android:layout_toLeftOf="@+id/addButton"
+                android:layout_toLeftOf="@+id/confirmButton"
                 android:id="@+id/objectName" />
 
             <Button
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/addButton"
+                android:id="@+id/confirmButton"
                 android:clickable="false"
                 android:layout_gravity="right"
                 android:background="@null"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="5dp"
-                android:drawableEnd="@android:drawable/ic_input_add"
+                android:drawableEnd="@drawable/check"
                 />
 
         </RelativeLayout>

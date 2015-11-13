@@ -78,13 +78,14 @@ public class Map_Web_Services {
         protected ResultContainer<MapObject> doInBackground(String... strings) {
             ResultContainer<MapObject> resultContainer = new ResultContainer<MapObject>();
             String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharingobject/create";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharingobjects/create";
             HashMap<String, String> values = new HashMap<>();
             String userID = strings[0];
             String token = strings [1];
             String flatID = strings[2];
             values.put("userid", userID);
             values.put("flatid", flatID);
+            values.put("token",token);
             values.put("objectname", object.getName());
             values.put("objectdescription", object.getDescription());
             values.put("lat", String.valueOf(object.getLatitude()));

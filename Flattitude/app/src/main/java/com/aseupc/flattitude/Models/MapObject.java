@@ -27,6 +27,22 @@ public class MapObject {
         this.longitude = coords.longitude;
     }
 
+    public MapObject(MapObject o){
+        this.id = o.id;
+        this.serverId = new String(o.serverId);
+        this.name = new String(o.name);
+        this.description = new String(o.description);
+        this.latitude = o.latitude;
+        this.longitude = o.longitude;
+    }
+
+    public void copyAttributes(MapObject o){
+        this.name = new String(o.name);
+        this.description = new String(o.description);
+        this.latitude = o.latitude;
+        this.longitude = o.longitude;
+    }
+
     public int getId() {
         return id;
     }

@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,15 +21,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
-import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
-import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.MapObject;
-import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.database.Map_Web_Services;
-import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -40,34 +33,41 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
 public class LocateObjectsActivity extends AppCompatActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener,
-        NewObjectFragment.OnFragmentInteractionListener
+        NewObjectFragment.OnNewFragmentInteractionListener,
+        EditObjectFragment.OnEditFragmentInteractionListener
 {
 
     private GoogleApiClient mGoogleApiClient;
     private NewObjectFragment newObjectFragment;
+    private EditObjectFragment editObjectFragment;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ArrayAdapter<MapObject> adapter;
     private Button addButton;
     private ActionBarDrawerToggle mDrawerToggle;
     private List<MapObject> objects;
-    private Marker addedMarker;
+    private Map<Long,Marker> markersMap;
+    private Map<String,MapObject> mapObjectsMap;
+    private Marker onWorkingMarker;
+    private MapObject editionObject;
     private MapFragment mapFragment;
     private boolean addObjectMenuDisplayed;
+    private boolean editObjectMenuDisplayed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,8 @@ public class LocateObjectsActivity extends AppCompatActivity
         setContentView(R.layout.activity_locate_objects);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mapObjectsMap = new HashMap<>();
+        markersMap = new HashMap<>();
         AsyncLoadingTask load = new AsyncLoadingTask(this);
         load.execute((Void) null);
     }
@@ -124,15 +126,45 @@ public class LocateObjectsActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    public synchronized void setEditObjectFragment(){
+        addButton.setVisibility(View.GONE);
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        editObjectMenuDisplayed = true;
+        // Create a new Fragment to be placed in the activity layout
+        if(editObjectFragment == null)
+            editObjectFragment = EditObjectFragment.newInstance();
+        // Add the fragment to the 'menufragment_container' FrameLayout
+        editObjectFragment.setEditedObject(editionObject);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.menufragment_container, editObjectFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     public synchronized void quitNewObjectFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(newObjectFragment);
         transaction.commit();
-        if(addedMarker != null) {
-            addedMarker.remove();
-            addedMarker = null;
+        if(onWorkingMarker != null) {
+            onWorkingMarker.remove();
+            onWorkingMarker = null;
         }
         addObjectMenuDisplayed = false;
+        addButton.setVisibility(View.VISIBLE);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+    }
+
+    public synchronized void quitEditObjectFragment(){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(editObjectFragment);
+        transaction.commit();
+        if(onWorkingMarker != null) {
+            onWorkingMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
+            onWorkingMarker = null;
+        }
+        editObjectMenuDisplayed = false;
         addButton.setVisibility(View.VISIBLE);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -152,13 +184,13 @@ public class LocateObjectsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onAddObjectConfirmed(String name) {
-        MapObject object = new MapObject(addedMarker.getPosition(),name);
+    public void onAddObjectConfirmed(String name, String description) {
+        MapObject object = new MapObject(onWorkingMarker.getPosition(),name);
+        object.setDescription(description);
+        onWorkingMarker.remove();
+        onWorkingMarker = null;
         AsyncAddObjectTask async = new AsyncAddObjectTask(object);
         async.execute();
-        addedMarker.remove();
-        addedMarker = null;
-        objects.add(object);
         newObjectFragment.reset();
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -169,17 +201,54 @@ public class LocateObjectsActivity extends AppCompatActivity
     }
 
     @Override
+    public void onEditObjectConfirmed(String name, String description) {
+        MapObject object = new MapObject(onWorkingMarker.getPosition(),name);
+        object.setDescription(description);
+        AsyncAddObjectTask async = new AsyncAddObjectTask(object);
+        async.execute();
+        onWorkingMarker.setTitle(name);
+        onWorkingMarker = null;
+        editionObject.copyAttributes(object);
+        adapter.notifyDataSetChanged();
+        editObjectFragment.reset();
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        quitEditObjectFragment();
+    }
+
+    @Override
+    public void onEditCurrentLocationPressed(){
+        currentLocationPressed();
+    }
+
+    @Override
     public void onCurrentLocationPressed(){
+        currentLocationPressed();;
+    }
+
+    public void currentLocationPressed(){
         final Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        addedMarker.setPosition(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        onWorkingMarker.setPosition(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
     }
 
     public void objectClicked(AdapterView<?> parent, View view, int position, long id) {
         mDrawerLayout.closeDrawer(Gravity.LEFT);
-        MapObject o = objects.get(position);
-        LatLng location = new LatLng(o.getLatitude(),o.getLongitude());
+        editionObject = objects.get(position);
+        LatLng location = new LatLng(editionObject.getLatitude(),editionObject.getLongitude());
         fixMapPosition(location);
+        onWorkingMarker = markersMap.get(id);
+        if(!editObjectMenuDisplayed) {
+            setEditObjectFragment();
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            final LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            addMarker(pos);
+        }
+
     }
 
     public void fixMapPosition(final LatLng location){
@@ -218,7 +287,7 @@ public class LocateObjectsActivity extends AppCompatActivity
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 fixMapPosition(pos, googleMap);
-                addedMarker = googleMap.addMarker(new MarkerOptions()
+                onWorkingMarker = googleMap.addMarker(new MarkerOptions()
                         .position(pos)
                         .draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.define_location)));
             }
@@ -231,6 +300,8 @@ public class LocateObjectsActivity extends AppCompatActivity
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }else if(addObjectMenuDisplayed) {
             quitNewObjectFragment();
+        } if(editObjectMenuDisplayed){
+            quitEditObjectFragment();
         }
         else{
             super.onBackPressed();
@@ -240,7 +311,7 @@ public class LocateObjectsActivity extends AppCompatActivity
     private class AsyncLoadingTask extends AsyncTask<Void, Integer, Boolean> {
 
         private LocateObjectsActivity act;
-        private List<MarkerOptions> markers;
+        private List<MarkerOptions> markerOptions;
 
         public AsyncLoadingTask(LocateObjectsActivity act){
             super();
@@ -261,6 +332,7 @@ public class LocateObjectsActivity extends AppCompatActivity
             mDrawerToggle = new ActionBarDrawerToggle(act, mDrawerLayout,
                     toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {};
             addObjectMenuDisplayed = false;
+            editObjectMenuDisplayed = false;
 
             mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
@@ -268,10 +340,11 @@ public class LocateObjectsActivity extends AppCompatActivity
             MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
             objects = objectDAO.getMapObjects();
             objects.addAll(debugObjects());
-            markers = new LinkedList<>();
+            markerOptions = new LinkedList<>();
+
 
             for(MapObject object: objects) {
-                markers.add(new MarkerOptions()
+                markerOptions.add(new MarkerOptions()
                         .position(new LatLng(object.getLatitude(), object.getLongitude()))
                         .title(object.getName())
                         .draggable(true)
@@ -289,7 +362,6 @@ public class LocateObjectsActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean result) {
-            //addButton= (FloatingActionButton) findViewById(R.id.fab);
             addButton = (Button) findViewById(R.id.add_button);
             addButton.setOnClickListener(new OnClickListener() {
                 @Override
@@ -315,19 +387,25 @@ public class LocateObjectsActivity extends AppCompatActivity
             });
             mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+
+
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     googleMap.setMyLocationEnabled(true);
-                    for (MarkerOptions marker : markers) {
-                        googleMap.addMarker(marker);
+                    int i = 0;
+                    for (MarkerOptions markerOp : markerOptions) {
+                        Marker marker = googleMap.addMarker(markerOp);
+                        markersMap.put(adapter.getItemId(i),marker);
+                        mapObjectsMap.put(marker.getId(),objects.get(i));
+                        i++;
                     }
                     googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                         @Override
                         public void onMapLongClick(LatLng latLng) {
                             final LatLng pos = new LatLng(latLng.latitude, latLng.longitude);
                             if(addObjectMenuDisplayed){
-                                addedMarker.setPosition(pos);
+                                onWorkingMarker.setPosition(pos);
                             }
                             else{
                                 setNewObjectFragment();
@@ -337,7 +415,6 @@ public class LocateObjectsActivity extends AppCompatActivity
                     });
                 }
             });
-
         }
 
         List<MapObject> debugObjects(){
@@ -409,17 +486,18 @@ public class LocateObjectsActivity extends AppCompatActivity
             }
             else{
                 //Add to the map
-                final double lat = o.getLatitude();
-                final double lng = o.getLongitude();
-                final String name = o.getName();
+                final MapObject of = new MapObject(o);
+                objects.add(of);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
-                        googleMap.addMarker(new MarkerOptions().draggable(true)
-                                .position(new LatLng(lat, lng))
-                                .title(name)
+                        Marker marker = googleMap.addMarker(new MarkerOptions().draggable(true)
+                                .position(new LatLng(of.getLatitude(), of.getLongitude()))
+                                .title(of.getName())
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)));
+                        mapObjectsMap.put(marker.getId(),of);
+                        markersMap.put(adapter.getItemId(adapter.getCount()-1),marker);
                     }
                 });
             }

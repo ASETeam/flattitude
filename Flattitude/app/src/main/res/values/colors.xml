@@ -6,4 +6,5 @@
     <color name="colorBackgroundBlue">#cbe9e2</color>
     <color name="colorPink">#ec6b61</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>

@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.Models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -19,9 +20,11 @@ public class User {
     //private String picture;
     private boolean loggedin;
     private String token;
+    private ArrayList<Flat> invitations;
 
 
     public User() {
+        invitations = new ArrayList<Flat>();
     }
 
     public User( String email, String firstname, String lastname) {
@@ -34,6 +37,19 @@ public class User {
         this.setIban("");
         //this.picture = "";
         this.setLoggedin(false);
+        invitations = new ArrayList<Flat>();
+    }
+
+    public void addInvite(Flat invite)
+    {
+        invitations.add(invite);
+    }
+    public void setInvitations(ArrayList<Flat> invitation) {
+        this.invitations = invitation;
+    }
+
+    public ArrayList<Flat> getInvitations() {
+        return invitations;
     }
 
     public String getToken() {

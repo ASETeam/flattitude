@@ -2,6 +2,8 @@ package com.aseupc.flattitude.database;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
@@ -42,6 +44,24 @@ public class User_Web_Services {
         ResultContainer<User> response = null;
         try {
             response = call.execute(userID, token).get(50000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+
+    public  ResultContainer<Flat> ws_getFlat(String userID) {
+        callGetFlat call = new callGetFlat();
+
+        ResultContainer<Flat> response = null;
+        try {
+             response = call.execute(userID).get(50000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -180,6 +200,72 @@ public class User_Web_Services {
         return resultContainer;
     }
 
+    class callGetFlat extends AsyncTask<String, Void, ResultContainer<Flat>>
+    {
+
+        @Override
+        protected ResultContainer<Flat> doInBackground(String... params) {
+            String userID = params[0];
+            ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
+
+            String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/userflat/"+ userID;
+            Log.i("Json Input Str", urlString);
+            String resultToDisplay = "";
+            ParseResults result = null;
+            InputStream in = null;
+            // HTTP Get
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.connect();
+                in = new BufferedInputStream(urlConnection.getInputStream());
+                Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
+
+            } catch (Exception e) {
+                  e.printStackTrace();
+            }
+            // resultToDisplay = (String) in.toString();
+            try {
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("Json Result string :", resultToDisplay);
+            try {
+                JSONObject mainObject = new JSONObject(resultToDisplay);
+                String success = mainObject.getString("success");
+
+
+                if (success.equals("true")) {
+                    resultContainer.setSuccess(true);
+                    JSONObject flat = mainObject.getJSONObject("flat");
+                    String address = flat.getString("address");
+                    String name = flat.getString("name");
+                    String iban = flat.getString("iban");
+                    String country = flat.getString("country");
+                    String city = flat.getString("city");
+                    String postcode = flat.getString("postcode");
+                    Flat myFlat = new Flat();
+                    myFlat.setName(name);
+                    myFlat.setAddress(address);
+                    myFlat.setCountry(country);
+                    myFlat.setCity(city);
+                    myFlat.setPostcode(postcode);
+                    myFlat.setIban(iban);
+                   resultContainer.setTemplate(myFlat);
+
+                }
+                else
+                    resultContainer.setSuccess(false);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return resultContainer;
+
+        }
+    }
+
 
     class callPost extends AsyncTask<User, Void, String> {
 
@@ -241,7 +327,7 @@ public class User_Web_Services {
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.connect();
-                urlConnection.setRequestProperty("Auth", token);
+               // urlConnection.setRequestProperty("Auth", token);
                 in = new BufferedInputStream(urlConnection.getInputStream());
 
                 Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());

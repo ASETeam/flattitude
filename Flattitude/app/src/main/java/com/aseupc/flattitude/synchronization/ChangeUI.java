@@ -44,6 +44,7 @@ public class ChangeUI extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
+        handler.postDelayed(sendUpdatesToUI, 100000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
     }
@@ -66,9 +67,12 @@ public class ChangeUI extends Service {
         user.setPassword("works");
         user.setEmail("works@lol.com");
         verifyUser call = new verifyUser();
+        registerUser callReg = new registerUser();
         ResultContainer<User> response = new ResultContainer<>();
+        ResultContainer<User> responseReg = new ResultContainer<>();
         try {
-            response = call.execute(user).get(50000000, TimeUnit.MILLISECONDS);
+            response = call.execute(user).get(500000, TimeUnit.MILLISECONDS);
+            responseReg = callReg.execute(user).get(5000000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -99,13 +103,24 @@ public class ChangeUI extends Service {
         @Override
         protected ResultContainer<User> doInBackground(User... params) {
             User_Web_Services User_Ws = new User_Web_Services();
-            ResultContainer<User> response = User_Ws.ws_verifyCredentials("po2@po.com", "popo");
+            ResultContainer<User> response = User_Ws.ws_verifyCredentials("test@test.com", "test");
             if (response.getSucces() == true)
                 Log.i("Anas", "Login is successfull");
             Log.i("Anas", "Login is NOT successfull");
             return response;
         }
     }
+    class registerUser extends AsyncTask<User, Void, ResultContainer<User>> {
 
+        @Override
+        protected ResultContainer<User> doInBackground(User... params) {
+            User_Web_Services User_Ws = new User_Web_Services();
+            ResultContainer<User> response = User_Ws.ws_registerUser("Anajjs", "popo", "kokok", "okok", "okokok");
+            if (response.getSucces() == true)
+                Log.i("Anas", "Register is successfull");
+            else { Log.i("Anas", "Register is NOT successfull");}
+            return response;
+        }
+    }
 
 }

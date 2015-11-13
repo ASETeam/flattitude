@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +32,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
@@ -39,7 +42,7 @@ import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -342,12 +345,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
             // AUTHENTICATION HERE
 
             ResultContainer<User> result = UserFacade.verifyCredentials((String) mEmail, (String) mPassword);
@@ -383,9 +380,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 UserDAO userDAO = new UserDAO(context);
                 userDAO.save(getCurrentUser());
-
+                ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
+                if (resultFlat.getSucces() == false){
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
-                startActivity(intent);
+                startActivity(intent);}
+                else if (resultFlat.getSucces() == true) {
+                    Flat flat = resultFlat.getTemplate();
+                    flat.setServerid(new Random().nextInt(324324) + "");
+                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    Log.i("UserFlat", flat.getName());
+                    flatDAO.save(flat);
+                    Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
+                    startActivity(mainIntent);
+                }
+
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();

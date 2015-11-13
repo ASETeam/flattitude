@@ -11,27 +11,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new Flat"
-        android:id="@+id/home_button"
+        android:id="@+id/create_flat_button"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"
-        android:id="@+id/create_flat_button"
-        android:layout_alignBottom="@+id/home_button"
-        android:layout_alignParentTop="true" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/home_button">
+        android:layout_below="@+id/create_flat_button"
+        android:id="@+id/frameLayout">
 
         <ListView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/invitations" />
+            android:layout_height="443dp"
+            android:id="@+id/invitations"
+            android:layout_gravity="left|center_vertical" />
+
     </FrameLayout>
 
 </RelativeLayout>

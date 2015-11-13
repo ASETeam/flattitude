@@ -62,6 +62,11 @@ public class UserDAO extends DBDAO {
                 WHERE_ID_EQUALS, new String[] { String.valueOf(user.getId()) });
     }
 
+    public int deleteAll(){
+
+        return database.delete(DataBaseHelper.USER_TABLENAME, null, null);
+    }
+
     public User getUser() {
         Cursor cursor = database.query(DataBaseHelper.USER_TABLENAME,
                 new String[] { DataBaseHelper.USER_ID,

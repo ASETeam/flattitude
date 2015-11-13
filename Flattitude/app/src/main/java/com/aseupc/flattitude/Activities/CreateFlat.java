@@ -1,6 +1,7 @@
 package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -63,7 +64,11 @@ public class CreateFlat extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                     FlatDAO flatDao = new FlatDAO(getApplicationContext());
+                    if (flatDao.getFlat() == null)
                     flatDao.save(flat);
+                   else flatDao.update(flat);
+                    Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(homeIntent);
                 }
         }
 

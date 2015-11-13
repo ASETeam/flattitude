@@ -34,12 +34,12 @@ public class DBDAO {
         if (date == null)
             return "";
        else  {
-        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         return df.format(date);}
     }
 
     protected Date parseDate(String date){
-        DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             return df.parse(date); //It have to be verified which format the database returns!
         } catch (ParseException e) {
@@ -48,6 +48,10 @@ public class DBDAO {
         }
     }
 
+    protected SimpleDateFormat parseSimpleDate(String date){
+        SimpleDateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        return df; //It have to be verified which format the database returns!
+    }
     protected int formatBoolean(boolean b){
         return b ? 1 : 0;
     }

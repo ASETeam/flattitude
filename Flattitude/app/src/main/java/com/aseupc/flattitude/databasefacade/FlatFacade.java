@@ -24,9 +24,9 @@ public class FlatFacade {
     return Flat_Ws.ws_createFlat(flat);
     }
 
-    public static ResultContainer<Flat> inviteMember(int userID, int flatID)
+    public static ResultContainer<Flat> inviteMember(String userID, String flatID, String email)
     {
         Invitation_Web_Services Invitation_ws = new Invitation_Web_Services();
-        return Invitation_ws.ws_inviteMember(userID, flatID);
+        return Invitation_ws.ws_inviteMember(userID, flatID, email);
     }
 }

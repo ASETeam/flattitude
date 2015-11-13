@@ -25,12 +25,13 @@ public class LandingActivity extends AppCompatActivity {
         UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         //User user = null;
+
         if (user == null) {
             Log.i("Anas", "The user has not been saved to localDB");
             Button mLoginButton = (Button) findViewById(R.id.login_button);
             Button mRegisterButton = (Button) findViewById(R.id.register_button);
-            Button mHomeButton = (Button) findViewById(R.id.home_button);
-            Button mMapButton = (Button) findViewById(R.id.map_button);
+            Button mHomeButton = (Button) findViewById(R.id.create_flat_button);
+            //Button mMapButton = (Button) findViewById(R.id.map_button);
             mLoginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -52,16 +53,10 @@ public class LandingActivity extends AppCompatActivity {
                     startActivity(HomeIntent);
                 }
             });
-            mMapButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent MapIntent = new Intent(view.getContext(), LocateObjectsActivity.class);
-                    startActivity(MapIntent);
-                }
-            });
+
         }
         else {
-            Intent goHome = new Intent(context, MainActivity.class);
+           Intent goHome = new Intent(context, MainActivity.class);
             startActivity(goHome);
         }
     }

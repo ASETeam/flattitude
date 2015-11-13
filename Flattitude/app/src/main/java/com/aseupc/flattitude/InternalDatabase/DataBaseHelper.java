@@ -115,6 +115,35 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     MAPOBJECT_LONGITUDE + " REAL NOT NULL" +
                     ");";
 
+
+
+    //--------------NOTIFICATIONS TABLE----------------
+    public static final String NOTIFICATIONS_TABLENAME = "notifications";
+
+    public static final String NOTIFICATION_ID = "notificationid";
+    public static final String NOTIFICATION_HASNOTIFICATION = "hasnotification";
+    public static final String NOTIFICATION_TIME = "time";
+    public static final String NOTIFICATION_TYPE = "type";
+    public static final String NOTIFICATION_BODY = "body";
+    public static final String NOTIFICATION_OBJECTNAME = "objectname";
+    public static final String NOTIFICATION_TASKTYPE = "tasktype";
+    public static final String NOTIFICATION_AUTHOR = "author";
+
+
+    private static final String NOTIFICATIONS_TABLE_CREATE =
+            "CREATE TABLE " + NOTIFICATIONS_TABLENAME + " (" +
+                    NOTIFICATION_ID + " INT PRIMARY KEY NOT NULL, " +
+                    NOTIFICATION_HASNOTIFICATION + " TEXT NOT NULL, " +
+                    NOTIFICATION_TYPE + " TEXT," +
+                    NOTIFICATION_BODY + " TEXT," +
+                    NOTIFICATION_AUTHOR + " TEXT," +
+                    NOTIFICATION_TASKTYPE + " TEXT," +
+                    NOTIFICATION_TIME + " TEXT," +
+                    NOTIFICATION_OBJECTNAME + " TEXT " +
+                    ");";
+
+
+
     private static DataBaseHelper instance;
 
     public static synchronized DataBaseHelper getHelper(Context context) {
@@ -135,6 +164,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(FLAT_TABLE_CREATE);
         db.execSQL(MATE_TABLE_CREATE);
         db.execSQL(MAPOBJECT_TABLE_CREATE);
+        db.execSQL(NOTIFICATIONS_TABLE_CREATE);
     }
 
 

@@ -57,6 +57,11 @@ public class FlatDAO extends DBDAO {
                 WHERE_ID_EQUALS, new String[] { String.valueOf(flat.getId()) });
     }
 
+    public int deleteAll() {
+        return database.delete(DataBaseHelper.FLAT_TABLENAME,
+               null, null);
+    }
+
     public Flat getFlat() {
         Cursor cursor = database.query(DataBaseHelper.FLAT_TABLENAME,
             new String[] {

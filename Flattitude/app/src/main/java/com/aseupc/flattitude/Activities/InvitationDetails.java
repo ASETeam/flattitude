@@ -6,28 +6,53 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.FlatFacade;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 public class InvitationDetails extends AppCompatActivity {
     private TextView mTitle;
+    private TextView mAddress;
+    private TextView mCountry;
+    private TextView mCity;
+    private TextView mPostcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation_details);
         String Flatname = "";
+        String FlatID = "";
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                 Flatname= null;
+                FlatID = null;
             } else {
                 Flatname= extras.getString("Flatname");
+                FlatID= extras.getString("FlatId");
             }
         } else {
             Flatname= (String) savedInstanceState.getSerializable("Flatname");
+            FlatID= (String) savedInstanceState.getSerializable("FlatId");
         }
         mTitle = (TextView) findViewById(R.id.flatname);
-        mTitle.setText(Flatname);
+        mAddress = (TextView) findViewById(R.id.address);
+        mCountry= (TextView) findViewById(R.id.country);
+        mCity = (TextView) findViewById(R.id.city);
+        mPostcode = (TextView) findViewById(R.id.postcode);
+
+        ResultContainer<Flat> response =  FlatFacade.getInfo(FlatID);
+        if (response.getSucces() == true) {
+            Flat flat = response.getTemplate();
+            mTitle.setText(Flatname);
+            mAddress.setText(flat.getAddress());
+            mCity.setText(flat.getCity());
+            mCountry.setText(flat.getCountry());
+            mPostcode.setText(flat.getPostcode());
+        }
+
     }
 
     @Override

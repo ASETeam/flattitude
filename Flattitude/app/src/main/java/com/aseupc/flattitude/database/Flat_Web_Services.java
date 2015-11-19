@@ -31,16 +31,73 @@ public class Flat_Web_Services {
 
     public ResultContainer<Flat> ws_getInfo(String flatID) {
         ResultContainer<Flat> response = new ResultContainer<>();
-        callGetFlatInfo call = new callGetFlatInfo();
+        Flat ThisFlat = new Flat();
+        ThisFlat.setServerid(flatID);
+        String resultToDisplay = null;
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/info/" + flatID;
+        Log.i("GETFLAT URL", urlString);
+        ParseResults result = null;
+        InputStream in = null;
+
+
+        URL url = null;
         try {
-          response =   call.execute(flatID).get(50000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            in = new BufferedInputStream(urlConnection.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // resultToDisplay = (String) in.toString();
+        try {
+            resultToDisplay = ParseResults.getStringFromInputStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.i("The GetFlat", resultToDisplay);
+        try {
+            JSONObject mainObject = new JSONObject(resultToDisplay);
+            String success = mainObject.getString("success");
+
+            if (success == "true") {
+                JSONObject flat = mainObject.getJSONObject("flat");
+                String address = flat.getString("address");
+                String name = flat.getString("name");
+                String postcode = flat.getString("postcode");
+                String iban = flat.getString("iban");
+                String city = flat.getString("city");
+                String country = flat.getString("country");
+
+                ThisFlat.setAddress(address);
+                ThisFlat.setServerid(flatID);
+                ThisFlat.setCountry(country);
+                ThisFlat.setCity(city);
+                ThisFlat.setIban(iban);
+                ThisFlat.setName(name);
+                ThisFlat.setPostcode(postcode);
+
+
+                response.setSuccess(true);
+                response.setTemplate(ThisFlat);
+
+            } else {
+                response.setSuccess(false);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         return response;
     }

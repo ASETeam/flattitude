@@ -152,5 +152,6 @@ public class InvitationDetails extends AppCompatActivity {
             super.onPostExecute(flatResultContainer);
             populateTextFields(flatResultContainer);
         }
+
     }
 }

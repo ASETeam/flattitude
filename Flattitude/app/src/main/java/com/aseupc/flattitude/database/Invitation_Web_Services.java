@@ -126,15 +126,16 @@ public class Invitation_Web_Services {
                 {
                     if (invites.get(i) != null) {
                         JSONObject flat = invites.getJSONObject(i);
-                        int id = new Random().nextInt(200000);
+                      //  int id = new Random().nextInt(200000);
                         String address = flat.getString("address");
                         String name = flat.getString("name");
                         String postcode = flat.getString("postcode");
                         String iban = flat.getString("iban");
                         String city = flat.getString("city");
                         String country = flat.getString("country");
+                        String id = flat.getString("flatid");
                         Flat finalFlat = new Flat();
-                        finalFlat.setServerid(id + "");
+                        finalFlat.setServerid(id);
                         finalFlat.setName(name);
 
                         finalFlat.setAddress(address);

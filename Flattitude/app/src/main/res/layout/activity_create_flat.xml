@@ -82,7 +82,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/country" />
+                android:id="@+id/postcode" />
 
             <TextView
                 android:layout_width="wrap_content"

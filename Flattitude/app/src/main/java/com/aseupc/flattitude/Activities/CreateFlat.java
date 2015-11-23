@@ -35,7 +35,7 @@ public class CreateFlat extends AppCompatActivity {
         mAddress = (EditText) findViewById(R.id.address);
         mCity = (EditText) findViewById(R.id.city);
         mPostalCode = (EditText) findViewById(R.id.postal_code);
-        mCountry = (EditText) findViewById(R.id.country);
+        mCountry = (EditText) findViewById(R.id.postcode);
         mIban = (EditText) findViewById(R.id.iban);
 
         final Button mCreateFlat = (Button) findViewById(R.id.create_button);

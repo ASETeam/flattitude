@@ -8,15 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin" tools:context=".Activities.LoginActivity">
 
     <!-- Login progress -->
+
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp" android:visibility="gone" />
+        android:layout_marginBottom="8dp" android:visibility="gone"
+        android:indeterminate="false" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="Loading"
         android:id="@+id/textView11"
         android:layout_weight="0.66" />
 
@@ -65,7 +67,8 @@
                 <AutoCompleteTextView android:id="@+id/email" android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress" android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:text="test@test.com" />
 
 
             </android.support.design.widget.TextInputLayout>
@@ -97,7 +100,8 @@
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_up_short"
                     android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                    android:maxLines="1" android:singleLine="true" />
+                    android:maxLines="1" android:singleLine="true"
+                    android:text="test" />
 
             </android.support.design.widget.TextInputLayout>
 

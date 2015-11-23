@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,12 +14,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
+
+import java.util.ArrayList;
 
 public class RegisteringActivity extends AppCompatActivity {
 
@@ -59,24 +64,30 @@ public class RegisteringActivity extends AppCompatActivity {
                 User retrievedUser = userDAO.getUser();
                 Log.i("RETRIEVED USER", retrievedUser.getEmail());*/
 
-                ResultContainer<User> result = UserFacade.registerUser(email_address, password, fname, lname, pnumber);
-                if (result.getSucces() == true)
-                {
+                //ResultContainer<User> result = UserFacade.registerUser(email_address, password, fname, lname, pnumber);
+                User user = new User();
+                user.setEmail(email_address);
+                user.setFirstname(fname);
+                user.setLastname(lname);
+                user.setPassword(password);
+                user.setPhonenbr(pnumber);
+                registerUser call = new registerUser();
+                call.execute(user);
+              /*  if (result.getSucces() == true) {
                     UserDAO userConn = new UserDAO(mPhonenumberView.getContext());
                     userConn.save(result.getTemplate());
                     Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
                     startActivity(valideIntent);
                     Log.i("Registering ", "Correct");
-                }
-                else
-                {
-                   if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0))
-                   { String reason = result.getReturnDescriptions().get(0);
-                    mFeedback.setText(reason); }
+                } else {
+                    if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0)) {
+                        String reason = result.getReturnDescriptions().get(0);
+                        mFeedback.setText(reason);
+                    }
 
                     Log.i("Registering", "Incorrect");
                 }
-
+*/
             }
         });
 
@@ -135,4 +146,45 @@ public class RegisteringActivity extends AppCompatActivity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }*/
+
+    private void callbackRegister(ResultContainer<User> result){
+        if (result.getSucces() == true) {
+            UserDAO userConn = new UserDAO(mPhonenumberView.getContext());
+            userConn.save(result.getTemplate());
+            Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
+            startActivity(valideIntent);
+            Log.i("Registering ", "Correct");
+        } else {
+            if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0)) {
+                String reason = result.getReturnDescriptions().get(0);
+                mFeedback.setText(reason);
+                CharSequence text = reason;
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                toast.show();
+            }
+
+            Log.i("Registering", "Incorrect");
+        }
+
+    }
+
+    public class registerUser extends AsyncTask<User, Void, ResultContainer<User>> {
+
+        @Override
+        protected ResultContainer<User> doInBackground(User... params) {
+            User user = params[0];
+
+            ResultContainer<User> result = UserFacade.registerUser(user.getEmail(), user.getPassword(), user.getFirstname(), user.getLastname(), user.getPhonenbr());
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(ResultContainer<User> userResultContainer) {
+            super.onPostExecute(userResultContainer);
+            callbackRegister(userResultContainer);
+        }
+    }
 }

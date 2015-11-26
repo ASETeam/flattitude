@@ -39,7 +39,6 @@ public class LandingActivity extends AppCompatActivity {
             Log.i("Anas", "The user has not been saved to localDB");
             Button mLoginButton = (Button) findViewById(R.id.login_button);
             Button mRegisterButton = (Button) findViewById(R.id.register_button);
-            Button mHomeButton = (Button) findViewById(R.id.create_flat_button);
             //Button mMapButton = (Button) findViewById(R.id.map_button);
             mLoginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -55,13 +54,7 @@ public class LandingActivity extends AppCompatActivity {
                     startActivity(intentRegister);
                 }
             });
-            mHomeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent HomeIntent = new Intent(view.getContext(), MainActivity.class);
-                    startActivity(HomeIntent);
-                }
-            });
+
 
         }
         else {

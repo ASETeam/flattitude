@@ -1,7 +1,11 @@
 package com.aseupc.flattitude.Activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,11 +32,14 @@ import java.util.concurrent.TimeoutException;
 
 public class GroupActivity extends AppCompatActivity {
     private ListView invitations;
+    private View mProgressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        mProgressView = findViewById(R.id.group_progress);
+        showProgress(true);
 
 
         final Button mCreateFlat = (Button) findViewById(R.id.create_flat_button);
@@ -51,15 +58,10 @@ public class GroupActivity extends AppCompatActivity {
         User user = userDAO.getUser();
         consultInfo callConsult = new consultInfo();
         ArrayList<Flat> result = new ArrayList<Flat>();
-        try {
-            result = callConsult.execute(user.getServerid()).get(50000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+
+        callConsult.execute(user.getServerid());
+
+        /*
         ArrayList<String> resultStr = new ArrayList<String>();
         for (int i = 0; i < result.size(); i++)
         {
@@ -83,7 +85,32 @@ public class GroupActivity extends AppCompatActivity {
                 detailsIntent.putExtra("FlatId", finalFlats.get(position).getServerid());
                 startActivity(detailsIntent);
             }
-        });
+        }); */
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        }
     }
 
     @Override
@@ -108,6 +135,35 @@ public class GroupActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void populateInvitations(ArrayList<Flat> flats)
+    {
+        showProgress(false);
+        ArrayList<String> resultStr = new ArrayList<String>();
+        for (int i = 0; i < flats.size(); i++)
+        {
+            resultStr.add(flats.get(i).getName());
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                resultStr );
+
+        invitations.setAdapter(arrayAdapter);
+
+        final ArrayList<Flat> finalFlats = flats;
+        final ArrayList<String> finalResult = resultStr;
+        invitations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selected = finalResult.get(position);
+                Intent detailsIntent = new Intent(getApplicationContext(), InvitationDetails.class);
+                detailsIntent.putExtra("Flatname", selected);
+                detailsIntent.putExtra("FlatId", finalFlats.get(position).getServerid());
+                startActivity(detailsIntent);
+            }
+        });
+    }
+
     public class consultInfo extends AsyncTask<String, Void, ArrayList<Flat>>{
 
         @Override
@@ -116,6 +172,12 @@ public class GroupActivity extends AppCompatActivity {
             ArrayList<Flat> invitations = result.getTemplate().getInvitations();
 
             return invitations;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Flat> flats) {
+            super.onPostExecute(flats);
+            populateInvitations(flats);
         }
     }
 }

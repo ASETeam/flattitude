@@ -153,7 +153,7 @@ public class User_Web_Services {
         user.setFirstname(firstname);
         user.setPhonenbr(phonenumber);
         String FinalizeThread ="Call not executed";
-        try {
+       /* try {
              FinalizeThread = call.execute(user).get(50000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -161,7 +161,26 @@ public class User_Web_Services {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
+        }*/
+        String response = "";
+        String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
+        HashMap<String, String> values = new HashMap<>();
+
+        values.put("email", user.getEmail());
+        values.put("password", user.getPassword());
+        values.put("firstname", user.getFirstname());
+        values.put("lastname", user.getLastname());
+        values.put("phonenbr", user.getPhonenbr());
+        response = CallAPI.performPostCall(urlStr, values);
+
+        try {
+            JSONObject mainObject = new JSONObject(response);
+            Log.i("GUILLE RESPONSE", mainObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        Log.i("GUILLE RESPONSE", response);
+        FinalizeThread = response;
 
 
         Log.i("We Before with Json: ", FinalizeThread);
@@ -185,6 +204,10 @@ public class User_Web_Services {
                     dummy.setFirstname("kpokpk");
                     dummy.setLastname("okokok");
                     resultContainer.setTemplate(dummy);
+                    if (user != null) {
+                        user.setServerid(userId);
+                        resultContainer.setTemplate(user);
+                    }
                 }
                 else if (success == "false"){
                     resultContainer.setSuccess(false);

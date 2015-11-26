@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Jordi on 19/10/2015.
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "db";
     private Context context;
 
@@ -107,7 +107,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String MAPOBJECT_TABLE_CREATE =
             "CREATE TABLE " + MAPOBJECT_TABLENAME + " (" +
-                    MAPOBJECT_ID + " INT PRIMARY KEY NOT NULL, " +
+                    MAPOBJECT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     MAPOBJECT_SERVERID + " TEXT NOT NULL, " +
                     MAPOBJECT_NAME + " TEXT NOT NULL, " +
                     MAPOBJECT_DESCRIPTION + " TEXT," +

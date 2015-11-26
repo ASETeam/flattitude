@@ -2,6 +2,7 @@ package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,14 @@ public class LandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+
+        Button Login = (Button)findViewById(R.id.login_button);
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Login.setTypeface(customFont);
+
+        Button Register = (Button)findViewById(R.id.register_button);
+        Register.setTypeface(customFont);
+
         Context context = getApplicationContext();
         UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();

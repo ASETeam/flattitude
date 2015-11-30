@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // Random Planning activites created
         PlanningDAO plDao = new PlanningDAO(getApplicationContext());
 
-        for (int i = 0; i < 2; i++ ) {
+        for (int i = 0; i < 10; i++ ) {
            Calendar Dday = Calendar.getInstance();
            Dday.set(2015, new Random().nextInt(12) + 1, new Random().nextInt(28), 12, 12, 12);
             final Calendar  Ddayx = Dday;

@@ -27,7 +27,6 @@ public class MapObjectDAO extends DBDAO {
 
     public long save(MapObject mo) {
         ContentValues values = new ContentValues();
-        values.put(DataBaseHelper.MAPOBJECT_ID, mo.getId());
         values.put(DataBaseHelper.MAPOBJECT_SERVERID, mo.getServerId());
         values.put(DataBaseHelper.MAPOBJECT_NAME, mo.getName());
         values.put(DataBaseHelper.MAPOBJECT_DESCRIPTION, mo.getDescription());
@@ -36,6 +35,8 @@ public class MapObjectDAO extends DBDAO {
 
         return database
             .insert(DataBaseHelper.MAPOBJECT_TABLENAME, null, values);
+
+
     }
 
     public long update(MapObject mo) {
@@ -47,13 +48,13 @@ public class MapObjectDAO extends DBDAO {
 
         long result = database.update(DataBaseHelper.MAPOBJECT_TABLENAME,
             values, WHERE_SERVERID_EQUALS,
-            new String[] { String.valueOf(mo.getId()) });
+            new String[] { mo.getServerId() });
         return result;
     }
 
     public int deleteDept(MapObject mo) {
         return database.delete(DataBaseHelper.MAPOBJECT_TABLENAME,
-            WHERE_SERVERID_EQUALS, new String[] { String.valueOf(mo.getId()) });
+            WHERE_SERVERID_EQUALS, new String[] { mo.getServerId() });
     }
 
     public List<MapObject> getMapObjects() {

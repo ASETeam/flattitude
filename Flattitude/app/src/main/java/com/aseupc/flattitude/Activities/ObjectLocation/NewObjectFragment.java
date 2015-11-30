@@ -65,14 +65,6 @@ public class NewObjectFragment extends Fragment {
             }
         });
 
-        final Button currentLocation = (Button) view.findViewById(R.id.currentLocationButton);
-        currentLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onCurrentLocationPressed();
-            }
-        });
-
         return view;
     }
 
@@ -107,7 +99,6 @@ public class NewObjectFragment extends Fragment {
      */
     public interface OnNewFragmentInteractionListener {
         public void onAddObjectConfirmed(String name, String description);
-        public void onCurrentLocationPressed();
     }
 
 }

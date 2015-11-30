@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.aseupc.flattitude.Models.MapObject;
 import com.aseupc.flattitude.R;
-import com.google.android.gms.maps.MapsInitializer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +24,7 @@ import com.google.android.gms.maps.MapsInitializer;
 public class EditObjectFragment extends Fragment {
 
     private OnEditFragmentInteractionListener mListener;
-    private View view;
+    public View view;
     private MapObject object;
 
     public EditObjectFragment() {
@@ -55,29 +55,46 @@ public class EditObjectFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_edit_object, container, false);
-        final EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
-        final EditText descriptionTE = (EditText) view.findViewById(R.id.objectDescription);
-        objectNameTE.setText(object.getName());
-        descriptionTE.setText(object.getDescription());
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
+        EditText descriptionTE = (EditText) view.findViewById(R.id.objectDescription);
+        objectNameTE.setText(object.getName(), TextView.BufferType.EDITABLE);
+        descriptionTE.setText(object.getDescription(), TextView.BufferType.EDITABLE);
         final Button confirmEdit = (Button) view.findViewById(R.id.confirmButton);
         confirmEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
+                EditText descriptionTE = (EditText) view.findViewById(R.id.objectDescription);
                 String objectName = objectNameTE.getText().toString();
                 String objectDescription = descriptionTE.getText().toString();
                 mListener.onEditObjectConfirmed(objectName, objectDescription);
             }
         });
 
-        final Button currentLocation = (Button) view.findViewById(R.id.currentLocationButton);
-        currentLocation.setOnClickListener(new View.OnClickListener() {
+        final Button deleteButton = (Button) view.findViewById(R.id.deleteButton);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onEditCurrentLocationPressed();
+                mListener.onRemoveObjectClicked();
             }
         });
+    }
 
-        return view;
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(object != null) {
+            EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
+            EditText descriptionTE = (EditText) view.findViewById(R.id.objectDescription);
+            objectNameTE.setText(object.getName(), TextView.BufferType.EDITABLE);
+            descriptionTE.setText(object.getDescription(), TextView.BufferType.EDITABLE);
+        }
     }
 
     @Override
@@ -92,21 +109,14 @@ public class EditObjectFragment extends Fragment {
         mListener = null;
     }
 
-    public void reset(){
-        EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
-        objectNameTE.setText("");
-        EditText descTE = (EditText) view.findViewById(R.id.objectDescription);
-        descTE.setText("");
-    }
-
     public void setEditedObject(MapObject object){
         this.object = object;
-        if(view != null) {
+       /* if(view != null) {
             EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
-            objectNameTE.setText(object.getName());
+            objectNameTE.setText(object.getName(),TextView.BufferType.EDITABLE);
             EditText descTE = (EditText) view.findViewById(R.id.objectDescription);
-            descTE.setText(object.getDescription());
-        }
+            descTE.setText(object.getDescription(), TextView.BufferType.EDITABLE);
+        }*/
     }
     /**
      * This interface must be implemented by activities that contain this
@@ -120,7 +130,7 @@ public class EditObjectFragment extends Fragment {
      */
     public interface OnEditFragmentInteractionListener {
         public void onEditObjectConfirmed(String name, String description);
-        public void onEditCurrentLocationPressed();
+        public void onRemoveObjectClicked();
     }
 
 }

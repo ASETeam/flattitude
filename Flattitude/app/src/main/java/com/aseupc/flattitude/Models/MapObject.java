@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class MapObject {
 
-    private int id;
+    private long id;
     private String serverId;
     private String name;
     private String description;
@@ -43,11 +43,11 @@ public class MapObject {
         this.longitude = o.longitude;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -86,6 +86,10 @@ public class MapObject {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public LatLng getPosition(){
+        return new LatLng(latitude,longitude);
     }
 
     @Override

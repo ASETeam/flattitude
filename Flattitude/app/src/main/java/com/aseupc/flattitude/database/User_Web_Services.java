@@ -263,6 +263,7 @@ public class User_Web_Services {
                 if (success.equals("true")) {
                     resultContainer.setSuccess(true);
                     JSONObject flat = mainObject.getJSONObject("flat");
+                    String serverID = flat.getString("flatid");
                     String address = flat.getString("address");
                     String name = flat.getString("name");
                     String iban = flat.getString("iban");
@@ -276,6 +277,7 @@ public class User_Web_Services {
                     myFlat.setCity(city);
                     myFlat.setPostcode(postcode);
                     myFlat.setIban(iban);
+                    myFlat.setServerid(serverID);
                    resultContainer.setTemplate(myFlat);
 
                 }
@@ -318,8 +320,7 @@ public class User_Web_Services {
         }
 
         protected void onPostExecute(String response) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
+
             setStatusRegister(response);
             Log.i("Registry has been", " changed in PostExecute");
 

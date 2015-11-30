@@ -53,4 +53,16 @@ public class UserFacade {
         return result;
     }
 
+    public static ResultContainer<User> getNotifications(String userID){
+        Notifications_Web_Services notif_WS = new Notifications_Web_Services();
+        ResultContainer<User> result = notif_WS.ws_getNotifications(userID);
+        return result;
+    }
+
+    public static ResultContainer<User> retrievedNotifications(String userID, String timestamp){
+        Notifications_Web_Services notif_WS = new Notifications_Web_Services();
+        ResultContainer<User> result = notif_WS.ws_RetrievNotifications(userID, timestamp);
+        return  result;
+    }
+
 }

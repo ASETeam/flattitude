@@ -12,6 +12,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
@@ -47,7 +48,7 @@
         <activity
             android:name=".Activities.LandingActivity"
             android:label="Flattitude"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -83,6 +84,14 @@
         <activity
             android:name=".Activities.InvitationDetails"
             android:label="@string/title_activity_invitation_details" >
+        </activity>
+        <activity
+            android:name=".Activities.PlanningActivity"
+            android:label="@string/title_activity_planning" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

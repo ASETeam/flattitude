@@ -118,8 +118,7 @@ public class Map_Web_Services {
 
         @Override
         protected void onPostExecute(ResultContainer<MapObject> response) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
+
 
             Log.i("Registry has been", " changed in PostExecute");
         }

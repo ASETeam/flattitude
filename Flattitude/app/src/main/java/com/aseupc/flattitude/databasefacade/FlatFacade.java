@@ -35,4 +35,10 @@ public class FlatFacade {
         Flat_Web_Services Flat_WS = new Flat_Web_Services();
         return Flat_WS.ws_getInfo(flatID);
     }
+
+    public static ResultContainer<Flat> respondInvitation(String userID, String flatID, String acceptation)
+    {
+        Invitation_Web_Services invit_WS = new Invitation_Web_Services();
+        return invit_WS.ws_respondInvitation(userID, flatID, acceptation);
+    }
 }

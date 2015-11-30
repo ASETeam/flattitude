@@ -104,4 +104,17 @@ public class Notification {
     public void setTime(Date time) {
         this.time = time;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Notification x = (Notification) o;
+        if (x.getServerID() == this.getServerID())
+            return true;
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

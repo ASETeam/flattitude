@@ -31,6 +31,59 @@ import java.util.concurrent.TimeoutException;
  */
 public class Invitation_Web_Services {
 
+    public ResultContainer<Flat> ws_respondInvitation(String userID, String flatID, String respond) {
+        ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
+        callPostInviteMember call = new callPostInviteMember();
+        String ResponseString =null;
+
+        String response = "";
+        String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/invitation/respond";
+        HashMap<String, String> values = new HashMap<>();
+
+
+        values.put("idUser", userID);
+        values.put("idFlat", flatID);
+        values.put("accepted", respond);
+
+        Log.i("Respond", respond);
+        response = CallAPI.performPostCall(urlStr, values);
+        try {
+            JSONObject mainObject = new JSONObject(response);
+            //Log.i("INVITE 3", mainObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("Respond", response);
+
+        ResponseString = response;
+        if (ResponseString != null)
+        {
+            //Log.i("INVITE 1: ", ResponseString);
+            try {
+                JSONObject mainObject = new JSONObject(ResponseString);
+                String success = mainObject.getString("success");
+             //   Log.i("INVITE 2 :", success);
+                if (success == "true") {
+                    resultContainer.setSuccess(true);
+                    // Temporary solution : dummy user
+                    // resultContainer.setTemplate(CallAPI.getUser(userId));
+
+                }
+                else if (success == "false"){
+                    resultContainer.setSuccess(false);
+                    String reason = mainObject.getString("reason");
+                    resultContainer.addReason(reason);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        return resultContainer;
+    }
+
     public ResultContainer<Flat> ws_inviteMember(String userID, String flatID, String email) {
         ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
         callPostInviteMember call = new callPostInviteMember();
@@ -186,8 +239,7 @@ public class Invitation_Web_Services {
         }
 
         protected void onPostExecute(String response) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
+
 
             Log.i("Registry has been", " changed in PostExecute");
 

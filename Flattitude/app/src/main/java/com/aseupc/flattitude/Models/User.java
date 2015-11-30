@@ -21,7 +21,20 @@ public class User {
     private boolean loggedin;
     private String token;
     private ArrayList<Flat> invitations;
+    private ArrayList<Notification> notifications;
 
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public void addNotifications(Notification notification)
+    {
+        this.notifications.add(notification);
+    }
 
     public User() {
         invitations = new ArrayList<Flat>();

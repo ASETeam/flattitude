@@ -47,21 +47,12 @@
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"/>
         <activity
-            android:name=".Activities.HomeActivity"
-            android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation"/>
-        <activity
             android:name=".Activities.LandingActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
-<<<<<<< HEAD
-            android:theme="@style/AppTheme.NoActionBar">
-=======
             android:label="Flattitude"
             android:theme="@style/AppTheme.NoActionBar" >
->>>>>>> ffd66e1c1f634c14f75b451ef3cebabfc9f551fe
-            <intent-filter>
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -73,9 +64,6 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_registering"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name=".Activities.TestActivity"
-            android:label="@string/title_activity_test" />
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/title_activity_main"

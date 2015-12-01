@@ -35,7 +35,6 @@ public class RegisteringActivity extends AppCompatActivity {
     private EditText mLastnameView;
     private EditText mPhonenumberView;
     private EditText mEmailView;
-    private TextView mFeedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +69,6 @@ public class RegisteringActivity extends AppCompatActivity {
         mFirstnameView = (EditText) findViewById(R.id.first_name);
         mLastnameView = (EditText) findViewById(R.id.last_name);
         mPhonenumberView = (EditText) findViewById(R.id.phone_number);
-        mFeedback = (TextView) findViewById(R.id.feedback);
 
         final Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +181,6 @@ public class RegisteringActivity extends AppCompatActivity {
         } else {
             if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0)) {
                 String reason = result.getReturnDescriptions().get(0);
-                mFeedback.setText(reason);
                 CharSequence text = reason;
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(getApplicationContext(), text, duration);

@@ -40,7 +40,8 @@ public class RegisteringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registering);
-        Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Bold.otf");
         TextView email_address_label = (TextView)findViewById(R.id.email_address_label);
         email_address_label.setTypeface(customFont);
         EditText email_address = (EditText)findViewById(R.id.email_address);
@@ -62,7 +63,7 @@ public class RegisteringActivity extends AppCompatActivity {
         EditText phone_number = (EditText)findViewById(R.id.phone_number);
         phone_number.setTypeface(customFont);
         Button register_button = (Button)findViewById(R.id.register_button);
-        register_button.setTypeface(customFont);
+        register_button.setTypeface(customFontButton);
 
         mEmailView = (EditText) findViewById(R.id.email_address);
         mPasswordView = (EditText) findViewById(R.id.password);

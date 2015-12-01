@@ -122,9 +122,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        //Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        //Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
+        //mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        login_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -399,7 +400,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+            //Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+            Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
                // finish();

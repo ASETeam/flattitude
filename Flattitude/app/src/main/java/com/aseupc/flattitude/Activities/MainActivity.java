@@ -38,6 +38,7 @@ import com.aseupc.flattitude.synchronization.SynchzonizationService;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 
+import java.security.acl.Group;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -171,6 +172,10 @@ public class MainActivity extends AppCompatActivity {
             setTitle(user.getFirstname() + " " + user.getLastname());
           /*  mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
             mFlat.setText(flat.getServerid() + " - " + flat.getName());*/
+        }
+        else {
+            Intent returnGroup = new Intent(getApplicationContext(), GroupActivity.class);
+            startActivity(returnGroup);
         }
 
 

@@ -210,6 +210,7 @@ public class InvitationDetails extends AppCompatActivity {
             String flatID = params[1];
             String acceptation = params[2];
             accept = acceptation;
+            Log.i("SentParam", userID + " - " + flatID + " - ");
             ResultContainer<Flat> response = FlatFacade.respondInvitation(userID, flatID, acceptation);
             Flat flat = FlatFacade.getInfo(MyFlatID).getTemplate();
             response.setTemplate(flat);

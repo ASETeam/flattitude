@@ -91,6 +91,7 @@ public class CallAPI  {
                // user.setBirthdate(birthdate);
                 //.setIban(iban);
                 user.setPhonenbr(phonenumber);
+                user.setServerid(userID);
 
             }
 

@@ -12,7 +12,9 @@
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone"
-        android:indeterminate="false" />
+        android:indeterminate="false"
+        android:progressDrawable="@xml/pinkprogress"
+        android:progress="@integer/google_play_services_version" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -106,7 +108,6 @@
             </android.support.design.widget.TextInputLayout>
 
 
-
             <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
                 android:layout_width="137dp" android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" android:text="Login"
@@ -118,4 +119,5 @@
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

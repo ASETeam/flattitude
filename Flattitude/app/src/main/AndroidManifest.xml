@@ -43,16 +43,24 @@
             android:label="@string/app_name" />
         <activity
             android:name=".Activities.GroupActivity"
-            android:label="@string/title_activity_create_group" />
+            android:label="@string/title_activity_create_group"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"/>
         <activity
             android:name=".Activities.HomeActivity"
-            android:label="@string/title_activity_home" />
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"/>
         <activity
             android:name=".Activities.LandingActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
+<<<<<<< HEAD
+            android:theme="@style/AppTheme.NoActionBar">
+=======
             android:label="Flattitude"
             android:theme="@style/AppTheme.NoActionBar" >
+>>>>>>> ffd66e1c1f634c14f75b451ef3cebabfc9f551fe
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,6 +69,8 @@
         </activity>
         <activity
             android:name=".Activities.RegisteringActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_registering"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class RegisteringActivity extends AppCompatActivity {
@@ -38,6 +41,29 @@ public class RegisteringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registering);
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        TextView email_address_label = (TextView)findViewById(R.id.email_address_label);
+        email_address_label.setTypeface(customFont);
+        EditText email_address = (EditText)findViewById(R.id.email_address);
+        email_address.setTypeface(customFont);
+        TextView password_label = (TextView)findViewById(R.id.password_label);
+        password_label.setTypeface(customFont);
+        EditText password = (EditText)findViewById(R.id.password);
+        password.setTypeface(customFont);
+        TextView first_name_label = (TextView)findViewById(R.id.first_name_label);
+        first_name_label.setTypeface(customFont);
+        EditText first_name = (EditText)findViewById(R.id.first_name);
+        first_name.setTypeface(customFont);
+        TextView last_name_label = (TextView)findViewById(R.id.last_name_label);
+        last_name_label.setTypeface(customFont);
+        EditText last_name  = (EditText)findViewById(R.id.last_name);
+        last_name.setTypeface(customFont);
+        TextView phone_number_label = (TextView)findViewById(R.id.phone_number_label);
+        phone_number_label.setTypeface(customFont);
+        EditText phone_number = (EditText)findViewById(R.id.phone_number);
+        phone_number.setTypeface(customFont);
+        Button register_button = (Button)findViewById(R.id.register_button);
+        register_button.setTypeface(customFont);
 
         mEmailView = (EditText) findViewById(R.id.email_address);
         mPasswordView = (EditText) findViewById(R.id.password);

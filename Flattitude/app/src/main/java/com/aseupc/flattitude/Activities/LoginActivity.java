@@ -38,6 +38,7 @@ import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import java.util.ArrayList;
@@ -342,11 +343,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
             // AUTHENTICATION HERE
+            if (CallAPI.isNetworkAvailable(getApplicationContext()) == false)
+            {
+                return false;
 
+            }
             ResultContainer<User> result = UserFacade.verifyCredentials((String) mEmail, (String) mPassword);
             if (result.getSucces() == true)
             {
@@ -386,15 +397,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(intent);}
                 else if (resultFlat.getSucces() == true) {
                     Flat flat = resultFlat.getTemplate();
-                    flat.setServerid(new Random().nextInt(324324) + "");
+                    //flat.setServerid(new Random().nextInt(324324) + "");
                     FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-                    Log.i("UserFlat", flat.getName());
+                 //   Log.i("UserFlat", flat.getName());
                     flatDAO.save(flat);
                     Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
                     startActivity(mainIntent);
                 }
 
-            } else {
+            }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
+                CallAPI.makeToast(getApplicationContext(), "No internet connection");
+
+            }
+            else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

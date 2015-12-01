@@ -3,16 +3,22 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
@@ -31,6 +37,8 @@ public class InvitationDetails extends AppCompatActivity {
     private TextView mPostcode;
 
     private View mProgressView;
+    private String MyFlatID;
+    private String MyUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,7 @@ public class InvitationDetails extends AppCompatActivity {
             Flatname = (String) savedInstanceState.getSerializable("Flatname");
             FlatID = (String) savedInstanceState.getSerializable("FlatId");
         }
+        MyFlatID= FlatID;
         mTitle = (TextView) findViewById(R.id.flatname);
         mAddress = (TextView) findViewById(R.id.address);
         mCountry = (TextView) findViewById(R.id.country);
@@ -64,17 +73,54 @@ public class InvitationDetails extends AppCompatActivity {
 
         call.execute(FlatID);
 
-       /* if (response.getSucces() == true) {
-            Flat flat = response.getTemplate();
-            mTitle.setText(Flatname);
-            mAddress.setText(flat.getAddress());
-            mCity.setText(flat.getCity());
-            mCountry.setText(flat.getCountry());
-            mPostcode.setText(flat.getPostcode());
-        }
-    */
+        UserDAO userDAO = new UserDAO(getApplicationContext());
+        User user = userDAO.getUser();
+        final String userID = user.getServerid();
+        final String flatID = FlatID;
+        MyUserID = userID;
 
-        //  showProgress(false);
+        Button mAccept = (Button) findViewById(R.id.accept_button);
+        mAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                callRespondInvitation callA = new callRespondInvitation();
+                callA.execute(userID, flatID, "true");
+            }
+        });
+        Button mDecline = (Button) findViewById(R.id.decline_button);
+        mDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callRespondInvitation callA = new callRespondInvitation();
+                callA.execute(userID, flatID, "false");
+            }
+        });
+
+    }
+
+    private void saveAndRedirect(ResultContainer<Flat> flatContainer, String accept)
+    {
+        String success;
+        if (flatContainer.getSucces() == true)
+            success = "true";
+        else
+            success = "false";
+        Log.i("Send Acceptation", success);
+        if (flatContainer.getSucces() == true)
+        {
+            if (accept == "true") {
+                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                flatDAO.update(flatContainer.getTemplate());
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+            if (accept == "false") {
+                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                startActivity(intent);
+            }
+
+        }
     }
 
     private void populateTextFields(ResultContainer<Flat> flatContainer)
@@ -151,6 +197,29 @@ public class InvitationDetails extends AppCompatActivity {
         protected void onPostExecute(ResultContainer<Flat> flatResultContainer) {
             super.onPostExecute(flatResultContainer);
             populateTextFields(flatResultContainer);
+        }
+
+    }
+
+    class callRespondInvitation extends AsyncTask<String, Void, ResultContainer<Flat>> {
+        private String accept;
+
+        @Override
+        protected ResultContainer<Flat> doInBackground(String... params) {
+            String userID = params[0];
+            String flatID = params[1];
+            String acceptation = params[2];
+            accept = acceptation;
+            ResultContainer<Flat> response = FlatFacade.respondInvitation(userID, flatID, acceptation);
+            Flat flat = FlatFacade.getInfo(MyFlatID).getTemplate();
+            response.setTemplate(flat);
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(ResultContainer<Flat> flatResultContainer) {
+            super.onPostExecute(flatResultContainer);
+            saveAndRedirect(flatResultContainer, accept);
         }
 
     }

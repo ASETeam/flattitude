@@ -25,9 +25,11 @@ import android.widget.Toast;
 import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.PlanningDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.Notification;
+import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         notif.setSeennotification(false);
         notif.setBody("This is a message posted by me");
         notDao.save(notif);
-    }
+        }
         List<Notification> retrieved = notDao.getNotifications();
         for (int i = 0; i< retrieved.size(); i++)
         {
@@ -81,12 +83,42 @@ public class MainActivity extends AppCompatActivity {
         }
         //--
 
+        // Random Planning activites created
+        PlanningDAO plDao = new PlanningDAO(getApplicationContext());
+
+        for (int i = 0; i < 10; i++ ) {
+           Calendar Dday = Calendar.getInstance();
+           Dday.set(2015, new Random().nextInt(12) + 1, new Random().nextInt(28), 12, 12, 12);
+            final Calendar  Ddayx = Dday;
+            PlanningTask task1 = new PlanningTask(new Random().nextInt(200000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
+            PlanningTask task2 = new PlanningTask(new Random().nextInt(2000000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
+
+            plDao.save(task1);
+          //  plDao.save(task2);
+       }
+        List<PlanningTask> tasks = plDao.getPlanningTasks();
+        List<PlanningTask> Gtasks = plDao.getGroupedPlanningTasks();
+        Log.i("GAnas Tasks", plDao.getPlanningTasks().size() + "");
+        for (PlanningTask task:tasks
+             ) {
+            Calendar date = task.getPlannedTime();
+            String theDay = PlanningTask.getCleanDate(date);
+            Log.i("GAnas indiv", task.getID() + " " + task.getDescription() + " " + theDay);
+
+        }
+        Log.i("GAnas GTasks", plDao.getGroupedPlanningTasks().size() + "");
+        for (PlanningTask task:Gtasks
+                ) {
+            Log.i("GAnas indiv", task.getID() + " " + task.getDescription() + " " + task.getPlannedTime().getTime().toString());
+
+        }
+
 
         Intent serviceIntent = new Intent(this, SynchzonizationService.class);
         //startService(serviceIntent);
-        //ui_intent = new Intent(this, ChangeUI.class);
-       // Intent changeUIintent = new Intent(this, ChangeUI.class);
-       // startService(changeUIintent);
+        ui_intent = new Intent(this, ChangeUI.class);
+       Intent changeUIintent = new Intent(this, ChangeUI.class);
+        startService(changeUIintent);
         final ImageButton sendInvite = (ImageButton) findViewById(R.id.add_button);
         sendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +134,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent MapIntent = new Intent(view.getContext(), LocateObjectsActivity.class);
                 startActivity(MapIntent);
+            }
+        });
+
+        final ImageButton goCalendar = (ImageButton) findViewById(R.id.calendar_button);
+        goCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent CalendarIntent = new Intent(view.getContext(), PlanningActivity.class);
+                startActivity(CalendarIntent);
             }
         });
         final ImageButton goGroup = (ImageButton) findViewById(R.id.leave_button);
@@ -173,8 +214,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-       // startService(ui_intent);
-        //registerReceiver(broadcastReceiver, new IntentFilter(ChangeUI.BROADCAST_ACTION));
+       startService(ui_intent);
+        registerReceiver(broadcastReceiver, new IntentFilter(ChangeUI.BROADCAST_ACTION));
     }
 
     @Override
@@ -195,8 +236,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-     //   unregisterReceiver(broadcastReceiver);
-      //  stopService(ui_intent);
+        unregisterReceiver(broadcastReceiver);
+        stopService(ui_intent);
     }
 
     @Override

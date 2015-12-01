@@ -260,8 +260,7 @@ public class Flat_Web_Services {
         }
 
         protected void onPostExecute(String response) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
+
 
             Log.i("Registry has been", " changed in PostExecute");
 

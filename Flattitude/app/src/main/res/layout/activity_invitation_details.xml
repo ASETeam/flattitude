@@ -95,19 +95,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accept Invitation"
-        android:id="@+id/button"
+        android:id="@+id/accept_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="#4cff5c" />
+        android:background="@android:color/holo_blue_light"
+        android:layout_toStartOf="@+id/flatname" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Decline Invitation"
-        android:id="@+id/button2"
+        android:id="@+id/decline_button"
         android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_orange_light"
         android:layout_alignParentEnd="true"
-        android:background="#ff6b60" />
+        android:layout_toEndOf="@+id/flatname" />
 
     <ProgressBar
         android:layout_width="wrap_content"

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Jordi on 19/10/2015.
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "db";
     private Context context;
 
@@ -107,7 +107,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String MAPOBJECT_TABLE_CREATE =
             "CREATE TABLE " + MAPOBJECT_TABLENAME + " (" +
-                    MAPOBJECT_ID + " INT PRIMARY KEY NOT NULL, " +
+                    MAPOBJECT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     MAPOBJECT_SERVERID + " TEXT NOT NULL, " +
                     MAPOBJECT_NAME + " TEXT NOT NULL, " +
                     MAPOBJECT_DESCRIPTION + " TEXT," +
@@ -144,6 +144,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
+    //--------------PLANNING TABLE----------------
+    public static final String PLANNING_TABLENAME = "planning";
+
+    public static final String PLANNING_ID = "planningid";
+    public static final String PLANNING_AUTHOR = "author";
+    public static final String PLANNING_DESTINATION= "destination";
+    public static final String PLANNING_TYPE = "type";
+    public static final String PLANNING_DESCRIPTION = "description";
+    public static final String PLANNING_DATE = "date";
+    public static final String PLANNING_TIME = "time";
+
+    private static final String PLANNING_TABLE_CREATE =
+            "CREATE TABLE " + PLANNING_TABLENAME + " (" +
+                    PLANNING_ID + " INT PRIMARY KEY NOT NULL, " +
+                    PLANNING_AUTHOR + " TEXT , " +
+                    PLANNING_DESTINATION + " TEXT," +
+                    PLANNING_TYPE + " TEXT," +
+                    PLANNING_DESCRIPTION + " TEXT," +
+                    PLANNING_TIME + " TEXT , " +
+                    PLANNING_DATE + " TEXT " +
+                    ");";
+
     private static DataBaseHelper instance;
 
     public static synchronized DataBaseHelper getHelper(Context context) {
@@ -165,6 +187,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(MATE_TABLE_CREATE);
         db.execSQL(MAPOBJECT_TABLE_CREATE);
         db.execSQL(NOTIFICATIONS_TABLE_CREATE);
+        db.execSQL(PLANNING_TABLE_CREATE);
     }
 
 

@@ -12,6 +12,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="22" />
@@ -54,7 +55,12 @@
             android:name=".Activities.LandingActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
+<<<<<<< HEAD
             android:theme="@style/AppTheme.NoActionBar">
+=======
+            android:label="Flattitude"
+            android:theme="@style/AppTheme.NoActionBar" >
+>>>>>>> ffd66e1c1f634c14f75b451ef3cebabfc9f551fe
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -93,6 +99,14 @@
         <activity
             android:name=".Activities.InvitationDetails"
             android:label="@string/title_activity_invitation_details" >
+        </activity>
+        <activity
+            android:name=".Activities.PlanningActivity"
+            android:label="@string/title_activity_planning" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

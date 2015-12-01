@@ -1,9 +1,14 @@
 package com.aseupc.flattitude.Activities.ObjectLocation;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -43,29 +48,38 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 
 public class LocateObjectsActivity extends AppCompatActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener,
         NewObjectFragment.OnNewFragmentInteractionListener,
-        EditObjectFragment.OnEditFragmentInteractionListener
+        EditObjectFragment.OnEditFragmentInteractionListener,
+        AsyncAddObjectTask.OnObjectAddedListener,
+        AsyncEditObjectTask.OnObjectEditedListener,
+        AsyncRemoveObjectTask.OnObjectRemovedListener
+
 {
+
+    private static final float flagXAnchor = 0.2f;
+    private static final float flagYAnchor = 1f;
+    private static final float focusXAnchor = 0.5f;
+    private static final float focusYAnchor = 0.5f;
 
     private GoogleApiClient mGoogleApiClient;
     private NewObjectFragment newObjectFragment;
     private EditObjectFragment editObjectFragment;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private View mProgressView;
+    private Dialog mOverlayDialog; //display an invisible overlay dialog to prevent user interaction and pressing back
     private ArrayAdapter<MapObject> adapter;
     private Button addButton;
     private ActionBarDrawerToggle mDrawerToggle;
     private List<MapObject> objects;
-    private Map<Long,Marker> markersMap;
-    private Map<String,MapObject> mapObjectsMap;
+    private Map<String,MapObject> markerIdToObject;
+    private Map<Long,Marker> objectIdToMarker;
+    private GoogleMap map;
     private Marker onWorkingMarker;
     private MapObject editionObject;
-    private MapFragment mapFragment;
     private boolean addObjectMenuDisplayed;
     private boolean editObjectMenuDisplayed;
 
@@ -75,8 +89,12 @@ public class LocateObjectsActivity extends AppCompatActivity
         setContentView(R.layout.activity_locate_objects);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mapObjectsMap = new HashMap<>();
-        markersMap = new HashMap<>();
+        markerIdToObject = new HashMap<>();
+        objectIdToMarker = new HashMap<>();
+        mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
+        mOverlayDialog.setCancelable(false);
+        mProgressView = findViewById(R.id.progressBar);
+        showProgress(true);
         AsyncLoadingTask load = new AsyncLoadingTask(this);
         load.execute((Void) null);
     }
@@ -111,8 +129,9 @@ public class LocateObjectsActivity extends AppCompatActivity
 
     }
 
-    public synchronized void setNewObjectFragment(){
+    private synchronized void setNewObjectFragment(){
         addButton.setVisibility(View.GONE);
+        setMarkersDraggable(false);
         mDrawerToggle.setDrawerIndicatorEnabled(false);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         addObjectMenuDisplayed = true;
@@ -122,12 +141,17 @@ public class LocateObjectsActivity extends AppCompatActivity
         // Add the fragment to the 'menufragment_container' FrameLayout
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.menufragment_container, newObjectFragment);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    public synchronized void setEditObjectFragment(){
+    private synchronized void setEditObjectFragment(){
         addButton.setVisibility(View.GONE);
+        setMarkersDraggable(false);
+        onWorkingMarker = objectIdToMarker.get(editionObject.getId());
+        onWorkingMarker.setDraggable(true);
+        onWorkingMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.define_location));
+        onWorkingMarker.setAnchor(focusXAnchor, focusYAnchor);
         mDrawerToggle.setDrawerIndicatorEnabled(false);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         editObjectMenuDisplayed = true;
@@ -138,11 +162,11 @@ public class LocateObjectsActivity extends AppCompatActivity
         editObjectFragment.setEditedObject(editionObject);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.menufragment_container, editObjectFragment);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
     }
 
-    public synchronized void quitNewObjectFragment(){
+    private synchronized void quitNewObjectFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(newObjectFragment);
         transaction.commit();
@@ -154,27 +178,55 @@ public class LocateObjectsActivity extends AppCompatActivity
         addButton.setVisibility(View.VISIBLE);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
+        setMarkersDraggable(true);
     }
 
-    public synchronized void quitEditObjectFragment(){
+    private synchronized void quitEditObjectFragment(){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(editObjectFragment);
         transaction.commit();
         if(onWorkingMarker != null) {
             onWorkingMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
+            onWorkingMarker.setAnchor(flagXAnchor, flagYAnchor);
             onWorkingMarker = null;
         }
         editObjectMenuDisplayed = false;
         addButton.setVisibility(View.VISIBLE);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
+        setMarkersDraggable(true);
     }
 
     public void showObjectNotAdded()
+{
+    new AlertDialog.Builder(this)
+            .setTitle("Addition failed")
+            .setMessage("The object couldn't be added. Check your internet connection and try again")
+            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            })
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+    public void showObjectNotEdited()
     {
         new AlertDialog.Builder(this)
-                .setTitle("Addition failed")
-                .setMessage("The object couldn't be added. Check your internet connection and try again")
+                .setTitle("Edition failed")
+                .setMessage("The object couldn't be edited. Check your internet connection and try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void showObjectNotRemoved()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Deletion failed")
+                .setMessage("The object couldn't be deleted. Check your internet connection and try again")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -185,11 +237,11 @@ public class LocateObjectsActivity extends AppCompatActivity
 
     @Override
     public void onAddObjectConfirmed(String name, String description) {
-        MapObject object = new MapObject(onWorkingMarker.getPosition(),name);
-        object.setDescription(description);
+        editionObject = new MapObject(onWorkingMarker.getPosition(),name);
+        editionObject.setDescription(description);
         onWorkingMarker.remove();
         onWorkingMarker = null;
-        AsyncAddObjectTask async = new AsyncAddObjectTask(object);
+        AsyncAddObjectTask async = new AsyncAddObjectTask(editionObject,this);
         async.execute();
         newObjectFragment.reset();
         View view = this.getCurrentFocus();
@@ -198,70 +250,79 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitNewObjectFragment();
+        showProgress(true);
     }
 
     @Override
     public void onEditObjectConfirmed(String name, String description) {
-        MapObject object = new MapObject(onWorkingMarker.getPosition(),name);
+        MapObject object = new MapObject(editionObject);
+        LatLng pos = onWorkingMarker.getPosition();
+        object.setCoordinates(pos.latitude, pos.longitude);
+        object.setName(name);
         object.setDescription(description);
-        AsyncAddObjectTask async = new AsyncAddObjectTask(object);
+        AsyncEditObjectTask async = new AsyncEditObjectTask(object,this);
         async.execute();
-        onWorkingMarker.setTitle(name);
         onWorkingMarker = null;
-        editionObject.copyAttributes(object);
-        adapter.notifyDataSetChanged();
-        editObjectFragment.reset();
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitEditObjectFragment();
+        showProgress(true);
     }
+
 
     @Override
-    public void onEditCurrentLocationPressed(){
-        currentLocationPressed();
+    public void onRemoveObjectClicked() {
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Remove object")
+            .setMessage("Are you sure you want to remove " + editionObject.getName() + "?")
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeObjectConfirmed();
+                }
+
+            })
+            .setNegativeButton("No", null)
+            .show();
     }
 
-    @Override
-    public void onCurrentLocationPressed(){
-        currentLocationPressed();;
+    public void removeObjectConfirmed(){
+        AsyncRemoveObjectTask async = new AsyncRemoveObjectTask(editionObject,this);
+        async.execute();
+        onWorkingMarker = null;
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        quitEditObjectFragment();
+        showProgress(true);
     }
 
-    public void currentLocationPressed(){
-        final Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        onWorkingMarker.setPosition(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+    public void objectLongClicked(AdapterView<?> parent, View view, int position, long id) {
+        mDrawerLayout.closeDrawer(Gravity.LEFT);
+        editionObject = adapter.getItem(position);
+        fixMapPosition(editionObject.getPosition());
+        onWorkingMarker = objectIdToMarker.get(editionObject.getId());
+        if(!editObjectMenuDisplayed)
+            setEditObjectFragment();
     }
 
     public void objectClicked(AdapterView<?> parent, View view, int position, long id) {
         mDrawerLayout.closeDrawer(Gravity.LEFT);
-        editionObject = objects.get(position);
-        LatLng location = new LatLng(editionObject.getLatitude(),editionObject.getLongitude());
-        fixMapPosition(location);
-        onWorkingMarker = markersMap.get(id);
-        if(!editObjectMenuDisplayed) {
-            setEditObjectFragment();
-            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            final LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            addMarker(pos);
-        }
-
+        MapObject mo = adapter.getItem(position);
+        objectIdToMarker.get(mo.getId()).showInfoWindow();
+        fixMapPosition(mo.getPosition());
     }
 
-    public void fixMapPosition(final LatLng location){
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                fixMapPosition(location, googleMap);
-            }
-        });
-    }
 
-    public void fixMapPosition(final LatLng location, GoogleMap googleMap){
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+    public void fixMapPosition(LatLng location){
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 location, 13));
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -269,7 +330,7 @@ public class LocateObjectsActivity extends AppCompatActivity
                 .zoom(17)                   // Sets the zoom
                 .bearing(0)                // Sets the orientation of the camera to north
                 .build();                   // Creates a CameraPosition from the builder
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     public synchronized void addButtonClicked() {
@@ -283,15 +344,11 @@ public class LocateObjectsActivity extends AppCompatActivity
     }
 
     public void addMarker(final LatLng pos){
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                fixMapPosition(pos, googleMap);
-                onWorkingMarker = googleMap.addMarker(new MarkerOptions()
-                        .position(pos)
-                        .draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.define_location)));
-            }
-        });
+        fixMapPosition(pos);
+        onWorkingMarker = map.addMarker(new MarkerOptions()
+                .position(pos)
+                .draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.define_location))
+                .anchor(focusXAnchor,focusYAnchor));
     }
 
     @Override
@@ -299,8 +356,11 @@ public class LocateObjectsActivity extends AppCompatActivity
         if(mDrawerLayout.isDrawerOpen(Gravity.LEFT)){
             mDrawerLayout.closeDrawer(Gravity.LEFT);
         }else if(addObjectMenuDisplayed) {
+            onWorkingMarker.remove();
             quitNewObjectFragment();
-        } if(editObjectMenuDisplayed){
+        }else if(editObjectMenuDisplayed){
+            onWorkingMarker.setPosition(editionObject.getPosition());
+            editionObject = null;
             quitEditObjectFragment();
         }
         else{
@@ -308,10 +368,93 @@ public class LocateObjectsActivity extends AppCompatActivity
         }
     }
 
+    private void setMarkersDraggable(boolean draggable){
+        for(Marker m : objectIdToMarker.values()){
+            m.setDraggable(draggable);
+        }
+    }
+
+
+
+    @Override
+    public void onAddSuccess(MapObject object) {
+        MapObject of = new MapObject(object);
+        objects.add(of);
+
+        Marker marker = map.addMarker(new MarkerOptions().draggable(true)
+                .position(of.getPosition())
+                .title(of.getName())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag))
+                .anchor(flagXAnchor,flagYAnchor));
+
+        markerIdToObject.put(marker.getId(), of);
+        objectIdToMarker.put(of.getId(), marker);
+        adapter.notifyDataSetChanged();
+        showProgress(false);
+        editionObject = null;
+
+    }
+
+    @Override
+    public void onAddFail() {
+        showProgress(false);
+        showObjectNotAdded();
+        editionObject = null;
+    }
+
+    @Override
+    public void onEditSuccess(MapObject newObject) {
+        Marker marker = objectIdToMarker.get(newObject.getId());
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
+        marker.setAnchor(flagXAnchor, flagXAnchor);
+        editionObject.copyAttributes(newObject);
+        marker.setTitle(newObject.getName());
+        marker.setPosition(newObject.getPosition());
+        adapter.notifyDataSetChanged();
+        editionObject = null;
+        showProgress(false);
+    }
+
+    @Override
+    public void onEditFail() {
+        Marker marker = objectIdToMarker.get(editionObject.getId());
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
+        marker.setAnchor(flagXAnchor,flagXAnchor);
+        marker.setPosition(editionObject.getPosition());
+        showProgress(false);
+        showObjectNotEdited();
+        editionObject = null;
+    }
+
+    @Override
+    public void onRemoveSuccess() {
+        Marker marker = objectIdToMarker.get(editionObject.getId());
+        markerIdToObject.remove(marker.getId());
+        objectIdToMarker.remove(editionObject.getId());
+        adapter.remove(editionObject);
+        adapter.notifyDataSetChanged();
+        marker.remove();
+        editionObject = null;
+        showProgress(false);
+    }
+
+    @Override
+    public void onRemoveFail() {
+        Marker marker = objectIdToMarker.get(editionObject.getId());
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
+        marker.setAnchor(flagXAnchor, flagXAnchor);
+        marker.setPosition(editionObject.getPosition());
+        showProgress(false);
+        editionObject = null;
+        showObjectNotRemoved();
+    }
+
     private class AsyncLoadingTask extends AsyncTask<Void, Integer, Boolean> {
 
         private LocateObjectsActivity act;
+        private ListView mDrawerList;
         private List<MarkerOptions> markerOptions;
+        private MapFragment mapFragment;
 
         public AsyncLoadingTask(LocateObjectsActivity act){
             super();
@@ -337,18 +480,20 @@ public class LocateObjectsActivity extends AppCompatActivity
             mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
 
+
+
             MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
             objects = objectDAO.getMapObjects();
-            objects.addAll(debugObjects());
             markerOptions = new LinkedList<>();
 
 
             for(MapObject object: objects) {
                 markerOptions.add(new MarkerOptions()
-                        .position(new LatLng(object.getLatitude(), object.getLongitude()))
+                        .position(object.getPosition())
                         .title(object.getName())
                         .draggable(true)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag))
+                        .anchor(flagXAnchor,flagYAnchor));
             }
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -382,125 +527,96 @@ public class LocateObjectsActivity extends AppCompatActivity
             mDrawerList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    return false;
+                    objectLongClicked(parent, view, position, id);
+                    return true;
                 }
             });
             mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-
-
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
-                    googleMap.setMyLocationEnabled(true);
+                    map = googleMap;
+                    map.setMyLocationEnabled(true);
                     int i = 0;
                     for (MarkerOptions markerOp : markerOptions) {
                         Marker marker = googleMap.addMarker(markerOp);
-                        markersMap.put(adapter.getItemId(i),marker);
-                        mapObjectsMap.put(marker.getId(),objects.get(i));
+                        MapObject mo = objects.get(i);
+                        objectIdToMarker.put(mo.getId(), marker);
+                        markerIdToObject.put(marker.getId(), mo);
                         i++;
                     }
-                    googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                         @Override
                         public void onMapLongClick(LatLng latLng) {
-                            final LatLng pos = new LatLng(latLng.latitude, latLng.longitude);
-                            if(addObjectMenuDisplayed){
+                            if (addObjectMenuDisplayed || editObjectMenuDisplayed) {
+                                onWorkingMarker.setPosition(latLng);
+                            } else {
+                                setNewObjectFragment();
+                                addMarker(latLng);
+                            }
+                        }
+                    });
+                    map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                        @Override
+                        public void onMarkerDragStart(Marker marker) {
+                            if (!addObjectMenuDisplayed && !editObjectMenuDisplayed) {
+                                editionObject = markerIdToObject.get(marker.getId());
+                                setEditObjectFragment();
+                            }
+                        }
+
+                        @Override
+                        public void onMarkerDrag(Marker marker) {
+
+                        }
+
+                        @Override
+                        public void onMarkerDragEnd(Marker marker) {
+
+                        }
+                    });
+                    map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                        @Override
+                        public boolean onMyLocationButtonClick() {
+                            if (addObjectMenuDisplayed || editObjectMenuDisplayed) {
+                                Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                                        mGoogleApiClient);
+                                LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                                 onWorkingMarker.setPosition(pos);
                             }
-                            else{
-                                setNewObjectFragment();
-                                addMarker(pos);
-                            }
+                            return false;
                         }
                     });
                 }
             });
-        }
-
-        List<MapObject> debugObjects(){
-            int nobjects = 5;
-            Random r = new Random();
-            List<MapObject> objects = new LinkedList<>();
-            for(int i = 0; i < nobjects; i++){
-                MapObject object = new MapObject();
-                object.setId(i);
-                object.setName("Object " + (i + 1));
-                object.setDescription("Lorem ipsum dolor sit amet, " +
-                        "consectetur adipiscing elit, sed do eiusmod tempor " +
-                        "incididunt ut labore et dolore magna aliqua");
-                double lat = r.nextDouble()*170 - 85;
-                double lon = r.nextDouble()*360 - 180;
-                object.setCoordinates(lat,lon);
-                objects.add(object);
-            }
-            return objects;
+            showProgress(false);
         }
     }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
 
-    private class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject>{
+        if(show) mOverlayDialog.show();
+        else mOverlayDialog.hide();
 
-        private MapObject o;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        public AsyncAddObjectTask(MapObject object){
-            this.o = object;
-        }
-
-        @Override
-        protected MapObject doInBackground(String... params) {
-
-            //-----Test-------
-            o.setServerId("123");
-            MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
-            objectDAO.save(o);
-            return o;
-            //----------------
-
-/*
-            //Synchronize with server
-            MapObject o = params[0];
-            UserDAO uDAO = new UserDAO(getApplicationContext());
-            User u = uDAO.getUser();
-            FlatDAO fDAO = new FlatDAO(getApplicationContext());
-            Flat f = fDAO.getFlat();
-            Map_Web_Services ws = new Map_Web_Services();
-            ResultContainer<MapObject> res;
-            res = ws.ws_addObject(o, u.getServerid(), u.getToken(), f.getServerid());
-
-            if(res.getSucces()){
-                //Store to database
-                o = res.getTemplate();
-                MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
-                objectDAO.save(o);
-                return o;
-            }
-            else{
-                return null;
-            }*/
-        }
-
-        @Override
-        public void onPostExecute(MapObject o){
-            if(o == null){
-                //Notify that object couldn't be added
-                showObjectNotAdded();
-            }
-            else{
-                //Add to the map
-                final MapObject of = new MapObject(o);
-                objects.add(of);
-
-                mapFragment.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        Marker marker = googleMap.addMarker(new MarkerOptions().draggable(true)
-                                .position(new LatLng(of.getLatitude(), of.getLongitude()))
-                                .title(of.getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)));
-                        mapObjectsMap.put(marker.getId(),of);
-                        markersMap.put(adapter.getItemId(adapter.getCount()-1),marker);
-                    }
-                });
-            }
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 }

@@ -41,6 +41,7 @@ public class LandingActivity extends AppCompatActivity {
             Log.i("Anas", "The user has not been saved to localDB");
             Button mLoginButton = (Button) findViewById(R.id.login_button);
             Button mRegisterButton = (Button) findViewById(R.id.register_button);
+            Button mSkipButton = (Button) findViewById(R.id.skip_button);
             //Button mMapButton = (Button) findViewById(R.id.map_button);
             mLoginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -54,6 +55,13 @@ public class LandingActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intentRegister = new Intent(view.getContext(), RegisteringActivity.class);
                     startActivity(intentRegister);
+                }
+            });
+            mSkipButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intentSkip = new Intent(view.getContext(), MainActivity.class);
+                    startActivity(intentSkip);
                 }
             });
 

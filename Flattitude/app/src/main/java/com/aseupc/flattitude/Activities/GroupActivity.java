@@ -148,6 +148,7 @@ public class GroupActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 resultStr );
 
+
         invitations.setAdapter(arrayAdapter);
 
         final ArrayList<Flat> finalFlats = flats;

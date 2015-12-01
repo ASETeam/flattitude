@@ -1,6 +1,10 @@
 package com.aseupc.flattitude.utility_REST;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aseupc.flattitude.Models.User;
 
@@ -110,8 +114,8 @@ public class CallAPI  {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
            // String token;
             //conn.setRequestProperty("Auth",token);
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
+            //conn.setReadTimeout(15000);
+            //conn.setConnectTimeout(15000);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -162,6 +166,31 @@ public class CallAPI  {
         return result.toString();
     }
 
+public static  void makeToast(Context ctx, String input )
+{
+    CharSequence text = input;
+    int duration = Toast.LENGTH_SHORT;
+    Toast toast = Toast.makeText(ctx, text, duration);
+    toast.show();
+}
+
+    public static boolean isNetworkAvailable(Context context) {
+
+            boolean haveConnectedWifi = false;
+            boolean haveConnectedMobile = false;
+
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+            for (NetworkInfo ni : netInfo) {
+                if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                    if (ni.isConnected())
+                        haveConnectedWifi = true;
+                if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                    if (ni.isConnected())
+                        haveConnectedMobile = true;
+            }
+            return haveConnectedWifi || haveConnectedMobile;
+        }
 
 
 }

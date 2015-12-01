@@ -390,7 +390,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Put user in local DB
 
                 UserDAO userDAO = new UserDAO(context);
+                if(userDAO.getUser() == null)
                 userDAO.save(getCurrentUser());
+                else
+                userDAO.update(getCurrentUser());
+
                 ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
                 if (resultFlat.getSucces() == false){
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);

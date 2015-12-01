@@ -40,6 +40,8 @@ public class RegisteringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registering);
+
+        //customize font for each textview, edit text, etc.
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Bold.otf");
         TextView email_address_label = (TextView)findViewById(R.id.email_address_label);

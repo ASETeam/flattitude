@@ -16,7 +16,16 @@ public class PlanningTask {
     private String Type;
     private String Description;
     private Calendar PlannedTime;
+
+    public static final String CLEANING_TASK = "Cleaning task";
+
+
+    public static String [] getTypes(){
+        return new String [] {CLEANING_TASK};
+    }
+
  //   private Date PlannedDate;
+
 
     public String getID()
     {

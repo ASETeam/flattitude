@@ -13,15 +13,21 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class NewTaskActivity extends AppCompatActivity
         implements TimePickerDialog.OnTimeSetListener,
@@ -30,9 +36,9 @@ public class NewTaskActivity extends AppCompatActivity
     private EditText date;
     private EditText time;
     private Calendar calendar;
+    private ArrayAdapter<String> adapter;
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 
     @Override
@@ -41,6 +47,17 @@ public class NewTaskActivity extends AppCompatActivity
         setContentView(R.layout.activity_new_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        List<String> spinnerArray =  new ArrayList<String>();
+        spinnerArray.add("item1");
+        spinnerArray.add("item2");
+
+        adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_dropdown_item, PlanningTask.getTypes());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner sItems = (Spinner) findViewById(R.id.type);
+        sItems.setAdapter(adapter);
+
         calendar = Calendar.getInstance();
         final NewTaskActivity finalThis = this;
 
@@ -66,6 +83,21 @@ public class NewTaskActivity extends AppCompatActivity
             }
         });
 
+        Button addButton = (Button) findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTask();
+            }
+        });
+
+
+
+    }
+
+    private void addTask(){
+        PlanningTask task = new PlanningTask();
+
     }
 
     public Calendar getCalendar(){
@@ -84,7 +116,7 @@ public class NewTaskActivity extends AppCompatActivity
         calendar.set(Calendar.DAY_OF_MONTH,day);
         calendar.set(Calendar.MONTH,month);
         calendar.set(Calendar.YEAR, year);
-        time.setText(dateFormat.format(calendar));
+        date.setText(dateFormat.format(calendar.getTime()));
 
 
     }

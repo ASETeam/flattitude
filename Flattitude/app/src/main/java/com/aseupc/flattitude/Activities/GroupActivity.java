@@ -60,32 +60,6 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Flat> result = new ArrayList<Flat>();
 
         callConsult.execute(user.getServerid());
-
-        /*
-        ArrayList<String> resultStr = new ArrayList<String>();
-        for (int i = 0; i < result.size(); i++)
-        {
-            resultStr.add(result.get(i).getName());
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                resultStr );
-
-        invitations.setAdapter(arrayAdapter);
-
-        final ArrayList<Flat> finalFlats = result;
-        final ArrayList<String> finalResult = resultStr;
-        invitations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selected = finalResult.get(position);
-                Intent detailsIntent = new Intent(getApplicationContext(), InvitationDetails.class);
-                detailsIntent.putExtra("Flatname", selected);
-                detailsIntent.putExtra("FlatId", finalFlats.get(position).getServerid());
-                startActivity(detailsIntent);
-            }
-        }); */
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

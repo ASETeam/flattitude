@@ -30,6 +30,10 @@ public class NewTaskActivity extends AppCompatActivity
     private EditText date;
     private EditText time;
     private Calendar calendar;
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,36 +41,42 @@ public class NewTaskActivity extends AppCompatActivity
         setContentView(R.layout.activity_new_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        calendar = Calendar.getInstance();
+        final NewTaskActivity finalThis = this;
 
         date = (EditText) findViewById(R.id.date);
-        final DatePickerDialog.OnDateSetListener listenerDate = this;
+        date.setText(dateFormat.format(calendar.getTime()));
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerFragment newFragment = new DatePickerFragment(listenerDate);
+                DatePickerFragment newFragment = new DatePickerFragment();
+                newFragment.setListener(finalThis);
                 newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         });
+
         time = (EditText) findViewById(R.id.time);
-        final TimePickerDialog.OnTimeSetListener listenerTime = this;
+        time.setText(timeFormat.format(calendar.getTime()));
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment newFragment = new TimePickerFragment(listenerTime);
+                TimePickerFragment newFragment = new TimePickerFragment();
+                newFragment.setListener(finalThis);
                 newFragment.show(getSupportFragmentManager(), "timePicker");
             }
         });
 
-        calendar = Calendar.getInstance();
+    }
 
+    public Calendar getCalendar(){
+        return calendar;
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        time.setText(dateFormat.format(calendar.getTime()));
+        time.setText(timeFormat.format(calendar.getTime()));
     }
 
     @Override
@@ -74,24 +84,22 @@ public class NewTaskActivity extends AppCompatActivity
         calendar.set(Calendar.DAY_OF_MONTH,day);
         calendar.set(Calendar.MONTH,month);
         calendar.set(Calendar.YEAR, year);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        time.setText(dateFormat.format(calendar.getTime()));
+        time.setText(dateFormat.format(calendar));
 
 
     }
 
     public static class TimePickerFragment extends DialogFragment {
-        TimePickerDialog.OnTimeSetListener listener;
+        NewTaskActivity listener;
 
-        public TimePickerFragment(TimePickerDialog.OnTimeSetListener listener){
-            super();
+        public void setListener(NewTaskActivity listener){
             this.listener = listener;
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
+            final Calendar c = listener.getCalendar();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
@@ -104,17 +112,16 @@ public class NewTaskActivity extends AppCompatActivity
 
     public static class DatePickerFragment extends DialogFragment {
 
-        DatePickerDialog.OnDateSetListener listener;
+        NewTaskActivity listener;
 
-        public DatePickerFragment(DatePickerDialog.OnDateSetListener listener){
-            super();
+        public void setListener(NewTaskActivity listener){
             this.listener = listener;
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
+            final Calendar c = listener.getCalendar();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);

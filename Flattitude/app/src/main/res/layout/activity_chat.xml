@@ -25,7 +25,7 @@
                 android:inputType="textMultiLine"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/chat_send_button" />
+                android:layout_toLeftOf="@+id/chat_send_button" />
 
             <Button
                 android:id="@+id/chat_send_button"

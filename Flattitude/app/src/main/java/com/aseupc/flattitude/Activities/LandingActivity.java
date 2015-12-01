@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
@@ -26,9 +27,10 @@ public class LandingActivity extends AppCompatActivity {
         Button Login = (Button)findViewById(R.id.login_button);
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Login.setTypeface(customFont);
-
         Button Register = (Button)findViewById(R.id.register_button);
         Register.setTypeface(customFont);
+        TextView tagline = (TextView)findViewById(R.id.tagline);
+        tagline.setTypeface(customFont);
 
         Context context = getApplicationContext();
         UserDAO userDAO = new UserDAO(context);

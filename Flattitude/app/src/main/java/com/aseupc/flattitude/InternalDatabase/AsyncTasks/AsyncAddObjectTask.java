@@ -1,7 +1,8 @@
-package com.aseupc.flattitude.Activities.ObjectLocation;
+package com.aseupc.flattitude.InternalDatabase.AsyncTasks;
 
 import android.os.AsyncTask;
 
+import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
@@ -14,19 +15,21 @@ import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Random;
 
 /**
  * Created by Jordi on 23/11/2015.
  */
-public class AsyncEditObjectTask extends AsyncTask<String,Integer,MapObject> {
+public class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject> {
 
-    private OnObjectEditedListener listener;
-    private MapObject newObject;
+    private  OnObjectAddedListener listener;
+    private MapObject object;
     ResultContainer<MapObject> res;
 
-
-    public AsyncEditObjectTask(MapObject newObject, OnObjectEditedListener listener){
-        this.newObject = newObject;
+    public AsyncAddObjectTask(MapObject object, OnObjectAddedListener listener){
+        this.object = object;
         this.listener = listener;
     }
 
@@ -37,19 +40,21 @@ public class AsyncEditObjectTask extends AsyncTask<String,Integer,MapObject> {
         //Synchronize with server
         UserDAO uDAO = new UserDAO(((LocateObjectsActivity) listener).getApplicationContext());
         User u = uDAO.getUser();
+        FlatDAO fDAO = new FlatDAO(((LocateObjectsActivity) listener).getApplicationContext());
+        Flat f = fDAO.getFlat();
         Map_Web_Services ws = new Map_Web_Services();
-        res = ws.ws_editObject(newObject, u.getServerid(), u.getToken());
+        res = ws.ws_addObject(object, u.getServerid(), u.getToken(), f.getServerid());
     }
-
 
     @Override
     protected MapObject doInBackground(String... params) {
+
         if(res.getSucces()){
             //Store to database
-            newObject = res.getTemplate();
+            object = res.getTemplate();
             MapObjectDAO objectDAO = new MapObjectDAO(((LocateObjectsActivity)listener).getApplicationContext());
-            objectDAO.update(newObject);
-            return newObject;
+            object.setId(objectDAO.save(object));
+            return object;
         }
         else{
             return null;
@@ -57,14 +62,13 @@ public class AsyncEditObjectTask extends AsyncTask<String,Integer,MapObject> {
     }
 
     @Override
-    public void onPostExecute(MapObject o) {
-        if(o != null)
-            listener.onEditSuccess(o);
-        else
-            listener.onEditFail();
+    public void onPostExecute(MapObject o){
+        if(o == null) listener.onAddFail();
+        else listener.onAddSuccess(o);
     }
-    public interface OnObjectEditedListener {
-        public void onEditSuccess(MapObject newObject);
-        public void onEditFail();
+
+    public interface OnObjectAddedListener {
+        public void onAddSuccess(MapObject object);
+        public void onAddFail();
     }
 }

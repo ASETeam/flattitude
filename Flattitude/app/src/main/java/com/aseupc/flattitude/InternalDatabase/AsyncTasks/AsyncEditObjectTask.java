@@ -1,7 +1,8 @@
-package com.aseupc.flattitude.Activities.ObjectLocation;
+package com.aseupc.flattitude.InternalDatabase.AsyncTasks;
 
 import android.os.AsyncTask;
 
+import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
@@ -18,16 +19,15 @@ import com.google.android.gms.maps.model.Marker;
 /**
  * Created by Jordi on 23/11/2015.
  */
+public class AsyncEditObjectTask extends AsyncTask<String,Integer,MapObject> {
 
-public class AsyncRemoveObjectTask extends AsyncTask<String,Integer,Boolean> {
-
-    private OnObjectRemovedListener listener;
-    private MapObject object;
+    private OnObjectEditedListener listener;
+    private MapObject newObject;
     ResultContainer<MapObject> res;
 
 
-    public AsyncRemoveObjectTask(MapObject object, OnObjectRemovedListener listener){
-        this.object = object;
+    public AsyncEditObjectTask(MapObject newObject, OnObjectEditedListener listener){
+        this.newObject = newObject;
         this.listener = listener;
     }
 
@@ -39,34 +39,33 @@ public class AsyncRemoveObjectTask extends AsyncTask<String,Integer,Boolean> {
         UserDAO uDAO = new UserDAO(((LocateObjectsActivity) listener).getApplicationContext());
         User u = uDAO.getUser();
         Map_Web_Services ws = new Map_Web_Services();
-        res = ws.ws_removeObject(object, u.getServerid(), u.getToken());
+        res = ws.ws_editObject(newObject, u.getServerid(), u.getToken());
     }
 
-    @Override
-    protected Boolean doInBackground(String... params) {
 
+    @Override
+    protected MapObject doInBackground(String... params) {
         if(res.getSucces()){
             //Store to database
-            object = res.getTemplate();
+            newObject = res.getTemplate();
             MapObjectDAO objectDAO = new MapObjectDAO(((LocateObjectsActivity)listener).getApplicationContext());
-            objectDAO.deleteDept(object);
-            return true;
+            objectDAO.update(newObject);
+            return newObject;
         }
         else{
-            return false;
+            return null;
         }
     }
 
     @Override
-    public void onPostExecute(Boolean b) {
-        if(b)
-            listener.onRemoveSuccess();
+    public void onPostExecute(MapObject o) {
+        if(o != null)
+            listener.onEditSuccess(o);
         else
-            listener.onRemoveFail();
+            listener.onEditFail();
     }
-
-    public interface OnObjectRemovedListener {
-        public void onRemoveSuccess();
-        public void onRemoveFail();
+    public interface OnObjectEditedListener {
+        public void onEditSuccess(MapObject newObject);
+        public void onEditFail();
     }
 }

@@ -1,12 +1,17 @@
 package com.aseupc.flattitude.Activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
@@ -20,8 +25,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncAddPlanningTaskTask;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.Models.IDs;
+import com.aseupc.flattitude.database.PlanningTask_Web_Services;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,15 +40,24 @@ import java.util.List;
 
 public class NewTaskActivity extends AppCompatActivity
         implements TimePickerDialog.OnTimeSetListener,
-        DatePickerDialog.OnDateSetListener
+        DatePickerDialog.OnDateSetListener,
+        PlanningTask_Web_Services.AddPlanningTaskWSListener,
+        PlanningTask_Web_Services.EditPlanningTaskWSListener,
+        PlanningTask_Web_Services.DeletePlanningTaskWSListener,
+        AsyncAddPlanningTaskTask.OnTaskAddedListener
 {
-    private EditText date;
-    private EditText time;
-    private Calendar calendar;
-    private ArrayAdapter<String> adapter;
+
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+    private EditText date;
+    private EditText time;
+    private EditText description;
+    private Spinner type;
+    private Calendar calendar;
+    private ArrayAdapter<String> adapter;
+    private View mProgressView;
+    private Dialog mOverlayDialog; //display an invisible overlay dialog to prevent user interaction and pressing back
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +65,6 @@ public class NewTaskActivity extends AppCompatActivity
         setContentView(R.layout.activity_new_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        List<String> spinnerArray =  new ArrayList<String>();
-        spinnerArray.add("item1");
-        spinnerArray.add("item2");
 
         adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_dropdown_item, PlanningTask.getTypes());
@@ -83,6 +97,9 @@ public class NewTaskActivity extends AppCompatActivity
             }
         });
 
+        description = (EditText) findViewById(R.id.description);
+        type = (Spinner) findViewById(R.id.type);
+
         Button addButton = (Button) findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,13 +108,22 @@ public class NewTaskActivity extends AppCompatActivity
             }
         });
 
-
-
+        mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
+        mOverlayDialog.setCancelable(false);
+        mProgressView = findViewById(R.id.progressBar);
+        showProgress(false);
     }
 
     private void addTask(){
+        showProgress(true);
         PlanningTask task = new PlanningTask();
-
+        task.setPlannedTime(calendar);
+        task.setDescription(description.getText().toString());
+        task.setType(type.getSelectedItem().toString());
+        task.setAuthor(IDs.getInstance(this).getUserId(this));
+        IDs ids = IDs.getInstance(this);
+        PlanningTask_Web_Services ws = new PlanningTask_Web_Services();
+        ws.ws_addTask(task,ids.getUserId(this),ids.getUserToken(this),ids.getFlatId(this),this);
     }
 
     public Calendar getCalendar(){
@@ -106,19 +132,84 @@ public class NewTaskActivity extends AppCompatActivity
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         time.setText(timeFormat.format(calendar.getTime()));
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        calendar.set(Calendar.DAY_OF_MONTH,day);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.MONTH,month);
         calendar.set(Calendar.YEAR, year);
         date.setText(dateFormat.format(calendar.getTime()));
+    }
 
+    @Override
+    public void onAddWSFinished(ResultContainer<PlanningTask> result) {
+        if(result.getSucces()){
+            //Internal database
+            AsyncAddPlanningTaskTask async = new AsyncAddPlanningTaskTask(result.getTemplate(),this);
+            async.execute();
+        }
+        else {
+            showProgress(false);
+            showTaskNotAdded();
+        }
+    }
 
+    @Override
+    public void OnAddedToDatabase() {
+        showProgress(false);
+        finish();
+    }
+
+    @Override
+    public void onEditWSFinished(ResultContainer<PlanningTask> result) {
+
+    }
+
+    @Override
+    public void onDeleteWSFinished(ResultContainer<PlanningTask> result) {
+
+    }
+
+    public void showTaskNotAdded()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Addition failed")
+                .setMessage("The task couldn't be added. Check your internet connection and try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+    public void showTaskNotEdited()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Edition failed")
+                .setMessage("The task couldn't be edited. Check your internet connection and try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    public void showTaskNotRemoved()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Deletion failed")
+                .setMessage("The task couldn't be deleted. Check your internet connection and try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     public static class TimePickerFragment extends DialogFragment {
@@ -140,6 +231,33 @@ public class NewTaskActivity extends AppCompatActivity
                     DateFormat.is24HourFormat(getActivity()));
         }
 
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+
+        if(show) mOverlayDialog.show();
+        else mOverlayDialog.hide();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment {

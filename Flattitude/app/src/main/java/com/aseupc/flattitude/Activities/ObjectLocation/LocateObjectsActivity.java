@@ -26,6 +26,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncAddObjectTask;
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncEditObjectTask;
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncRemoveObjectTask;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
 import com.aseupc.flattitude.Models.MapObject;
 import com.aseupc.flattitude.R;

@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Models;
 import com.aseupc.flattitude.Activities.PlanningActivity;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -17,11 +18,22 @@ public class PlanningTask {
     private String Description;
     private Calendar PlannedTime;
 
-    public static final String CLEANING_TASK = "Cleaning task";
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+    private static final SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+    private static final SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+    private static final SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
 
+    public static final String CLEANING_TASK = "Cleaning task";
+    public static final String PARTY = "Party";
+    public static final String OTHER = "Other";
 
     public static String [] getTypes(){
-        return new String [] {CLEANING_TASK};
+        return new String [] {
+                CLEANING_TASK, PARTY, OTHER
+        };
     }
 
  //   private Date PlannedDate;
@@ -105,5 +117,33 @@ public class PlanningTask {
 
     public void setDescription(String description) {
         Description = description;
+    }
+
+    public String getDateString(){
+        return dateFormat.format(PlannedTime.getTime());
+    }
+
+    public String getYearString(){
+        return yearFormat.format(PlannedTime.getTime());
+    }
+
+    public String getMonthString(){
+        return monthFormat.format(PlannedTime.getTime());
+    }
+
+    public String getDayString(){
+        return dayFormat.format(PlannedTime.getTime());
+    }
+
+    public String getTimeString(){
+        return timeFormat.format(PlannedTime.getTime());
+    }
+
+    public String getHourString(){
+        return hourFormat.format(PlannedTime.getTime());
+    }
+
+    public String getMinuteString(){
+        return minuteFormat.format(PlannedTime.getTime());
     }
 }

@@ -1,7 +1,8 @@
-package com.aseupc.flattitude.Activities.ObjectLocation;
+package com.aseupc.flattitude.InternalDatabase.AsyncTasks;
 
 import android.os.AsyncTask;
 
+import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
@@ -14,20 +15,19 @@ import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.Random;
 
 /**
  * Created by Jordi on 23/11/2015.
  */
-public class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject> {
 
-    private  OnObjectAddedListener listener;
+public class AsyncRemoveObjectTask extends AsyncTask<String,Integer,Boolean> {
+
+    private OnObjectRemovedListener listener;
     private MapObject object;
     ResultContainer<MapObject> res;
 
-    public AsyncAddObjectTask(MapObject object, OnObjectAddedListener listener){
+
+    public AsyncRemoveObjectTask(MapObject object, OnObjectRemovedListener listener){
         this.object = object;
         this.listener = listener;
     }
@@ -39,35 +39,35 @@ public class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject> {
         //Synchronize with server
         UserDAO uDAO = new UserDAO(((LocateObjectsActivity) listener).getApplicationContext());
         User u = uDAO.getUser();
-        FlatDAO fDAO = new FlatDAO(((LocateObjectsActivity) listener).getApplicationContext());
-        Flat f = fDAO.getFlat();
         Map_Web_Services ws = new Map_Web_Services();
-        res = ws.ws_addObject(object, u.getServerid(), u.getToken(), f.getServerid());
+        res = ws.ws_removeObject(object, u.getServerid(), u.getToken());
     }
 
     @Override
-    protected MapObject doInBackground(String... params) {
+    protected Boolean doInBackground(String... params) {
 
         if(res.getSucces()){
             //Store to database
             object = res.getTemplate();
             MapObjectDAO objectDAO = new MapObjectDAO(((LocateObjectsActivity)listener).getApplicationContext());
-            object.setId(objectDAO.save(object));
-            return object;
+            objectDAO.deleteDept(object);
+            return true;
         }
         else{
-            return null;
+            return false;
         }
     }
 
     @Override
-    public void onPostExecute(MapObject o){
-        if(o == null) listener.onAddFail();
-        else listener.onAddSuccess(o);
+    public void onPostExecute(Boolean b) {
+        if(b)
+            listener.onRemoveSuccess();
+        else
+            listener.onRemoveFail();
     }
 
-    public interface OnObjectAddedListener {
-        public void onAddSuccess(MapObject object);
-        public void onAddFail();
+    public interface OnObjectRemovedListener {
+        public void onRemoveSuccess();
+        public void onRemoveFail();
     }
 }

@@ -144,6 +144,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="70dp"
             android:clickable="true"/>
-    </LinearLayout>
+
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>

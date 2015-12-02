@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //customize the fonts for each label
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
-        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Bold.otf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
         TextView email_address_login_label = (TextView)findViewById(R.id.email_address_login_label);
         email_address_login_label.setTypeface(customFont);
         AutoCompleteTextView email = (AutoCompleteTextView)findViewById(R.id.email);
@@ -122,9 +122,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        //Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        //Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
+        //mEmailSignInButton.setOnClickListener(new OnClickListener() {
+
+            Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
+            Button mRegisterButton = (Button) findViewById(R.id.login_button);
+            mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -399,7 +403,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+           // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+            Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
                // finish();

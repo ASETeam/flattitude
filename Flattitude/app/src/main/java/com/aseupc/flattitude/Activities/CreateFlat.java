@@ -2,6 +2,7 @@ package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
@@ -16,6 +18,8 @@ import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
+
+import org.w3c.dom.Text;
 
 public class CreateFlat extends AppCompatActivity {
 //nothing here
@@ -30,6 +34,39 @@ public class CreateFlat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //customized fonts:
+        Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
+        TextView flat_name_label = (TextView)findViewById(R.id.flat_name_label);
+        flat_name_label.setTypeface(customFont);
+        EditText flat_name = (EditText)findViewById(R.id.flat_name);
+        flat_name.setTypeface(customFont);
+        TextView address_label = (TextView)findViewById(R.id.address_label);
+        address_label.setTypeface(customFont);
+        EditText address = (EditText)findViewById(R.id.address);
+        address.setTypeface(customFont);
+        TextView city_label = (TextView)findViewById(R.id.city_label);
+        city_label.setTypeface(customFont);
+        EditText city = (EditText)findViewById(R.id.city);
+        city.setTypeface(customFont);
+        TextView postal_code_label = (TextView)findViewById(R.id.postal_code_label);
+        postal_code_label.setTypeface(customFont);
+        EditText postal_code = (EditText)findViewById(R.id.postal_code);
+        postal_code.setTypeface(customFont);
+        TextView country_label = (TextView)findViewById(R.id.country_label);
+        country_label.setTypeface(customFont);
+        EditText country = (EditText)findViewById(R.id.country);
+        country.setTypeface(customFont);
+        TextView iban_label = (TextView)findViewById(R.id.iban_label);
+        iban_label.setTypeface(customFont);
+        EditText iban = (EditText)findViewById(R.id.iban);
+        Button create_button = (Button)findViewById(R.id.create_button);
+        create_button.setTypeface(customFontButton);
+
+
+
+
         setContentView(R.layout.activity_create_flat);
         mName = (EditText) findViewById(R.id.flat_name);
         mAddress = (EditText) findViewById(R.id.address);

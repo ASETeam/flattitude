@@ -151,8 +151,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 confirmFireMissiles();
+            }
+        });
 
-
+        final ImageButton goChat = (ImageButton) findViewById(R.id.chat_button);
+        goChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent chatIntent = new Intent(view.getContext(), ChatActivity.class);
+                startActivity(chatIntent);
             }
         });
 

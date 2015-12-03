@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -91,6 +92,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //customize the fonts for each label
+        Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
+        TextView email_address_login_label = (TextView)findViewById(R.id.email_address_login_label);
+        email_address_login_label.setTypeface(customFont);
+        AutoCompleteTextView email = (AutoCompleteTextView)findViewById(R.id.email);
+        email.setTypeface(customFont);
+        TextView password_login_label = (TextView)findViewById(R.id.password_login_label);
+        password_login_label.setTypeface(customFont);
+        EditText password = (EditText)findViewById(R.id.password);
+        password.setTypeface(customFont);
+        Button login_button = (Button)findViewById(R.id.login_button);
+        login_button.setTypeface(customFontButton);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -107,9 +123,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+
+        Button mRegisterButton = (Button) findViewById(R.id.login_button);
+
+        login_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -388,7 +405,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+
+           // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+            Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
                // finish();

@@ -24,13 +24,11 @@ public class LandingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
-        Button Login = (Button)findViewById(R.id.login_button);
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Button Login = (Button)findViewById(R.id.login_button);
         Login.setTypeface(customFont);
         Button Register = (Button)findViewById(R.id.register_button);
         Register.setTypeface(customFont);
-        TextView tagline = (TextView)findViewById(R.id.tagline);
-        tagline.setTypeface(customFont);
 
         Context context = getApplicationContext();
         UserDAO userDAO = new UserDAO(context);

@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/colorBackgroundBlue"
     tools:context=".Activities.LandingActivity"
@@ -19,9 +18,10 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-
+        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/skip_button" />
 
     <Button
         android:layout_width="wrap_content"
@@ -32,29 +32,37 @@
         android:textColor="@color/colorPink"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/tagline" />
+        android:layout_toEndOf="@+id/skip_button" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:src="@drawable/logoflattitude"
+        android:layout_marginBottom="55dp"
+        android:layout_alignBottom="@+id/page_slider"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/logoflattitude"
-        android:layout_alignBottom="@+id/tagline"
-        android:layout_alignEnd="@+id/register_button" />
+        android:id="@+id/page_slider"
+        android:src="@drawable/ic_slider"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="53dp"
+        android:layout_above="@+id/login_button"/>
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="“A simple way to improve  your SHARED EXPERIENCE with flatmates”"
         android:id="@+id/tagline"
-        android:textColor="@color/colorPink"
-        android:textStyle="italic"
-        android:textSize="15dp"
-        android:layout_above="@+id/login_button"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="49dp" />
+        android:src="@drawable/ic_tag"
+        android:layout_alignTop="@+id/page_slider"
+        android:layout_alignParentStart="true" />
 
     <Button
         style="@style/AlertDialog.AppCompat.Light"
@@ -62,8 +70,7 @@
         android:layout_height="wrap_content"
         android:text="Skip"
         android:id="@+id/skip_button"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignParentEnd="true" />
-
+        android:layout_below="@+id/page_slider"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

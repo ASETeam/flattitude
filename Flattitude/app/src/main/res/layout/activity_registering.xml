@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@color/colorBackgroundBlue"
     tools:context=".Activities.RegisteringActivity"
@@ -19,37 +18,25 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true">
 
-
-    </ScrollView>
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/sss"
-        android:weightSum="1"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
 
         <ImageView
-            android:layout_width="316dp"
-            android:layout_height="40dp"
+            android:layout_width="130dp"
+            android:layout_height="70dp"
             android:src="@drawable/ic_logo"
-            android:id="@+id/header_icon"
-            android:layout_weight="1.31" />
+            android:id="@+id/header_icon" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Flattitude"
-            android:id="@+id/header" />
-
-        <TextView
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="E-mail address:"
+            android:text="Email Address"
             android:id="@+id/email_address_label"
             android:textSize="20dp"
             android:textColor="@color/white"/>
@@ -64,13 +51,13 @@
             android:id="@+id/email_address"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.08"
-            android:textSize="17dp" />
+            android:textSize="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Password:"
+            android:text="Password"
             android:id="@+id/password_label"
             android:textSize="20dp"
             android:textColor="@color/white"/>
@@ -85,13 +72,13 @@
             android:id="@+id/password"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.08"
-            android:textSize="17dp"/>
+            android:textSize="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="First Name:"
+            android:text="First Name"
             android:id="@+id/first_name_label"
             android:textSize="20dp"
             android:textColor="@color/white"/>
@@ -103,13 +90,13 @@
             android:textColor="@color/black"
             android:id="@+id/first_name"
             android:layout_weight="0.08"
-            android:textSize="17dp"/>
+            android:textSize="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Last Name:"
+            android:text="Last Name"
             android:id="@+id/last_name_label"
             android:textSize="20dp"
             android:textColor="@color/white"/>
@@ -121,12 +108,12 @@
             android:textColor="@color/black"
             android:id="@+id/last_name"
             android:layout_weight="0.08"
-            android:textSize="17dp"/>
+            android:textSize="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phone number"
+            android:text="Phone"
             android:id="@+id/phone_number_label"
             android:textSize="20dp"
             android:textColor="@color/white"/>
@@ -139,23 +126,25 @@
             android:id="@+id/phone_number"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.08"
-            android:textSize="17dp"/>
+            android:textSize="20dp"/>
 
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="109dp"
             android:layout_height="wrap_content"
             android:text="SignUp"
+            android:textSize="22dp"
             android:textColor="@color/white"
             android:background="@color/colorPink"
             android:id="@+id/register_button"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="21dp"
+            android:textAllCaps="false"
             android:layout_gravity="right"
             android:layout_alignBottom="@+id/scrollView"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="70dp" />
+            android:layout_marginBottom="70dp"
+            android:clickable="true"/>
 
-
-    </LinearLayout>
-
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

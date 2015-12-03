@@ -64,7 +64,7 @@ public class PlanningTask_Web_Services {
             if(true) {
                 resultContainer.setSuccess(true);
                 Random r = new Random();
-                task.setID(String.valueOf(r.nextInt()));
+                task.setID(String.valueOf(r.nextInt(200000)));
                 resultContainer.setTemplate(task);
                 return resultContainer;
             }

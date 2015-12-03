@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
         //--
 
         // Random Planning activites created
-        PlanningDAO plDao = new PlanningDAO(getApplicationContext());
+        /*PlanningDAO plDao = new PlanningDAO(getApplicationContext());
 
         for (int i = 0; i < 10; i++ ) {
            Calendar Dday = Calendar.getInstance();
-           Dday.set(2015, new Random().nextInt(12) + 1, new Random().nextInt(28), 12, 12, 12);
+           Dday.set(2015, new Random().nextInt(12), new Random().nextInt(27)+1, 12, 12, 12);
             final Calendar  Ddayx = Dday;
             PlanningTask task1 = new PlanningTask(new Random().nextInt(200000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
             PlanningTask task2 = new PlanningTask(new Random().nextInt(2000000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("GAnas indiv", task.getID() + " " + task.getDescription() + " " + task.getPlannedTime().getTime().toString());
 
         }
-
+*/
 
         Intent serviceIntent = new Intent(this, SynchzonizationService.class);
         //startService(serviceIntent);

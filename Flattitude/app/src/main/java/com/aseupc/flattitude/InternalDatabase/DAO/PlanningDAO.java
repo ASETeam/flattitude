@@ -38,9 +38,9 @@ public class PlanningDAO extends  DBDAO{
             values.put(DataBaseHelper.PLANNING_AUTHOR, mo.getAuthor());
             values.put(DataBaseHelper.PLANNING_DESCRIPTION, mo.getDescription());
             values.put(DataBaseHelper.PLANNING_DESTINATION, mo.getDestination());
-            values.put(DataBaseHelper.PLANNING_TIME, PlanningTask.getOnlyTime(mo.getPlannedTime()));
+            values.put(DataBaseHelper.PLANNING_TIME, mo.getTimeStringWithSec());
             Log.i("XAnas", PlanningTask.getOnlyDate(mo.getPlannedTime()));
-            values.put(DataBaseHelper.PLANNING_DATE, PlanningTask.getOnlyDate(mo.getPlannedTime()));
+            values.put(DataBaseHelper.PLANNING_DATE, mo.getDateString());
         //    values.put(DataBaseHelper.PLANNING_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
             values.put(DataBaseHelper.PLANNING_TYPE, mo.getType());
 
@@ -55,8 +55,8 @@ public class PlanningDAO extends  DBDAO{
             values.put(DataBaseHelper.PLANNING_AUTHOR, mo.getAuthor());
             values.put(DataBaseHelper.PLANNING_DESCRIPTION, mo.getDescription());
             values.put(DataBaseHelper.PLANNING_DESTINATION, mo.getDestination());
-            values.put(DataBaseHelper.PLANNING_TIME, PlanningTask.getOnlyTime(mo.getPlannedTime()));
-            values.put(DataBaseHelper.PLANNING_DATE, PlanningTask.getOnlyDate(mo.getPlannedTime()));
+            values.put(DataBaseHelper.PLANNING_TIME, mo.getTimeStringWithSec());
+            values.put(DataBaseHelper.PLANNING_DATE, mo.getDateString());
             //    values.put(DataBaseHelper.PLANNING_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
             values.put(DataBaseHelper.PLANNING_TYPE, mo.getType());
 
@@ -100,15 +100,7 @@ public class PlanningDAO extends  DBDAO{
                 mo.setDescription(cursor.getString(2));
                 mo.setDestination(cursor.getString(3));
                 mo.setType(cursor.getString(4));
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
-                try {
-
-                    cal.setTime(sdf.parse(cursor.getString(6) + " " +cursor.getString(5)));// all done
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                mo.setPlannedTime(cal);
+                mo.setPlannedTime(cursor.getString(6), cursor.getString(5));
               //  mo.setTime(parseDate(cursor.getString(6)));
                 list.add(mo);
             }
@@ -144,17 +136,7 @@ public class PlanningDAO extends  DBDAO{
             mo.setDescription(cursor.getString(2));
             mo.setDestination(cursor.getString(3));
             mo.setType(cursor.getString(4));
-            Log.i("YAnas", cursor.getString(6));
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
-            try {
-
-                cal.setTime(sdf.parse(cursor.getString(6) + " " +cursor.getString(5)));// all done
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            mo.setPlannedTime(cal);
-            //  mo.setTime(parseDate(cursor.getString(6)));
+            mo.setPlannedTime(cursor.getString(6),cursor.getString(5));
             list.add(mo);
         }
         return list;
@@ -187,17 +169,7 @@ public class PlanningDAO extends  DBDAO{
             mo.setDescription(cursor.getString(2));
             mo.setDestination(cursor.getString(3));
             mo.setType(cursor.getString(4));
-            Calendar cal = Calendar.getInstance();
-            Log.i("FAnas 7.6", cursor.getInt(0) + " - " + cursor.getString(6));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
-            try {
-
-                cal.setTime(sdf.parse(cursor.getString(6) + " " +cursor.getString(5)));// all done
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            mo.setPlannedTime(cal);
-            //  mo.setTime(parseDate(cursor.getString(6)));
+            mo.setPlannedTime(cursor.getString(6),cursor.getString(5));
             list.add(mo);
         }
         return list;

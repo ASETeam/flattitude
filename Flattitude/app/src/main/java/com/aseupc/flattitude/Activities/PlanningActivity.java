@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -25,13 +26,9 @@ import com.roomorama.caldroid.CaldroidListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 import hirondelle.date4j.DateTime;
@@ -46,6 +43,12 @@ public class PlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
         plans = (ListView) findViewById(R.id.plans_listview);
+        plans.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                
+            }
+        });
         Button addButton = (Button) findViewById(R.id.button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,19 +77,10 @@ public class PlanningActivity extends AppCompatActivity {
 
         PlanningDAO planDAO = new PlanningDAO(getApplicationContext());
         List<PlanningTask> tasks = planDAO.getPlanningTasks();
-        for (PlanningTask task:tasks
-                ) {
+        for (PlanningTask task:tasks) {
             Date date = new Date(task.getPlannedTime().get(Calendar.YEAR)-1900,task.getPlannedTime().get(Calendar.MONTH), task.getPlannedTime().get(Calendar.DATE));
-            Date date2 = new Date();
-            date2.setMonth(task.getPlannedTime().get(Calendar.MONTH));
-            date2.setYear(task.getPlannedTime().get(Calendar.YEAR) - 1900);
-            date2.setDate(task.getPlannedTime().get(Calendar.DATE));
             caldroidFragment.setBackgroundResourceForDate(R.color.AnasBlue, date);
             backgrounddates.add(date);
-            Log.i("FAnas 1", date.toString());
-            Log.i("FAnas 2,", date2.toString());
-            Log.i("FAnas 3,", task.getPlannedTime().toString());
-
         }
 
 
@@ -103,20 +97,10 @@ public class PlanningActivity extends AppCompatActivity {
                     PlanningDAO dao = new PlanningDAO(getApplicationContext());
                     GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
                     cal.setTime(date);
-                    int month = cal.get(Calendar.MONTH);
-                    month++;
-                    cal.set(Calendar.MONTH, month);
-                   // cal.set(Calendar.MONTH, date.getMonth());
-                    //cal.set(Calendar.YEAR, date.getYear());
-                    //cal.set(Calendar.DATE, date.getDate());
-                    Log.i("FAnas 7", "BEFORE");
-                    Log.i("FAnas 7.2", date.toString());
                     List<PlanningTask> tasks = dao.getFilteredPlanningTasks(cal);
-                    Log.i("FAnas 7.3", PlanningTask.getOnlyDate(cal));
-                    for (PlanningTask task:tasks
-                         ) {
+                    for (PlanningTask task:tasks) {
                         Log.i("FAnas 7.5", task.getID() + " " + PlanningTask.getCleanDate(task.getPlannedTime()));
-                     //   CallAPI.makeToast(getApplicationContext(),task.getID() + " " + task.getPlannedTime().getTime().toString() );
+                        //CallAPI.makeToast(getApplicationContext(),task.getID() + " " + task.getPlannedTime().getTime().toString() );
                     }
                 ArrayList<String> resultStr =  new ArrayList<String>();
                 List<PlanningTask> planninTasks =  new ArrayList<PlanningTask>();

@@ -1,16 +1,15 @@
 package com.aseupc.flattitude.Models;
 
-import com.aseupc.flattitude.Activities.PlanningActivity;
-
-import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by MetzoDell on 25-11-15.
  */
 public class PlanningTask {
+
     private String ID;
     private String Author;
     private String Destination;
@@ -36,33 +35,8 @@ public class PlanningTask {
         };
     }
 
- //   private Date PlannedDate;
-
-
-    public String getID()
-    {
-        return ID;
-    }
-
-    public static String getCleanDate(Calendar date)
-    {
-        String theDay = date.get(Calendar.DATE) + "/" + date.get(Calendar.MONTH) + "/" + date.get(Calendar.YEAR)+ " " + date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE) + ":" + date.get(Calendar.SECOND);
-        return theDay;
-    }
-
-    public static String getOnlyDate(Calendar date)
-    {
-        String theDay = date.get(Calendar.DATE) + "/" + date.get(Calendar.MONTH) + "/" + date.get(Calendar.YEAR);
-        return theDay;
-    }
-    public static String getOnlyTime(Calendar date)
-    {
-        String theDay = date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE) + ":" + date.get(Calendar.SECOND);
-        return theDay;
-    }
-    //TODO : Test of todo
-    public void setID(String ID) {
-        this.ID = ID;
+    public PlanningTask(){
+        this.Destination = "111"; //TODO: provisional
     }
 
     public PlanningTask(String id, String author, String destination, String type, String description, Calendar plannedTime) {
@@ -74,9 +48,30 @@ public class PlanningTask {
         ID = id;
     }
 
-    public PlanningTask()
+    public String getID()
     {
+        return ID;
+    }
 
+    public static String getCleanDate(Calendar date)
+    {
+        String theDay = date.get(Calendar.DATE) + "/" + (date.get(Calendar.MONTH)+1) + "/" + date.get(Calendar.YEAR)+ " " + date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE) + ":" + date.get(Calendar.SECOND);
+        return theDay;
+    }
+
+    public static String getOnlyDate(Calendar date)
+    {
+        //String theDay = date.get(Calendar.DATE) + "/" + (date.get(Calendar.MONTH)+1) + "/" + date.get(Calendar.YEAR);
+        return dateFormat.format(date.getTime());
+    }
+    public static String getOnlyTime(Calendar date)
+    {
+        String theDay = date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE) + ":" + date.get(Calendar.SECOND);
+        return theDay;
+    }
+    //TODO : Test of todo
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public String getAuthor() {
@@ -115,6 +110,23 @@ public class PlanningTask {
         PlannedTime = plannedTime;
     }
 
+    public void setPlannedTime(String date, String time){
+        try{
+            String [] decomposedDate = date.split("/");
+            String [] decomposedTime = time.split(":");
+            PlannedTime = Calendar.getInstance();
+            PlannedTime.set(Calendar.YEAR,Integer.parseInt(decomposedDate[2]));
+            PlannedTime.set(Calendar.MONTH, Integer.parseInt(decomposedDate[1])-1);
+            PlannedTime.set(Calendar.DAY_OF_MONTH, Integer.parseInt(decomposedDate[0]));
+            PlannedTime.set(Calendar.HOUR, Integer.parseInt(decomposedTime[0]));
+            PlannedTime.set(Calendar.MINUTE, Integer.parseInt(decomposedTime[1]));
+            PlannedTime.set(Calendar.SECOND, Integer.parseInt(decomposedTime[2]));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void setDescription(String description) {
         Description = description;
     }
@@ -137,6 +149,10 @@ public class PlanningTask {
 
     public String getTimeString(){
         return timeFormat.format(PlannedTime.getTime());
+    }
+
+    public String getTimeStringWithSec(){
+        return timeFormat.format(PlannedTime.getTime())+":00";
     }
 
     public String getHourString(){

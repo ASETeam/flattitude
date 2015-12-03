@@ -60,7 +60,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textSize="17dp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:text="test@test.com" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -88,7 +89,8 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textSize="17dp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:text="test" />
 
             </android.support.design.widget.TextInputLayout>
 

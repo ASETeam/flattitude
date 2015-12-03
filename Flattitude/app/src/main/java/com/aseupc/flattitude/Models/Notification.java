@@ -19,6 +19,15 @@ public class Notification {
     private Date time;
     private Integer myIcon;
     private int serverID;
+    private String objectID;
+
+    public String getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(String objectID) {
+        this.objectID = objectID;
+    }
 
     public int getServerID() {
         return serverID;
@@ -37,6 +46,7 @@ public class Notification {
     }
 
     public Notification() {
+
     }
 
 

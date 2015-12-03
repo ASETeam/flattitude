@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 /**
  * Created by MetzoDell on 25-11-15.
@@ -26,7 +27,7 @@ public class Notifications_Web_Services {
 
     public ResultContainer<User> ws_getNotifications(String userID) {
         User user = new User();
-        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/Notification/getNotifications/" + userID;
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/notification/getNotifications/" + userID;
         ResultContainer<User> resultContainer = new ResultContainer<User>();
         String resultToDisplay = "";
         ParseResults result = null;
@@ -59,6 +60,7 @@ public class Notifications_Web_Services {
         }
         // resultToDisplay = (String) in.toString();
         try {
+            Log.i("AFara", resultToDisplay);
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,28 +72,43 @@ public class Notifications_Web_Services {
             String success = mainObject.getString("success");
 
             if (success.equals("true")) {
-                JSONArray invites = mainObject.getJSONArray("notifications"); // Needs control
+                JSONArray invites = mainObject.getJSONArray("invitation_notifications"); // Needs control
                 for (int i = 0; i < invites.length(); i++) {
                     if (invites.get(i) != null) {
-                        JSONObject flat = invites.getJSONObject(i);
-                        //  int id = new Random().nextInt(200000);
-                        String address = flat.getString("address");
-                        String name = flat.getString("name");
-                        String postcode = flat.getString("postcode");
-                        String iban = flat.getString("iban");
-                        String city = flat.getString("city");
-                        String country = flat.getString("country");
-                        String id = flat.getString("flatid");
-                        Flat finalFlat = new Flat();
-                        finalFlat.setServerid(id);
-                        finalFlat.setName(name);
+                        JSONObject invitation = invites.getJSONObject(i);
 
-                        finalFlat.setAddress(address);
-                        finalFlat.setPostcode(postcode);
-                        finalFlat.setIban(iban);
-                        finalFlat.setCity(city);
-                        finalFlat.setCountry(country);
-                        user.addInvite(finalFlat);
+                        String sender = invitation.getString("sender");
+                        String flatIds = invitation.getString("flat_id");
+                        int id = invitation.getInt("id");
+                        Notification finalNotif = new Notification();
+                        finalNotif.setServerID(id);
+                        finalNotif.setId(id);
+                        finalNotif.setAuthor(sender);
+
+                        finalNotif.setObjectID(flatIds);
+                        finalNotif.setTime(new Date());
+                        finalNotif.setType("Flat_Invite");
+
+                        user.addNotifications(finalNotif);
+                    }
+                }
+                JSONArray invites2 = mainObject.getJSONArray("invitation_objects"); // Needs control
+                for (int i = 0; i < invites2.length(); i++) {
+                    if (invites2.get(i) != null) {
+                        JSONObject invitation2 = invites2.getJSONObject(i);
+
+                        String sender = invitation2.getString("sender");
+                        String flatIds = invitation2.getString("object_id");
+                        int id = invitation2.getInt("id");
+                        Notification finalNotif = new Notification();
+                        finalNotif.setServerID(id);
+                        finalNotif.setId(id);
+                        finalNotif.setAuthor(sender);
+                        finalNotif.setObjectID(flatIds);
+                        finalNotif.setTime(new Date());
+                        finalNotif.setType("Map_notification");
+
+                        user.addNotifications(finalNotif);
                     }
                 }
                 resultContainer.setTemplate(user);
@@ -103,9 +120,9 @@ public class Notifications_Web_Services {
         return resultContainer;
     }
 
-    public ResultContainer<User> ws_RetrievNotifications(String userID, String timestamp) {
+    public ResultContainer<User> ws_RetrievNotifications(String notifID, String timestamp) {
         User user = new User();
-        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/Notification/retrieved/" + userID + "/" + timestamp;
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/notification/retrievedNotification/" + notifID;
         ResultContainer<User> resultContainer = new ResultContainer<User>();
         String resultToDisplay = "";
         ParseResults result = null;

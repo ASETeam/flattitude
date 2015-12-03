@@ -36,10 +36,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Sign Up"
-                android:textStyle="bold"
+                android:text=""
                 android:id="@+id/textView2"
-                android:textSize="32dp"
+                android:textSize="20dp"
                 android:textColor="#ffffffff"
                 android:layout_gravity="center_horizontal" />
 
@@ -50,6 +49,29 @@
                 android:text=""
                 android:id="@+id/textView2"
                 android:textSize="20dp"
+                android:textColor="#ffffffff"
+                android:layout_gravity="center_horizontal" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/avloadingIndicatorView"
+                android:layout_width="212dp"
+                android:layout_height="100dp"
+                android:visibility="invisible"
+
+                app:indicator="BallPulse"
+
+                android:layout_gravity="center_horizontal"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Sign Up"
+                android:textStyle="bold"
+                android:id="@+id/textView2"
+                android:textSize="32dp"
                 android:textColor="#ffffffff"
                 android:layout_gravity="center_horizontal" />
 
@@ -74,15 +96,6 @@
 
 
             </android.support.design.widget.TextInputLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=""
-                android:id="@+id/textView2"
-                android:textSize="20dp"
-                android:textColor="#ffffffff"
-                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"

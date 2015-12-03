@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         this.currentUser = currentUser;
     }
 
-    /**
+    /*
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private View mNewProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mNewProgress = findViewById(R.id.avloadingIndicatorView);
+
     }
 
     private void populateAutoComplete() {
@@ -245,18 +248,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.GONE : View.GONE);
+            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mProgressView.setVisibility(show ? View.GONE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.GONE : View.GONE);
+            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
@@ -407,7 +412,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //flat.setServerid(new Random().nextInt(324324) + "");
                     FlatDAO flatDAO = new FlatDAO(getApplicationContext());
                  //   Log.i("UserFlat", flat.getName());
+                    if (flatDAO.getFlat() == null)
                     flatDAO.save(flat);
+                    else
+                    flatDAO.update(flat);
                     Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
                     startActivity(mainIntent);
                 }

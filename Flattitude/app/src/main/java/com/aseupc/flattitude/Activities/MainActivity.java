@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.Toast;
@@ -32,17 +30,13 @@ import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 
-import java.security.acl.Group;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -75,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         notif.setType("Add");
         notif.setSeennotification(false);
         notif.setBody("This is a message posted by me");
-        notDao.save(notif);
+     //   notDao.save(notif);
         }
         List<Notification> retrieved = notDao.getNotifications();
         for (int i = 0; i< retrieved.size(); i++)
@@ -137,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(MapIntent);
             }
         });
+
+        final ImageButton goBudget = (ImageButton) findViewById(R.id.budget_button);
+        goBudget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent BudgetIntent = new Intent(view.getContext(), BudgetActivity.class);
+                startActivity(BudgetIntent);
+            }
+        });
+
 
         final ImageButton goCalendar = (ImageButton) findViewById(R.id.calendar_button);
         goCalendar.setOnClickListener(new View.OnClickListener() {

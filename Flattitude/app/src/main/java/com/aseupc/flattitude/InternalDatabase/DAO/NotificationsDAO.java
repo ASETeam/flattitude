@@ -39,8 +39,13 @@ public class NotificationsDAO extends DBDAO {
         values.put(DataBaseHelper.NOTIFICATION_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
         values.put(DataBaseHelper.NOTIFICATION_AUTHOR, mo.getAuthor());
 
-        return database
-                .insert(DataBaseHelper.NOTIFICATIONS_TABLENAME, null, values);
+
+        long result =  database.insertWithOnConflict(DataBaseHelper.NOTIFICATIONS_TABLENAME, null, values, database.CONFLICT_FAIL);
+        if (result == -1)
+            result = database.update(DataBaseHelper.NOTIFICATIONS_TABLENAME,
+                    values, WHERE_ID_EQUALS,
+                    new String[]{String.valueOf(mo.getId())});
+        return result;
     }
 
     public long update(Notification mo) {
@@ -77,7 +82,7 @@ public class NotificationsDAO extends DBDAO {
                         DataBaseHelper.NOTIFICATION_TYPE,
                         DataBaseHelper.NOTIFICATION_TIME,
                         DataBaseHelper.NOTIFICATION_OBJECTNAME},
-                null, null, DataBaseHelper.NOTIFICATION_TIME, null,null, "5");
+                null, null, DataBaseHelper.NOTIFICATION_TIME, null,null, "10");
 
 
         List<Notification> list = new LinkedList<>();

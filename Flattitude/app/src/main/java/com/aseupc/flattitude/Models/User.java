@@ -33,11 +33,12 @@ public class User {
 
     public void addNotifications(Notification notification)
     {
-        this.notifications.add(notification);
+        notifications.add(notification);
     }
 
     public User() {
         invitations = new ArrayList<Flat>();
+        notifications = new ArrayList<Notification>();
     }
 
     public User( String email, String firstname, String lastname) {

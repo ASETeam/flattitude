@@ -12,6 +12,7 @@ import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
+import com.aseupc.flattitude.database.Notifications_Web_Services;
 import com.aseupc.flattitude.database.User_Web_Services;
 import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.utility_REST.CallAPI;
@@ -22,9 +23,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.xml.transform.Result;
 
 /**
  * Created by MetzoDell on 28-10-15.
@@ -53,7 +57,7 @@ public class ChangeUI extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 3000000); // 1 second * 1000
+        handler.postDelayed(sendUpdatesToUI, 5000000); // 1 second * 1000
        // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
@@ -63,9 +67,9 @@ public class ChangeUI extends Service {
 
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
-            DisplayLoggingInfo();
-          //  SycnhronizeNotifications();
-            handler.postDelayed(this, 20000); // 5 seconds
+           // DisplayLoggingInfo();
+            SycnhronizeNotifications();
+            handler.postDelayed(this, 5000); // 5 seconds
         }
     };
 
@@ -108,18 +112,20 @@ public class ChangeUI extends Service {
         sendBroadcast(intent);
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+
 
 
     public void SycnhronizeNotifications(){
+        Log.i("AFara1", "We are in the backgroundproces");
         getNotification notifs = new getNotification();
+        UserDAO dao = new UserDAO(getApplicationContext());
+        User user = dao.getUser();
         try {
-            ResultContainer<User> response = notifs.execute().get(500000, TimeUnit.MILLISECONDS);
+            ResultContainer<User> response = notifs.execute(user.getServerid()).get(500000, TimeUnit.MILLISECONDS);
+            //ResultContainer<User> response =  UserFacade.getNotifications(user.getServerid());
             ArrayList<Notification> notifications = response.getTemplate().getNotifications();
+            int nothing = 0;
+            Log.i("AFara2", "We are in the backgroundproces");
             for (int i = 0; i < notifications.size(); i++)
             {
                 Notification thisNotif = notifications.get(i);
@@ -128,29 +134,38 @@ public class ChangeUI extends Service {
                 if (!internal_Notifications.contains(thisNotif))
                 {
                     thisNotif.setSeennotification(false);
+                    thisNotif.setId(new Random().nextInt(4000000));
                     not_Dao.save(thisNotif);
+                    Timestamp tstamp  = new Timestamp(System.currentTimeMillis());
+                  //  UserFacade.retrievedNotifications(thisNotif.getServerID() + "", tstamp.toString());
+                    nothing = 1;
                 }
             }
+            Log.i("AFara3", "We are After the backgroundproces");
             UserDAO userDAO = new UserDAO(getApplicationContext());
-            User user = userDAO.getUser();
-           Timestamp tstamp  = new Timestamp(System.currentTimeMillis());
-            UserFacade.retrievedNotifications(user.getServerid(),tstamp.toString());
 
-        } catch (InterruptedException e) {
+            if (nothing == 1)
+            intent.putExtra("change", "yes");
+            else
+                intent.putExtra("change", "no");
+            sendBroadcast(intent);
+        }  catch (Exception e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            CallAPI.makeToast(getApplicationContext(), "Time expired for request, try again");
+        //    CallAPI.makeToast(getApplicationContext(), "Time expired for request, try again");
         }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     class getNotification extends  AsyncTask<String, Void, ResultContainer<User>> {
 
         @Override
         protected ResultContainer<User> doInBackground(String... params) {
-            ResultContainer<User> result = UserFacade.getNotifications(params[0]);
+            ResultContainer<User> result = new Notifications_Web_Services().ws_getNotifications(params[0]);
             return result;
         }
 

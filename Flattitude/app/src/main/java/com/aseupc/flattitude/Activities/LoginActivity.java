@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         this.currentUser = currentUser;
     }
 
-    /**
+    /*
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private View mNewProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //customize the fonts for each label
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
-        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Bold.otf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
         TextView email_address_login_label = (TextView)findViewById(R.id.email_address_login_label);
         email_address_login_label.setTypeface(customFont);
         AutoCompleteTextView email = (AutoCompleteTextView)findViewById(R.id.email);
@@ -122,9 +123,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        //Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        //Button mRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
-        //mEmailSignInButton.setOnClickListener(new OnClickListener() {
+
+        Button mRegisterButton = (Button) findViewById(R.id.login_button);
+
         login_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +135,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
     private void populateAutoComplete() {
@@ -262,18 +264,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.GONE : View.GONE);
+            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mProgressView.setVisibility(show ? View.GONE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.GONE : View.GONE);
+            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
@@ -400,7 +404,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            //Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+
+           // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
             Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
@@ -425,7 +430,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //flat.setServerid(new Random().nextInt(324324) + "");
                     FlatDAO flatDAO = new FlatDAO(getApplicationContext());
                  //   Log.i("UserFlat", flat.getName());
+                    if (flatDAO.getFlat() == null)
                     flatDAO.save(flat);
+                    else
+                    flatDAO.update(flat);
                     Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
                     startActivity(mainIntent);
                 }

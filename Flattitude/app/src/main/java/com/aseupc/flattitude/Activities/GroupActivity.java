@@ -23,12 +23,10 @@ import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
+import com.asha.ChromeLikeSwipeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class GroupActivity extends AppCompatActivity {
     private ListView invitations;
@@ -38,11 +36,31 @@ public class GroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        UserDAO userDAO = new UserDAO(getApplicationContext());
+        User user = userDAO.getUser();
+        final User userF = user;
+        ChromeLikeSwipeLayout chromeLikeSwipeLayout = (ChromeLikeSwipeLayout) findViewById(R.id.chrome_like_swipe_layout);
+        ChromeLikeSwipeLayout.makeConfig()
+                .addIcon(R.drawable.ic_refresh)
+
+                .radius(20)
+                .gap(10)
+                .circleColor(0xFF11CCFF)
+                .listenItemSelected(new ChromeLikeSwipeLayout.IOnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(int index) {
+                        showProgress(true);
+                        Toast.makeText(getApplicationContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                        consultInfo callConsult = new consultInfo();
+                        callConsult.execute(userF.getServerid());
+                    }
+                })
+                .setTo(chromeLikeSwipeLayout);
         mProgressView = findViewById(R.id.group_progress);
         showProgress(true);
 
 
-        final Button mCreateFlat = (Button) findViewById(R.id.create_flat_button);
+        final Button mCreateFlat = (Button) findViewById(R.id.budget_button);
         mCreateFlat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,8 +72,7 @@ public class GroupActivity extends AppCompatActivity {
         invitations = (ListView) findViewById(R.id.invitations);
         List<String> population = new ArrayList<String>();
        // population.add("foo");
-        UserDAO userDAO = new UserDAO(getApplicationContext());
-        User user = userDAO.getUser();
+
         consultInfo callConsult = new consultInfo();
         ArrayList<Flat> result = new ArrayList<Flat>();
 

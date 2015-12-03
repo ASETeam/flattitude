@@ -1,3 +1,5 @@
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -7,25 +9,32 @@
     tools:context=".Activities.GroupActivity">
 
     <Button
+
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create new Flat"
-        android:id="@+id/create_flat_button"
+        android:id="@+id/budget_button"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/create_flat_button"
+        android:layout_below="@+id/budget_button"
         android:id="@+id/frameLayout">
+        <com.asha.ChromeLikeSwipeLayout
+            android:id="@+id/chrome_like_swipe_layout"
 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:android="http://schemas.android.com/apk/res/android">
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="443dp"
             android:id="@+id/invitations"
             android:layout_gravity="left|center_vertical" />
+        </com.asha.ChromeLikeSwipeLayout>
 
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"

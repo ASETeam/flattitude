@@ -46,7 +46,7 @@ public class PlanningActivity extends AppCompatActivity {
         plans.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                
+
             }
         });
         Button addButton = (Button) findViewById(R.id.button);

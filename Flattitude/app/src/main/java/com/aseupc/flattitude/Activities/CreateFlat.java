@@ -39,30 +39,30 @@ public class CreateFlat extends AppCompatActivity {
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
         TextView flat_name_label = (TextView)findViewById(R.id.flat_name_label);
-        flat_name_label.setTypeface(customFont);
+//        flat_name_label.setTypeface(customFont);
         EditText flat_name = (EditText)findViewById(R.id.flat_name);
-        flat_name.setTypeface(customFont);
+//        flat_name.setTypeface(customFont);
         TextView address_label = (TextView)findViewById(R.id.address_label);
-        address_label.setTypeface(customFont);
+  //      address_label.setTypeface(customFont);
         EditText address = (EditText)findViewById(R.id.address);
-        address.setTypeface(customFont);
+    //    address.setTypeface(customFont);
         TextView city_label = (TextView)findViewById(R.id.city_label);
-        city_label.setTypeface(customFont);
+      //  city_label.setTypeface(customFont);
         EditText city = (EditText)findViewById(R.id.city);
-        city.setTypeface(customFont);
+       // city.setTypeface(customFont);
         TextView postal_code_label = (TextView)findViewById(R.id.postal_code_label);
-        postal_code_label.setTypeface(customFont);
+       // postal_code_label.setTypeface(customFont);
         EditText postal_code = (EditText)findViewById(R.id.postal_code);
-        postal_code.setTypeface(customFont);
+       // postal_code.setTypeface(customFont);
         TextView country_label = (TextView)findViewById(R.id.country_label);
-        country_label.setTypeface(customFont);
+       // country_label.setTypeface(customFont);
         EditText country = (EditText)findViewById(R.id.country);
-        country.setTypeface(customFont);
+       // country.setTypeface(customFont);
         TextView iban_label = (TextView)findViewById(R.id.iban_label);
-        iban_label.setTypeface(customFont);
+       // iban_label.setTypeface(customFont);
         EditText iban = (EditText)findViewById(R.id.iban);
         Button create_button = (Button)findViewById(R.id.create_button);
-        create_button.setTypeface(customFontButton);
+       // create_button.setTypeface(customFontButton);
 
 
 

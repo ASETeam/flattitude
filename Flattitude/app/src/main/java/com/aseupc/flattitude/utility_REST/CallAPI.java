@@ -64,7 +64,7 @@ public class CallAPI  {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             in = new BufferedInputStream(urlConnection.getInputStream());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+//            System.out.println(e.getMessage());
         }
         // resultToDisplay = (String) in.toString();
         try {

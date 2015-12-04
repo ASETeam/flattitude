@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,13 @@ import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.UserFacade;
+import com.aseupc.flattitude.utility_REST.CallAPI;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LandingActivity extends AppCompatActivity {
 
@@ -31,7 +39,7 @@ public class LandingActivity extends AppCompatActivity {
         Register.setTypeface(customFont);
 
         Context context = getApplicationContext();
-        UserDAO userDAO = new UserDAO(context);
+        final UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         //User user = null;
 
@@ -58,8 +66,22 @@ public class LandingActivity extends AppCompatActivity {
             mSkipButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    callGetUser call = new callGetUser();
+                    ResultContainer<User> result = new ResultContainer<User>();
+                    try {
+                        result = call.execute("2").get(50000, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
+                    // User user = CallAPI.getUser("2");
+                    userDAO.save(result.getTemplate());
                     Intent intentSkip = new Intent(view.getContext(), MainActivity.class);
                     startActivity(intentSkip);
+
                 }
             });
 
@@ -105,4 +127,16 @@ public class LandingActivity extends AppCompatActivity {
             startActivity(goHome);
         }
     }
+
+    public class callGetUser extends AsyncTask<String, Void, ResultContainer<User>>{
+
+        @Override
+        protected ResultContainer<User> doInBackground(String... params) {
+            User user = CallAPI.getUser("2");
+            ResultContainer<User> resultContainer = new ResultContainer<>();
+            resultContainer.setTemplate(user);
+            return resultContainer;
+        }
+    }
+
 }

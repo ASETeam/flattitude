@@ -97,6 +97,11 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
+            android:name=".Activities.EditTaskActivity"
+            android:label="@string/title_activity_edit_task"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
             android:name=".Activities.ChatActivity"
             android:label="@string/title_activity_chat" >
         </activity>

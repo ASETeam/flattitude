@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.Models;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,7 +9,7 @@ import java.util.Locale;
 /**
  * Created by MetzoDell on 25-11-15.
  */
-public class PlanningTask {
+public class PlanningTask implements Serializable{
 
     private String ID;
     private String Author;
@@ -118,7 +119,7 @@ public class PlanningTask {
             PlannedTime.set(Calendar.YEAR,Integer.parseInt(decomposedDate[2]));
             PlannedTime.set(Calendar.MONTH, Integer.parseInt(decomposedDate[1])-1);
             PlannedTime.set(Calendar.DAY_OF_MONTH, Integer.parseInt(decomposedDate[0]));
-            PlannedTime.set(Calendar.HOUR, Integer.parseInt(decomposedTime[0]));
+            PlannedTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(decomposedTime[0]));
             PlannedTime.set(Calendar.MINUTE, Integer.parseInt(decomposedTime[1]));
             PlannedTime.set(Calendar.SECOND, Integer.parseInt(decomposedTime[2]));
         }

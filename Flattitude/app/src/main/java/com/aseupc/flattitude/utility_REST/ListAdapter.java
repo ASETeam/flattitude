@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.aseupc.flattitude.Models.PlanningTask;
@@ -18,16 +19,20 @@ import java.util.List;
  */
 public class ListAdapter extends ArrayAdapter<PlanningTask> {
 
-    public ListAdapter(Context context, int textViewResourceId) {
+    private TaskDeletePressedListener listener;
+
+    public ListAdapter(Context context, int textViewResourceId, TaskDeletePressedListener listener) {
         super(context, textViewResourceId);
+        this.listener = listener;
     }
 
-    public ListAdapter(Context context, int resource, List<PlanningTask> items) {
+    public ListAdapter(Context context, int resource, List<PlanningTask> items, TaskDeletePressedListener listener) {
         super(context, resource, items);
+        this.listener = listener;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
 
@@ -59,9 +64,20 @@ public class ListAdapter extends ArrayAdapter<PlanningTask> {
         /*    if (tt4 != null) {
                 tt3.setText(p.getAuthor());
             }*/
+            Button deleteButton = (Button) v.findViewById(R.id.deleteButton);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnTaskDeletePressed(getItem(position));
+                }
+            });
         }
 
         return v;
+    }
+
+    public interface TaskDeletePressedListener{
+        public void OnTaskDeletePressed(PlanningTask task);
     }
 
 }

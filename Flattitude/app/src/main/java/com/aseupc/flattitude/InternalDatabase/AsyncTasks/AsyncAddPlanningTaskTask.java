@@ -34,10 +34,10 @@ public class AsyncAddPlanningTaskTask extends AsyncTask<String,Integer,Void> {
 
     @Override
     public void onPostExecute(Void v){
-        listener.OnAddedToDatabase();
+        listener.OnAddedToDatabase(task);
     }
 
     public interface OnTaskAddedListener {
-        public void OnAddedToDatabase();
+        public void OnAddedToDatabase(PlanningTask task);
     }
 }

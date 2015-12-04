@@ -35,12 +35,12 @@ public class PlanningTask_Web_Services {
         call.execute(userID,token,flatID);
     }
 
-    public void ws_EditTask(PlanningTask task, String userID, String token, String flatID, EditPlanningTaskWSListener listener) {
+    public void ws_editTask(PlanningTask task, String userID, String token, String flatID, EditPlanningTaskWSListener listener) {
         callEdit call = new callEdit(task,listener);
         call.execute(userID,token,flatID);
     }
 
-    public void ws_DeleteTask(PlanningTask task, String userID, String token, String flatID, DeletePlanningTaskWSListener listener) {
+    public void ws_deleteTask(PlanningTask task, String userID, String token, String flatID, DeletePlanningTaskWSListener listener) {
         callRemove call = new callRemove(task,listener);
         call.execute(userID,token,flatID);
     }
@@ -70,7 +70,7 @@ public class PlanningTask_Web_Services {
             }
 
             String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharedobjects/create";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/create";
             HashMap<String, String> values = new HashMap<>();
             String userID = strings[0];
             String token = strings [1];
@@ -86,13 +86,14 @@ public class PlanningTask_Web_Services {
             values.put("day", task.getDayString());
             values.put("hour", task.getHourString());
             values.put("minute", task.getMinuteString());
+            values.put("duration","10"); //TODO: do we have duration?
             try {
                 response = CallAPI.performPostCall(urlStr, values);
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
                 Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
-                    String id = mainObject.getString("idObject");
+                    String id = mainObject.getString("taskId");
                     resultContainer.setSuccess(true);
                     task.setID(id);
                     resultContainer.setTemplate(task);
@@ -138,18 +139,30 @@ public class PlanningTask_Web_Services {
         @Override
         protected ResultContainer<PlanningTask> doInBackground(String... strings) {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
+
+            //Only for debug
+            if(true) {
+                resultContainer.setSuccess(true);
+                resultContainer.setTemplate(task);
+                return resultContainer;
+            }
+
             String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharedobjects/edit";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/edit";
             HashMap<String, String> values = new HashMap<>();
             String userID = strings[0];
             String token = strings [1];
             values.put("userid", userID);
             values.put("token",token);
-            //values.put("objectid", task.getServerId());
-            //values.put("objectname", task.getName());
-            //values.put("objectdescription", task.getDescription());
-            //values.put("lat", String.valueOf(task.getLatitude()));
-            //values.put("long", String.valueOf(task.getLongitude()));
+            values.put("taskid",task.getID());
+            values.put("type", task.getType());
+            values.put("description", task.getDescription());
+            values.put("year", task.getYearString());
+            values.put("month", task.getMonthString());
+            values.put("day", task.getDayString());
+            values.put("hour", task.getHourString());
+            values.put("minute", task.getMinuteString());
+            values.put("duration","10"); //TODO: do we have duration?
             response = CallAPI.performPostCall(urlStr, values);
 
             try {
@@ -194,15 +207,25 @@ public class PlanningTask_Web_Services {
 
         @Override
         protected ResultContainer<PlanningTask> doInBackground(String... strings) {
+
+
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
+
+            //Only for debug
+            if(true) {
+                resultContainer.setSuccess(true);
+                resultContainer.setTemplate(task);
+                return resultContainer;
+            }
+
             String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharedobjects/delete";
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/delete";
             HashMap<String, String> values = new HashMap<>();
             String userID = strings[0];
             String token = strings [1];
             values.put("userid", userID);
             values.put("token",token);
-            values.put("objectid", task.getID());
+            values.put("taskid", task.getID());
             response = CallAPI.performPostCall(urlStr, values);
 
             try {

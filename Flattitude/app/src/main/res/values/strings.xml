@@ -50,6 +50,7 @@
     <string name="title_activity_invitation_details">InvitationDetails</string>
     <string name="title_activity_planning">"Planning "</string>
     <string name="title_activity_new_task">NewTaskActivity</string>
+    <string name="title_activity_edit_task">EditTaskActivity</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="title_activity_budget">BudgetActivity</string>
 </resources>

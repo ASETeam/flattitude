@@ -3,10 +3,12 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -42,8 +44,6 @@ public class NewTaskActivity extends AppCompatActivity
         implements TimePickerDialog.OnTimeSetListener,
         DatePickerDialog.OnDateSetListener,
         PlanningTask_Web_Services.AddPlanningTaskWSListener,
-        PlanningTask_Web_Services.EditPlanningTaskWSListener,
-        PlanningTask_Web_Services.DeletePlanningTaskWSListener,
         AsyncAddPlanningTaskTask.OnTaskAddedListener
 {
 
@@ -66,13 +66,10 @@ public class NewTaskActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_dropdown_item, PlanningTask.getTypes());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner sItems = (Spinner) findViewById(R.id.type);
-        sItems.setAdapter(adapter);
+        calendar = (Calendar) getIntent().getSerializableExtra("date");
+        if(calendar==null)
+            calendar = Calendar.getInstance();
 
-        calendar = Calendar.getInstance();
         final NewTaskActivity finalThis = this;
 
         date = (EditText) findViewById(R.id.date);
@@ -99,6 +96,11 @@ public class NewTaskActivity extends AppCompatActivity
 
         description = (EditText) findViewById(R.id.description);
         type = (Spinner) findViewById(R.id.type);
+        adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_dropdown_item, PlanningTask.getTypes());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        type.setAdapter(adapter);
+
 
         Button addButton = (Button) findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +110,7 @@ public class NewTaskActivity extends AppCompatActivity
             }
         });
 
+
         mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
         mOverlayDialog.setCancelable(false);
         mProgressView = findViewById(R.id.progressBar);
@@ -115,7 +118,7 @@ public class NewTaskActivity extends AppCompatActivity
     }
 
     private void addTask(){
-        showProgress(true);
+        //showProgress(true);
         PlanningTask task = new PlanningTask();
         task.setPlannedTime(calendar);
         task.setDescription(description.getText().toString());
@@ -123,7 +126,7 @@ public class NewTaskActivity extends AppCompatActivity
         task.setAuthor(IDs.getInstance(this).getUserId(this));
         IDs ids = IDs.getInstance(this);
         PlanningTask_Web_Services ws = new PlanningTask_Web_Services();
-        ws.ws_addTask(task,ids.getUserId(this),ids.getUserToken(this),ids.getFlatId(this),this);
+        ws.ws_addTask(task, ids.getUserId(this), ids.getUserToken(this), ids.getFlatId(this), this);
     }
 
     public Calendar getCalendar(){
@@ -153,25 +156,18 @@ public class NewTaskActivity extends AppCompatActivity
             async.execute();
         }
         else {
-            showProgress(false);
+            //showProgress(false);
             showTaskNotAdded();
         }
     }
 
     @Override
-    public void OnAddedToDatabase() {
-        showProgress(false);
+    public void OnAddedToDatabase(PlanningTask task) {
+        //showProgress(false);
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("task",task);
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
-    }
-
-    @Override
-    public void onEditWSFinished(ResultContainer<PlanningTask> result) {
-
-    }
-
-    @Override
-    public void onDeleteWSFinished(ResultContainer<PlanningTask> result) {
-
     }
 
     public void showTaskNotAdded()
@@ -179,31 +175,6 @@ public class NewTaskActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle("Addition failed")
                 .setMessage("The task couldn't be added. Check your internet connection and try again")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-    public void showTaskNotEdited()
-    {
-        new AlertDialog.Builder(this)
-                .setTitle("Edition failed")
-                .setMessage("The task couldn't be edited. Check your internet connection and try again")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    public void showTaskNotRemoved()
-    {
-        new AlertDialog.Builder(this)
-                .setTitle("Deletion failed")
-                .setMessage("The task couldn't be deleted. Check your internet connection and try again")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }

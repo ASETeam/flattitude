@@ -84,6 +84,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="library" exported="" name="smack-bosh-4.1.0-rc1" level="project" />
     <orderEntry type="library" exported="" name="smack-im-4.1.0-rc1" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-8.1.0" level="project" />
@@ -105,11 +106,25 @@
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="smack-android-4.1.0-rc1" level="project" />
     <orderEntry type="library" exported="" name="caldroid-2.3.1" level="project" />
+=======
+    <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-base-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="caldroid-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-location-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="ChromeLikeSwipeLayout-fa3c462c14" level="project" />
+>>>>>>> fa07985d7452eed74f4e576163aa03587755e9ce
     <orderEntry type="library" exported="" name="design-23.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-8.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-8.1.0" level="project" />
     <orderEntry type="library" exported="" name="hirondelle-date4j-1.5.1" level="project" />
+<<<<<<< HEAD
     <orderEntry type="library" exported="" name="smack-android-extensions-4.1.0-rc1" level="project" />
     <orderEntry type="library" exported="" name="simple-xml-2.7.1" level="project" />
+=======
+    <orderEntry type="library" exported="" name="library-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.0.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
+>>>>>>> fa07985d7452eed74f4e576163aa03587755e9ce
   </component>
 </module>

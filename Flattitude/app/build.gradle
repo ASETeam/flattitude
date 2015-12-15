@@ -35,5 +35,15 @@ dependencies {
     compile 'com.github.ashqal:ChromeLikeSwipeLayout:fa3c462c14@aar'
     compile 'com.wang.avi:library:1.0.1'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile('org.simpleframework:simple-xml:2.7.+'){
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
+    }
+
+    compile "org.igniterealtime.smack:smack-android:4.1.0-rc1"
+    compile "org.igniterealtime.smack:smack-tcp:4.1.0-rc1"
+    // optional features
+    compile "org.igniterealtime.smack:smack-android-extensions:4.1.0-rc1"
 
 }

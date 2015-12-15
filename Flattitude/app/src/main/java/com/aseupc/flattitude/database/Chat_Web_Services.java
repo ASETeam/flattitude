@@ -1,11 +1,9 @@
 package com.aseupc.flattitude.database;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.aseupc.flattitude.Models.Flat;
-import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
@@ -27,7 +25,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by MetzoDell on 28-10-15.
  */
-public class Flat_Web_Services {
+public class Chat_Web_Services {
 
     public ResultContainer<Flat> ws_getInfo(String flatID) {
         ResultContainer<Flat> response = new ResultContainer<>();
@@ -127,9 +125,6 @@ public class Flat_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
-
-                CallAPI.performChatRoomCreation(flat.getName());
-
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
                     //String userId = mainObject.getString("id");
@@ -251,14 +246,10 @@ public class Flat_Web_Services {
             values.put("postcode", flat.getPostcode());
             values.put("IBAN", flat.getIban());
             values.put("masterid", "2");
-
             response = CallAPI.performPostCall(urlStr, values);
-
             try {
                 JSONObject mainObject = new JSONObject(response);
                 Log.i("GUILLE RESPONSE", mainObject.toString());
-
-                //Perform creation of chatRoom associated to the flat.
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -171,6 +171,7 @@ public class User_Web_Services {
         values.put("firstname", user.getFirstname());
         values.put("lastname", user.getLastname());
         values.put("phonenbr", user.getPhonenbr());
+
         response = CallAPI.performPostCall(urlStr, values);
 
         try {
@@ -193,6 +194,10 @@ public class User_Web_Services {
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
                     String userId = mainObject.getString("id");
+
+                    //Perform registration to the Chat Server.
+                    CallAPI.performChatRegister(userId, values);
+
                     resultContainer.setSuccess(true);
                     // Temporary solution : dummy user
                    // resultContainer.setTemplate(CallAPI.getUser(userId));

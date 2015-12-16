@@ -31,6 +31,7 @@ import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.synchronization.ChangeUI;
+import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.ParseResults;
@@ -43,6 +44,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
     private User thisUser;
     private Flat thisFlat;
+
     public static Menu menu;
     public static Context currentContext;
     public static MenuItem mItem;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public Menu getMenu() {
         return menu;
     }
+
+    private JabberSmackAPI chatConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
             thisFlat = flat;
             thisUser = user;
             setTitle(user.getFirstname() + " " + user.getLastname());
+
           /*  mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
             mFlat.setText(flat.getServerid() + " - " + flat.getName());*/
         }

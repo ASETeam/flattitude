@@ -168,7 +168,6 @@ public class CallAPI  {
             conn.setRequestProperty("Content-Type", "application/xml");
 
             UserEntity userEntity = new UserEntity(id, parameters.get("firstname"), parameters.get("email"), parameters.get("password"));
-
             Serializer serializer = new Persister();
             StringWriter sw = new StringWriter();
 

@@ -36,9 +36,11 @@ import android.widget.TextView;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
+import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
@@ -422,11 +424,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Log.i("XJordi 2", userDAO.getUser().getFirstname());
 
                 ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
+                Flat flat = resultFlat.getTemplate();
+
                 if (resultFlat.getSucces() == false){
                 Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
                 startActivity(intent);}
                 else if (resultFlat.getSucces() == true) {
-                    Flat flat = resultFlat.getTemplate();
+
                     //flat.setServerid(new Random().nextInt(324324) + "");
                     FlatDAO flatDAO = new FlatDAO(getApplicationContext());
                  //   Log.i("UserFlat", flat.getName());
@@ -437,6 +441,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
                     startActivity(mainIntent);
                 }
+
+
+                    String chatID = getCurrentUser().getServerid();
+                    String password = mPassword;
+                    try {
+                        JabberSmackAPI smackChat = new JabberSmackAPI();
+
+                        //Login to Chat.
+                        smackChat.login(chatID, password);
+
+                        //Join to room.
+                        smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
+
+                        IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
+
+                    } catch (Exception ex ) {
+                        Log.e("CHAT ERROR", ex.getMessage());
+                    }
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");

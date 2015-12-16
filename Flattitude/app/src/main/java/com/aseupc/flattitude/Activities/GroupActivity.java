@@ -3,12 +3,15 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,11 +20,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
+import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.asha.ChromeLikeSwipeLayout;
 
@@ -31,6 +39,13 @@ import java.util.List;
 public class GroupActivity extends AppCompatActivity {
     private ListView invitations;
     private View mProgressView;
+    public static Menu menu;
+    public static Context currentContext;
+    public static MenuItem mItem;
+
+    public Menu getMenu() {
+        return menu;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +122,15 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_group, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.menu_create_group, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.global, menu);
+        this.menu = menu;
+        this.mItem = menu.getItem(1);
+        this.currentContext =  getApplicationContext();
+        menu.getItem(1).setVisible(false);
+        menu.getItem(0).setVisible(false);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -121,6 +143,35 @@ public class GroupActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.logout)
+        {
+            UserDAO userDAO = new UserDAO(getApplicationContext());
+            User thisUser = userDAO.getUser();
+
+            if (thisUser != null)
+            {
+                // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
+
+                userDAO.deleteDept(thisUser);
+                userDAO.deleteAll();
+                //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
+                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                Flat thisFlat = flatDAO.getFlat();
+
+                flatDAO.deleteAll();
+                if (thisFlat != null)
+                    flatDAO.deleteDept(thisFlat);
+            }
+            IDs.resetIDs();
+
+            userDAO.deleteAll();
+            FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+            flatDAO.deleteAll();
+            NotificationsDAO notDAO = new NotificationsDAO(getApplicationContext());
+            //  notDAO.deleteAll();
+            Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
+            startActivity(ReturnHome);
+
         }
 
         return super.onOptionsItemSelected(item);

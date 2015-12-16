@@ -17,6 +17,7 @@ public class IDs {
     private String flatId;
     private JabberSmackAPI smackChat;
 
+
     private IDs(Context context){
         userId = null;
         userToken = null;
@@ -38,6 +39,10 @@ public class IDs {
         if(instance == null)
             instance = new IDs(context);
         return instance;
+    }
+
+    public static void resetIDs(){
+        instance = null;
     }
 
     public String getUserId(Context context){

@@ -443,6 +443,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
 
+
                     String chatID = getCurrentUser().getServerid();
                     String password = mPassword;
                     try {

@@ -73,6 +73,7 @@ public class Notifications_Web_Services {
 
             if (success.equals("true")) {
                 JSONArray invites = mainObject.getJSONArray("invitation_notifications"); // Needs control
+                Log.i("Booba", invites + " ");
                 for (int i = 0; i < invites.length(); i++) {
                     if (invites.get(i) != null) {
                         JSONObject invitation = invites.getJSONObject(i);
@@ -87,26 +88,48 @@ public class Notifications_Web_Services {
 
                         finalNotif.setObjectID(flatIds);
                         finalNotif.setTime(new Date());
-                        finalNotif.setType("Flat_Invite");
+                        finalNotif.setType("INVITATION");
 
                         user.addNotifications(finalNotif);
                     }
                 }
-                JSONArray invites2 = mainObject.getJSONArray("invitation_objects"); // Needs control
+                JSONArray invites2 = mainObject.getJSONArray("object_notifications"); // Needs control
+                Log.i("Booba2", invites2 + "");
                 for (int i = 0; i < invites2.length(); i++) {
                     if (invites2.get(i) != null) {
                         JSONObject invitation2 = invites2.getJSONObject(i);
 
                         String sender = invitation2.getString("sender");
-                        String flatIds = invitation2.getString("object_id");
+                        //String flatIds = invitation2.getString("object_id");
                         int id = invitation2.getInt("id");
                         Notification finalNotif = new Notification();
                         finalNotif.setServerID(id);
                         finalNotif.setId(id);
                         finalNotif.setAuthor(sender);
-                        finalNotif.setObjectID(flatIds);
+                       // finalNotif.setObjectID(flatIds);
                         finalNotif.setTime(new Date());
-                        finalNotif.setType("Map_notification");
+                        finalNotif.setType("MAP");
+
+                        user.addNotifications(finalNotif);
+                    }
+                }
+
+                JSONArray invites3 = mainObject.getJSONArray("task_notifications"); // Needs control
+                Log.i("Booba7", invites3 + "");
+                for (int i = 0; i < invites3.length(); i++) {
+                    if (invites3.get(i) != null) {
+                        JSONObject invitation2 = invites2.getJSONObject(i);
+
+                        String sender = invitation2.getString("sender");
+                       // String flatIds = invitation2.getString("task_id");
+                        int id = invitation2.getInt("id");
+                        Notification finalNotif = new Notification();
+                        finalNotif.setServerID(id);
+                        finalNotif.setId(id);
+                        finalNotif.setAuthor(sender);
+                       // finalNotif.setObjectID(flatIds);
+                        finalNotif.setTime(new Date());
+                        finalNotif.setType("PLANNING");
 
                         user.addNotifications(finalNotif);
                     }

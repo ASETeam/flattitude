@@ -20,6 +20,15 @@ public class Notification {
     private Integer myIcon;
     private int serverID;
     private String objectID;
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getObjectID() {
         return objectID;
@@ -75,6 +84,12 @@ public class Notification {
                 break;
             case "CHAT" :
                 this.myIcon = R.drawable.ic_chat;
+                break;
+            case "MAP" :
+                this.myIcon = R.drawable.ic_map;
+                break;
+            case "PLANNING" :
+                this.myIcon = R.drawable.ic_calendar;
                 break;
             default:
                 this.myIcon = R.drawable.ic_message;

@@ -6,10 +6,12 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.telecom.Call;
 import android.util.Log;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.database.Notifications_Web_Services;
@@ -57,7 +59,7 @@ public class ChangeUI extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 5000000); // 1 second * 1000
+        handler.postDelayed(sendUpdatesToUI, 20000); // 1 second * 1000
        // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
@@ -69,7 +71,7 @@ public class ChangeUI extends Service {
         public void run() {
            // DisplayLoggingInfo();
             SycnhronizeNotifications();
-            handler.postDelayed(this, 5000); // 5 seconds
+            handler.postDelayed(this, 20000); // 5 seconds
         }
     };
 
@@ -124,17 +126,23 @@ public class ChangeUI extends Service {
             ResultContainer<User> response = notifs.execute(user.getServerid()).get(500000, TimeUnit.MILLISECONDS);
             //ResultContainer<User> response =  UserFacade.getNotifications(user.getServerid());
             ArrayList<Notification> notifications = response.getTemplate().getNotifications();
+            Log.i("Booba 2.5", CallAPI.printList(notifications));
             int nothing = 0;
             Log.i("AFara2", "We are in the backgroundproces");
             for (int i = 0; i < notifications.size(); i++)
             {
                 Notification thisNotif = notifications.get(i);
                 NotificationsDAO not_Dao = new NotificationsDAO(getApplicationContext());
-                List<Notification> internal_Notifications = not_Dao.getNotifications();
-                if (!internal_Notifications.contains(thisNotif))
+
+                List<Notification> internal_Notifications = not_Dao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+                List<Notification> selectList = not_Dao.selectNotification(thisNotif.getId() + "");
+                Log.i("Booba3", CallAPI.printList(selectList));
+                if (selectList.size() == 0)
+
                 {
                     thisNotif.setSeennotification(false);
-                    thisNotif.setId(new Random().nextInt(4000000));
+                   // thisNotif.setId(new Random().nextInt(4000000));
+                    thisNotif.setUser(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
                     not_Dao.save(thisNotif);
                     Timestamp tstamp  = new Timestamp(System.currentTimeMillis());
                   //  UserFacade.retrievedNotifications(thisNotif.getServerID() + "", tstamp.toString());

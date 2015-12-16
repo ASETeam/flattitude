@@ -140,7 +140,7 @@ public class ChangeUI extends Service {
                 if (selectList.size() == 0)
 
                 {
-                    thisNotif.setSeennotification(false);
+                    thisNotif.setSeennotification("false");
                    // thisNotif.setId(new Random().nextInt(4000000));
                     thisNotif.setUser(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
                     not_Dao.save(thisNotif);

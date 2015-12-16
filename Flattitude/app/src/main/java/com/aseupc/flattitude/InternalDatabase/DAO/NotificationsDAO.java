@@ -91,7 +91,8 @@ public class NotificationsDAO extends DBDAO {
                         DataBaseHelper.NOTIFICATION_OBJECTNAME,
                         DataBaseHelper.NOTIFICATION_USER
                 },
-                DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"' AND "+ DataBaseHelper.NOTIFICATION_HASNOTIFICATION + " = 'FALSE'", null, null, null,null, null);
+             //   DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"' AND "+ DataBaseHelper.NOTIFICATION_HASNOTIFICATION + " = 'FALSE'", null, null, null,null, null);
+                DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"'", null, null, null,null, null);
 
 
 
@@ -102,7 +103,7 @@ public class NotificationsDAO extends DBDAO {
             Notification mo = new Notification();
             mo.setId(cursor.getInt(0));
             mo.setAuthor(cursor.getString(1));
-            mo.setSeennotification(seen);
+            mo.setSeennotification(cursor.getString(2));
             mo.setBody(cursor.getString(3));
 
             mo.setType(cursor.getString(5));
@@ -137,7 +138,7 @@ public class NotificationsDAO extends DBDAO {
             Notification mo = new Notification();
             mo.setId(cursor.getInt(0));
             mo.setAuthor(cursor.getString(1));
-            mo.setSeennotification(seen);
+            mo.setSeennotification(cursor.getString(2));
             mo.setBody(cursor.getString(3));
 
             mo.setType(cursor.getString(5));

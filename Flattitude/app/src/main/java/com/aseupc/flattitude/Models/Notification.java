@@ -13,7 +13,7 @@ import java.util.Date;
 public class Notification {
     private int id;
     private String type;
-    private boolean seennotification;
+    private String seennotification;
     private String body;
     private String author;
     private Date time;
@@ -98,11 +98,11 @@ public class Notification {
 
     }
 
-    public boolean isSeennotification() {
+    public String isSeennotification() {
         return seennotification;
     }
 
-    public void setSeennotification(boolean seennotification) {
+    public void setSeennotification(String seennotification) {
         this.seennotification = seennotification;
     }
 

@@ -4,7 +4,7 @@ package com.aseupc.flattitude.databasefacade;
 import com.aseupc.flattitude.Models.Flat;
 
 
-
+import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.database.Invitation_Web_Services;
 
 
@@ -18,10 +18,10 @@ import com.aseupc.flattitude.utility_REST.ResultContainer;
  */
 public class FlatFacade {
 
-    public static ResultContainer<Flat> createFlat(Flat flat)
+    public static ResultContainer<Flat> createFlat(Flat flat, User user)
     {
     Flat_Web_Services Flat_Ws = new Flat_Web_Services();
-    return Flat_Ws.ws_createFlat(flat);
+    return Flat_Ws.ws_createFlat(flat, user);
     }
 
     public static ResultContainer<Flat> inviteMember(String userID, String flatID, String email)

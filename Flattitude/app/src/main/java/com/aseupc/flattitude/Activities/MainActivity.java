@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -31,17 +32,22 @@ import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.UserFacade;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
     private User thisUser;
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         notif.setId(random.nextInt(2000000));
 
         notif.setType("Add");
-        notif.setSeennotification(false);
+        notif.setSeennotification("false");
         notif.setBody("This is a message posted by me");
      //   notDao.save(notif);
         }
@@ -354,7 +360,27 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-                                flatDAO.deleteDept(flatDAO.getFlat());
+                                //flatDAO.deleteDept(flatDAO.getFlat());
+                                flatDAO.deleteAll();
+                                IDs ids = IDs.getInstance(getApplicationContext());
+                                CallLeaveFlat call = new CallLeaveFlat();
+
+                                ResultContainer<User> res = null;
+                                try {
+                                    res = call.execute(ids.getUserId(getApplicationContext()), ids.getFlatId(getApplicationContext())).get(50000, TimeUnit.MILLISECONDS);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (TimeoutException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //UserFacade.quitFlat(ids.getUserId(getApplicationContext()), ids.getFlatId(getApplicationContext()));
+                                if (res.getSucces() == true)
+                                {
+                                    CallAPI.makeToast(getApplicationContext(), "You have just left the flat");
+                                }
                                 Intent homeIntent = new Intent(getApplicationContext(), GroupActivity.class);
                                 startActivity(homeIntent);
                             }
@@ -375,6 +401,18 @@ public class MainActivity extends AppCompatActivity {
                 return builder.create();
 
 
+        }
+    }
+
+    public class CallLeaveFlat extends AsyncTask<String, Void, ResultContainer<User>>
+    {
+
+        @Override
+        protected ResultContainer<User> doInBackground(String... params) {
+            ResultContainer<User> res;
+            res = UserFacade.quitFlat(params[0], params[1]);
+
+            return res;
         }
     }
 

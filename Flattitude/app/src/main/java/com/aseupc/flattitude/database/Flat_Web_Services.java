@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
@@ -102,7 +103,7 @@ public class Flat_Web_Services {
         return response;
     }
 
-    public ResultContainer<Flat> ws_createFlat(Flat flat) {
+    public ResultContainer<Flat> ws_createFlat(Flat flat, User user) {
         ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
         String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
 
@@ -111,7 +112,7 @@ public class Flat_Web_Services {
 
         String FinalizeThread = "Call not executed";
         try {
-            FinalizeThread = call.execute(flat).get(50000, TimeUnit.MILLISECONDS);
+            FinalizeThread = call.execute(flat, user).get(50000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -234,23 +235,24 @@ public class Flat_Web_Services {
         }
     }
 
-    class callPostCreateFlat extends AsyncTask<Flat, Void, String> {
+    class callPostCreateFlat extends AsyncTask<Object, Void, String> {
 
         private Exception exception;
 
 
-        protected String doInBackground(Flat... flats) {
+        protected String doInBackground(Object... flats) {
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/create";
             HashMap<String, String> values = new HashMap<>();
-            Flat flat = flats[0];
+            Flat flat = (Flat) flats[0];
+            User user = (User) flats[1];
             values.put("name", flat.getName());
             values.put("address", flat.getAddress());
             values.put("city", flat.getCity());
             values.put("country", flat.getCountry());
             values.put("postcode", flat.getPostcode());
             values.put("IBAN", flat.getIban());
-            values.put("masterid", "2");
+            values.put("masterid", user.getServerid());
 
             response = CallAPI.performPostCall(urlStr, values);
 

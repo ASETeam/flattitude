@@ -24,7 +24,11 @@ public class UserFacade {
             Log.i("In facade loggin", "TRUE" );
         return result;
     }
-
+    public static ResultContainer<User> quitFlat (String userID, String flatID){
+        User_Web_Services ws_user = new User_Web_Services();
+        ResultContainer<User> res = ws_user.ws_quitFlat(userID, flatID);
+        return res;
+    }
     public static ResultContainer<User> logoutUser(String userID, String token)
     {
         User_Web_Services WS_user = new User_Web_Services();

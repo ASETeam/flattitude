@@ -209,7 +209,7 @@ public class CallAPI  {
 
     public static String performChatRoomCreation(String flatname) {
         try {
-            URL url = new URL("http://ec2-54-218-39-214.us-west-2.compute.amazonaws.com:9090/plugins/restapi/v1/users/");
+            URL url = new URL("http://ec2-54-218-39-214.us-west-2.compute.amazonaws.com:9090/plugins/restapi/v1/chatrooms/");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");

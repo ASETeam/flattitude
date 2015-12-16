@@ -128,7 +128,7 @@ public class Flat_Web_Services {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
 
-                CallAPI.performChatRoomCreation(flat.getName());
+
 
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
@@ -257,7 +257,7 @@ public class Flat_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(response);
                 Log.i("GUILLE RESPONSE", mainObject.toString());
-
+                CallAPI.performChatRoomCreation(flat.getName());
                 //Perform creation of chatRoom associated to the flat.
             } catch (JSONException e) {
                 e.printStackTrace();

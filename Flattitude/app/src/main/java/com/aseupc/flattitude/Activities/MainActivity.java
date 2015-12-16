@@ -26,6 +26,7 @@ import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.PlanningDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
@@ -33,6 +34,7 @@ import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.synchronization.ChangeUI;
 import com.aseupc.flattitude.synchronization.SynchzonizationService;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public static Menu menu;
     public static Context currentContext;
     public static MenuItem mItem;
-
+    public Context context;
     private static final String TAG = "BroadcastTest";
     private Intent ui_intent;
 
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // ---
         NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
-
+        context = getApplicationContext();
         for(int i=0; i < 5; i++)
         { Notification notif = new Notification();
         Random random = new Random();
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         notif.setBody("This is a message posted by me");
      //   notDao.save(notif);
         }
-        List<Notification> retrieved = notDao.getNotifications();
+        List<Notification> retrieved = notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
         for (int i = 0; i< retrieved.size(); i++)
         {
             Log.i("NOTIFICATION ", retrieved.get(i).getId() + " " + retrieved.get(i).getTime().toString());
@@ -275,6 +277,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.notif_received)
         {
+            NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
+            List<Notification> nots = (List<Notification>)notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+            Log.i("Booba6", CallAPI.printList(nots));
             showNotifications();
         }
         if (id == R.id.action_search) {
@@ -302,10 +307,13 @@ public class MainActivity extends AppCompatActivity {
                 if (thisFlat != null)
                 flatDAO.deleteDept(thisFlat);
             }
+            IDs.resetIDs();
             UserDAO userDAO = new UserDAO(getApplicationContext());
             userDAO.deleteAll();
             FlatDAO flatDAO = new FlatDAO(getApplicationContext());
             flatDAO.deleteAll();
+            NotificationsDAO notDAO = new NotificationsDAO(getApplicationContext());
+          //  notDAO.deleteAll();
             Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
             startActivity(ReturnHome);
 
@@ -365,8 +373,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class ShowNotifications extends DialogFragment {
+    public  class ShowNotifications extends DialogFragment {
 
+
+        @Override
+        public void onStart() {
+            super.onStart();
+
+
+        }
 
         @NonNull
         @Override
@@ -374,11 +389,12 @@ public class MainActivity extends AppCompatActivity {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            final String [] items = new String[] {"Invitation received by Anas Helalouch to join appartment", "A new event Red Party has been planned by Red John on December 15th"};
-            final Integer[] icons = new Integer[] {R.drawable.ic_add, R.drawable.ic_calendar};
+          //  final String [] items = new String[] {"Invitation received by Anas Helalouch to join appartment", "A new event Red Party has been planned by Red John on December 15th"};
+          //  final Integer[] icons = new Integer[] {R.drawable.ic_add, R.drawable.ic_calendar};
 
-            NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
-            List<Notification> notifs = notDao.getNotifications();
+            NotificationsDAO notDao = new NotificationsDAO(getContext());
+            List<Notification> notifs = notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+            Log.i("Booba4", CallAPI.printList(notifs));
             ArrayList<String> notifbody = new ArrayList<String>();
             ArrayList<Integer> notificon = new ArrayList<Integer>();
             for(int i= 0; i < notifs.size(); i++)
@@ -399,14 +415,20 @@ public class MainActivity extends AppCompatActivity {
             final Integer[] a = notifIconArray;
             final String[] b = notifArray;
             ListAdapter adapter = new ArrayAdapterWithIcon(getActivity(), b, a);
-
+            final List<Notification> notifsF = notifs;
             for (int i = 0; i < a.length; i++)
             {
                 Log.i("Notif type", a[i].toString());
             }
             builder.setTitle("Notifications").setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item ) {
-                    Toast.makeText(getActivity(), "Item Selected: " + item, Toast.LENGTH_SHORT).show();
+                    Notification notifU =  notifsF.get(item);
+                  //  Toast.makeText(getActivity(), "Item Selected: " + notifU.getAuthor(), Toast.LENGTH_SHORT).show();
+                if (notifU.getType().equals("MAP"))
+                {
+                    Intent intent = new Intent(getApplicationContext(), LocateObjectsActivity.class);
+                    startActivity(intent);
+                }
                 }
             });
             // Create the AlertDialog object and return it

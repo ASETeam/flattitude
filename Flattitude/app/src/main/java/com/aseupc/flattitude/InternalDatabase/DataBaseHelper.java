@@ -128,6 +128,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String NOTIFICATION_OBJECTNAME = "objectname";
     public static final String NOTIFICATION_TASKTYPE = "tasktype";
     public static final String NOTIFICATION_AUTHOR = "author";
+    public static final String NOTIFICATION_USER = "user";
 
 
     private static final String NOTIFICATIONS_TABLE_CREATE =
@@ -139,6 +140,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     NOTIFICATION_AUTHOR + " TEXT," +
                     NOTIFICATION_TASKTYPE + " TEXT," +
                     NOTIFICATION_TIME + " TEXT," +
+                    NOTIFICATION_USER + " TEXT," +
                     NOTIFICATION_OBJECTNAME + " TEXT " +
                     ");";
 

@@ -437,7 +437,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
                     startActivity(mainIntent);
                 }
-
+                
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");
 

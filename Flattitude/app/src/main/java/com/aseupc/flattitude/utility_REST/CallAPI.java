@@ -7,6 +7,7 @@ import android.util.*;
 import android.widget.Toast;
 
 import com.aseupc.flattitude.Models.MUCRoomEntity;
+import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.Models.UserEntity;
 
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -39,7 +41,16 @@ import org.simpleframework.xml.core.Persister;
  */
 public class CallAPI  {
 
+    public static String printList (List<Notification> l)
+    {
+        String res = "";
+        for (Notification n:l
+             ) {
+            res += n.getId()  + " ";
 
+        }
+        return res;
+    }
 
     public static User getUser1(String userID)
     {

@@ -14,7 +14,9 @@ import android.widget.ListView;
 
 import com.aseupc.flattitude.ChatArrayAdapter;
 import com.aseupc.flattitude.Models.ChatMessage;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -22,6 +24,7 @@ public class ChatActivity extends AppCompatActivity {
     private ListView messagesList;
     private EditText messageTextField;
     private Button sendButton;
+    private JabberSmackAPI chatSmack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,13 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private boolean sendChatMessage() {
+        JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
+
+        smackChat.sendGroupMessage(messageTextField.getText().toString());
+        smackChat.setReceiveListener(adapter);
+
         adapter.add(new ChatMessage(messageTextField.getText().toString()));
+
         messageTextField.setText("");
         return true;
     }

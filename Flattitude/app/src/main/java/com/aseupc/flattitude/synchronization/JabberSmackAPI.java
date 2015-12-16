@@ -1,5 +1,8 @@
 package com.aseupc.flattitude.synchronization;
 
+import com.aseupc.flattitude.ChatArrayAdapter;
+import com.aseupc.flattitude.Models.ChatMessage;
+
 import java.util.*;
 import java.io.*;
 
@@ -81,11 +84,14 @@ public class JabberSmackAPI {
 			
 		    this.currentMUC = manager.getMultiUserChat(roomName + "@conference.ip-172-31-40-57");
 			this.currentMUC.join(nickname);
-
-			this.currentMUC.addMessageListener(new MUCManagerListenerImpl());
 		} catch (Exception ex) {ex.printStackTrace();}
 	}
-	
+
+	public void setReceiveListener(ChatArrayAdapter adapter) {
+		this.currentMUC.addMessageListener(new MUCManagerListenerImpl(adapter));
+
+	}
+
 	public void sendGroupMessage(String message) {
 		try {
 			this.currentMUC.sendMessage(message);
@@ -156,11 +162,20 @@ public class JabberSmackAPI {
 	
 	private class MUCManagerListenerImpl implements MessageListener {
 
+		private ChatArrayAdapter adapter;
+
+		public MUCManagerListenerImpl(ChatArrayAdapter adapter) {
+			this.adapter = adapter;
+		}
+
+
 	    /** {@inheritDoc} */
 		@Override
 		public void processMessage(Message message) {
-            System.out.println("Received message: " 
-	                + (message != null ? message.getBody() : "NULL"));
+
+            adapter.add(new ChatMessage(message.getBody(), true));
+			/*System.out.println("Received message: "
+	                + (message != null ? message.getBody() : "NULL"));*/
 		}
 
 	}

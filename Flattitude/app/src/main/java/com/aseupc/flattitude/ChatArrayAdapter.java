@@ -31,6 +31,7 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
 
     public void add(ChatMessage chatMessage) {
         messages.add(chatMessage);
+
         super.add(chatMessage);
     }
 

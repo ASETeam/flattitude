@@ -214,9 +214,9 @@ public class InvitationDetails extends AppCompatActivity {
             accept = acceptation;
             Log.i("SentParam", "User id : " + userID + " - Flat id :  " + flatID );
            String accString = "";
-            if (acceptation == 0 )
+            if (acceptation == 1 )
                 accString = "true";
-            else if (acceptation == 1)
+            else if (acceptation == 0)
                 accString = "false";
             ResultContainer<Flat> response = FlatFacade.respondInvitation(userID, flatID, accString);
             Flat flat = FlatFacade.getInfo(MyFlatID).getTemplate();

@@ -91,8 +91,8 @@ public class NotificationsDAO extends DBDAO {
                         DataBaseHelper.NOTIFICATION_OBJECTNAME,
                         DataBaseHelper.NOTIFICATION_USER
                 },
-             //   DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"' AND "+ DataBaseHelper.NOTIFICATION_HASNOTIFICATION + " = 'FALSE'", null, null, null,null, null);
-                DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"'", null, null, null,null, null);
+               DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"' AND "+ DataBaseHelper.NOTIFICATION_HASNOTIFICATION + " = 'false'", null, null, null,null, null);
+              //  DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"'", null, null, null,null, null);
 
 
 

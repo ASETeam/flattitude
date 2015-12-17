@@ -3,6 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
+        <item name="logo">@drawable/ic_chat</item>
+        <item name="displayOptions">useLogo|showHome</item>
         <item name="colorPrimary">@color/colorBackgroundBlue</item>
         <item name="colorPrimaryDark">@color/colorPink</item>
         <item name="colorAccent">@color/black</item>
@@ -11,6 +13,13 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <style name="MyActionBarLogo" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="background">@color/AnasBlue</item>
+        <item name="logo">@drawable/ic_chat</item>
+        <item name="displayOptions">useLogo|showHome</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -26,6 +26,9 @@ public class InvitationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+
         Button mSendInvite = (Button) findViewById(R.id.send_invitation);
         mSendInvite.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.database.DataSetObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +31,9 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
 
         sendButton = (Button) findViewById(R.id.chat_send_button);
         messagesList = (ListView) findViewById(R.id.chat_list_view);
@@ -93,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private boolean sendChatMessage() {
         JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
-
+//        Log.i("Bib5", smackChat.toString());
         smackChat.sendGroupMessage(messageTextField.getText().toString());
         smackChat.setReceiveListener(adapter);
 
@@ -103,3 +107,4 @@ public class ChatActivity extends AppCompatActivity {
         return true;
     }
 }
+

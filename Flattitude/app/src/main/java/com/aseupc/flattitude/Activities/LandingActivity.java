@@ -28,6 +28,11 @@ import java.util.concurrent.TimeoutException;
 public class LandingActivity extends AppCompatActivity {
 
     @Override
+    public void onBackPressed() {
+        return;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);

@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.Activities;
 
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +13,10 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public Context context;
     private static final String TAG = "BroadcastTest";
     private Intent ui_intent;
+    Toolbar mToolbar;
 
     public Menu getMenu() {
         return menu;
@@ -70,9 +76,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        ab.setSubtitle("A shared experience");
+        SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ab.setTitle(s);
+        setTitle(s);
+
         // ---
         NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
         context = getApplicationContext();
+        UserDAO userDAO1 = new UserDAO(getApplicationContext());
+        User user1 = userDAO1.getUser();
+        if (user1 == null)
+        {
+            Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
+            startActivity(intent);
+        }
         for(int i=0; i < 5; i++)
         { Notification notif = new Notification();
         Random random = new Random();
@@ -149,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent BudgetIntent = new Intent(view.getContext(), BudgetActivity.class);
-                startActivity(BudgetIntent);
+                //startActivity(BudgetIntent);
+                CallAPI.makeToast(getApplicationContext(), "Let's not go there. ");
             }
         });
 
@@ -188,7 +213,8 @@ public class MainActivity extends AppCompatActivity {
         User user = userDAO.getUser();
        /*TextView mUser = (TextView) findViewById(R.id.user_id);
         TextView mFlat = (TextView) findViewById(R.id.flat_id);*/
-        getSupportActionBar().setIcon(R.drawable.logoflattitude);
+
+
         if ((flat != null) && (user != null)) {
             thisFlat = flat;
             thisUser = user;
@@ -327,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
           //  notDAO.deleteAll();
             Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
             startActivity(ReturnHome);
+            finish();
 
         }
 
@@ -463,10 +490,13 @@ public class MainActivity extends AppCompatActivity {
             {
                 Log.i("Notif type", a[i].toString());
             }
+            final NotificationsDAO notificationsDAO= new NotificationsDAO(getApplicationContext());
             builder.setTitle("Notifications").setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item ) {
                     Notification notifU =  notifsF.get(item);
                   //  Toast.makeText(getActivity(), "Item Selected: " + notifU.getAuthor(), Toast.LENGTH_SHORT).show();
+               notifU.setSeennotification("true");
+                  notificationsDAO.update(notifU);
                 if (notifU.getType().equals("MAP"))
                 {
                     Intent intent = new Intent(getApplicationContext(), LocateObjectsActivity.class);

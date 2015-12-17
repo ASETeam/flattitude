@@ -1,5 +1,7 @@
 package com.aseupc.flattitude.synchronization;
 
+import android.util.Log;
+
 import com.aseupc.flattitude.ChatArrayAdapter;
 import com.aseupc.flattitude.Models.ChatMessage;
 
@@ -41,7 +43,7 @@ public class JabberSmackAPI {
 	    
 	    config.setSendPresence(true);
 	    config.setDebuggerEnabled(true);
-	    
+	    Log.i("Bib2", "Before cnnection");
 	    connection = new XMPPTCPConnection(config.build());
 	    connection.connect();
 	    connection.login(userName, password);
@@ -81,9 +83,9 @@ public class JabberSmackAPI {
 	public void joinMUC (String roomName, String nickname) {
 		try {
 		    MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
-			
 		    this.currentMUC = manager.getMultiUserChat(roomName + "@conference.ip-172-31-40-57");
 			this.currentMUC.join(nickname);
+			Log.i("Bib3", "Join chat");
 		} catch (Exception ex) {ex.printStackTrace();}
 	}
 

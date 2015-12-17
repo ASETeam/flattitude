@@ -25,6 +25,7 @@
         android:icon="@drawable/logoflattitude"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
         <service
             android:name=".synchronization.SynchzonizationService"
             android:enabled="true"
@@ -62,6 +63,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".Activities.MainActivity"
+
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity

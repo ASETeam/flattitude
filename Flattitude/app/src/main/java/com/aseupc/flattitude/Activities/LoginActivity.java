@@ -446,20 +446,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     String chatID = getCurrentUser().getServerid();
                     String password = mPassword;
-                    try {
-                        JabberSmackAPI smackChat = new JabberSmackAPI();
-
-                        //Login to Chat.
-                        smackChat.login(chatID, password);
-
-                        //Join to room.
-                        smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
-
-                        IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
-
-                    } catch (Exception ex ) {
-                        Log.e("CHAT ERROR", ex.getMessage());
-                    }
+                connectChat call = new connectChat();
+                call.execute(chatID, password);
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");
@@ -477,7 +465,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
 
+        public class connectChat extends AsyncTask<String, Void, Void>
+        {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    JabberSmackAPI smackChat = new JabberSmackAPI();
+
+                    //Login to Chat.
+                    smackChat.login(params[0], params[1]);
+                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    Flat flat = flatDAO.getFlat();
+                    //Join to room.
+                    smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
+
+                    IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
+
+                } catch (Exception ex ) {
+                    Log.e("CHAT ERROR", ex.getMessage());
+                }
+                return null;
+
+            }
+        }
+
 
     }
+
 }
 

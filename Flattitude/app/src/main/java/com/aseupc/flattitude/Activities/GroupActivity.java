@@ -171,6 +171,7 @@ public class GroupActivity extends AppCompatActivity {
             //  notDAO.deleteAll();
             Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
             startActivity(ReturnHome);
+            finish();
 
         }
 

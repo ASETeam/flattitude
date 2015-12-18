@@ -41,6 +41,7 @@ public class RegisteringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registering);
 
+
         //customize font for each textview, edit text, etc.
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");

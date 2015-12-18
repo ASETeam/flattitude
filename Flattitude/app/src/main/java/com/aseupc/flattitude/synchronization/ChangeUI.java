@@ -59,7 +59,7 @@ public class ChangeUI extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 20000); // 1 second * 1000
+        handler.postDelayed(sendUpdatesToUI, 200000); // 1 second * 1000
        // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
@@ -71,7 +71,7 @@ public class ChangeUI extends Service {
         public void run() {
            // DisplayLoggingInfo();
             SycnhronizeNotifications();
-            handler.postDelayed(this, 20000); // 5 seconds
+            handler.postDelayed(this, 200000); // 5 seconds
         }
     };
 

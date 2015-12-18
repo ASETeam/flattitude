@@ -446,6 +446,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     String chatID = getCurrentUser().getServerid();
                     String password = mPassword;
+<<<<<<< HEAD
                     try {
                         JabberSmackAPI smackChat = new JabberSmackAPI();
 
@@ -460,6 +461,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     } catch (Exception ex ) {
                         ex.printStackTrace();
                     }
+=======
+                connectChat call = new connectChat();
+                call.execute(chatID, password);
+>>>>>>> 161a9c7c27b5758f4ecc3070d4f7c67d5b332ad3
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");
@@ -477,7 +482,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
 
+        public class connectChat extends AsyncTask<String, Void, Void>
+        {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    JabberSmackAPI smackChat = new JabberSmackAPI();
+
+                    //Login to Chat.
+                    smackChat.login(params[0], params[1]);
+                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    Flat flat = flatDAO.getFlat();
+                    //Join to room.
+                    smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
+
+                    IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
+
+                } catch (Exception ex ) {
+                    Log.e("CHAT ERROR", ex.getMessage());
+                }
+                return null;
+
+            }
+        }
+
 
     }
+
 }
 

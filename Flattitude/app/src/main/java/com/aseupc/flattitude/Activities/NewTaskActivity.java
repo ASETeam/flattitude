@@ -65,6 +65,8 @@ public class NewTaskActivity extends AppCompatActivity
         setContentView(R.layout.activity_new_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
 
         calendar = (Calendar) getIntent().getSerializableExtra("date");
         if(calendar==null)

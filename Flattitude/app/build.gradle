@@ -45,5 +45,6 @@ dependencies {
     compile "org.igniterealtime.smack:smack-tcp:4.1.0-rc1"
     // optional features
     compile "org.igniterealtime.smack:smack-android-extensions:4.1.0-rc1"
+    compile 'com.github.d-max:spots-dialog:0.4@aar'
 
 }

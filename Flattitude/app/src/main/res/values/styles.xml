@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="logo">@drawable/ic_chat</item>
+        <item name="logo">@drawable/ic_logo_app</item>
         <item name="displayOptions">useLogo|showHome</item>
         <item name="colorPrimary">@color/colorBackgroundBlue</item>
         <item name="colorPrimaryDark">@color/colorPink</item>
@@ -26,4 +26,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CustomLoading" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Updating…</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+    </style>
 </resources>

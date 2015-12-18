@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
@@ -179,6 +180,7 @@ public class RegisteringActivity extends AppCompatActivity {
         if (result.getSucces() == true) {
             UserDAO userConn = new UserDAO(mPhonenumberView.getContext());
             userConn.save(result.getTemplate());
+            IDs.getInstance(getApplicationContext()).setNewUser();
             Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
             startActivity(valideIntent);
             Log.i("Registering ", "Correct");

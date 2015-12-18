@@ -16,12 +16,14 @@ public class IDs {
     private String userToken;
     private String flatId;
     private JabberSmackAPI smackChat;
+    private boolean newUser;
 
 
     private IDs(Context context){
         userId = null;
         userToken = null;
         flatId = null;
+        newUser = false;
 
         UserDAO uDAO = new UserDAO(context);
         User u = uDAO.getUser();
@@ -86,4 +88,15 @@ public class IDs {
     public void setSmackChat(JabberSmackAPI smackChat) {
         this.smackChat = smackChat;
     }
+
+    public void setNewUser() {
+        this.newUser = true;
+    }
+    public void setConfirmedUser() {
+        this.newUser = false;
+    }
+    public boolean getNewUser(){
+        return newUser;
+    }
+
 }

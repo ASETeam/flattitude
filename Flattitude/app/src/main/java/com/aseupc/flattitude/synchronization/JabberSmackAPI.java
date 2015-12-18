@@ -5,6 +5,7 @@ import com.aseupc.flattitude.Models.ChatMessage;
 
 import java.util.*;
 import java.io.*;
+import android.util.Log;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
@@ -46,6 +47,7 @@ public class JabberSmackAPI {
 	    connection.connect();
 	    connection.login(userName, password);
 	    connection.setPacketReplyTimeout(20000);
+		Log.e("HELLO", "It connects");
 	}
 	
 	public void sendMessage(String message, String to) throws Exception {
@@ -81,8 +83,10 @@ public class JabberSmackAPI {
 	public void joinMUC (String roomName, String nickname) {
 		try {
 		    MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
-			
-		    this.currentMUC = manager.getMultiUserChat(roomName + "@conference.ip-172-31-40-57");
+
+			String roomNameCorrected = roomName.replaceAll("\\s+","");
+
+		    this.currentMUC = manager.getMultiUserChat(roomNameCorrected + "@conference.ip-172-31-40-57");
 			this.currentMUC.join(nickname);
 		} catch (Exception ex) {ex.printStackTrace();}
 	}
@@ -100,49 +104,8 @@ public class JabberSmackAPI {
 		}
 	}
 
-	
-	public static void main(String args[]) throws XMPPException, IOException {
-	    // declare variables
-	    JabberSmackAPI c = new JabberSmackAPI();
-	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	    String msg;
-	
-	    try {
-		    // Enter your login information here
-		    System.out.println("-----");
-		    System.out.println("Login information:");
-		
-		    System.out.print("username: ");
-		    String login_username = br.readLine();
-		
-		    System.out.print("password: ");
-		    String login_pass = br.readLine();
 
-			c.login(login_username, login_pass);
-		
-		    c.displayBuddyList();
 
-		    System.out.println("-----");
-		
-		    System.out
-		            .println("Who do you want to talk to? - Type contacts full email address:");
-		    String talkTo = br.readLine();
-		
-		    System.out.println("-----");
-		    System.out.println("All messages will be sent to " + talkTo);
-		    System.out.println("Enter your message in the console:");
-		    System.out.println("-----\n");
-		
-		    while (!(msg = br.readLine()).equals("bye")) {
-		        c.sendMessage(msg, talkTo);
-		    }
-		
-		    c.disconnect();
-		    System.exit(0);
-	    
-	    } catch (Exception e) { e.printStackTrace(); }
-	}
-	
 	private class ChatManagerListenerImpl implements ChatManagerListener {
 
 	    /** {@inheritDoc} */

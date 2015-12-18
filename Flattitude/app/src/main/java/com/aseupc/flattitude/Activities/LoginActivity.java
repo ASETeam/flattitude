@@ -458,7 +458,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
 
                     } catch (Exception ex ) {
-                        Log.e("CHAT ERROR", ex.getMessage());
+                        ex.printStackTrace();
                     }
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){

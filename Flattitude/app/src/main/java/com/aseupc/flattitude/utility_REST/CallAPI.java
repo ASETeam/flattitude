@@ -29,7 +29,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -230,7 +230,8 @@ public class CallAPI  {
             conn.setRequestProperty("Authorization", "Basic " + base64);
             conn.setRequestProperty("Content-Type", "application/xml");
 
-            MUCRoomEntity muc = new MUCRoomEntity(flatname, "flattitude", "Description");
+            String flatNameCorrected = flatname.replaceAll("\\s+","");
+            MUCRoomEntity muc = new MUCRoomEntity(flatNameCorrected, "flattitude", "Description");
             muc.setPassword("");
             muc.setSubject("Flat");
             muc.setMaxUsers(50);
@@ -246,7 +247,8 @@ public class CallAPI  {
             muc.setLogEnabled(true);
             muc.setLoginRestrictedToNickname(false);
             muc.setMembersOnly(false);
-            muc.setModerated(true);
+            muc.setModerated(false);
+            muc.setBroadcastPresenceRoles(Arrays.asList(new String[]{"moderator", "participant", "visitor"}));
 
             Serializer serializer = new Persister();
             StringWriter sw = new StringWriter();

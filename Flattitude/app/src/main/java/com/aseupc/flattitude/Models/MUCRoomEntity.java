@@ -39,8 +39,8 @@ public class MUCRoomEntity {
 	private boolean membersOnly;
 	private boolean moderated;
 
-	/*private List<String> broadcastPresenceRoles;
-	private List<String> owners;
+	private List<String> broadcastPresenceRoles;
+	/*private List<String> owners;
 	private List<String> admins;
 	private List<String> members;
 	private List<String> outcasts;*/
@@ -224,7 +224,7 @@ public class MUCRoomEntity {
 	}
 
 	//@Element(name = "broadcastPresenceRole")
-	/*@ElementList(entry = "broadcastPresenceRole")
+	@ElementList(entry = "broadcastPresenceRole")
 	public List<String> getBroadcastPresenceRoles() {
 		return broadcastPresenceRoles;
 	}
@@ -233,7 +233,7 @@ public class MUCRoomEntity {
 		this.broadcastPresenceRoles = broadcastPresenceRoles;
 	}
 	
-	public void addBroadcastPresenceRole(String bpr) {
+	/*public void addBroadcastPresenceRole(String bpr) {
 		this.broadcastPresenceRoles.add(bpr);
 	}
 	

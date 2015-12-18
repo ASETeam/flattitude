@@ -109,7 +109,6 @@ public class Flat_Web_Services {
 
         callPostCreateFlat call = new callPostCreateFlat();
 
-
         String FinalizeThread = "Call not executed";
         try {
             FinalizeThread = call.execute(flat, user).get(50000, TimeUnit.MILLISECONDS);

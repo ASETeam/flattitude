@@ -61,13 +61,13 @@ public class PlanningTask_Web_Services {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<>();
 
             //Only for debug
-            if(true) {
+            /*if(true) {
                 resultContainer.setSuccess(true);
                 Random r = new Random();
                 task.setID(String.valueOf(r.nextInt(200000)));
                 resultContainer.setTemplate(task);
                 return resultContainer;
-            }
+            }*/
 
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/create";
@@ -79,7 +79,7 @@ public class PlanningTask_Web_Services {
             values.put("userid", userID);
             values.put("flatid", flatID);
             values.put("token",token);
-            values.put("type", task.getType());
+            values.put("type", String.valueOf(task.getTypeId()));
             values.put("description", task.getDescription());
             values.put("year", task.getYearString());
             values.put("month", task.getMonthString());
@@ -141,11 +141,11 @@ public class PlanningTask_Web_Services {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
 
             //Only for debug
-            if(true) {
+            /*if(true) {
                 resultContainer.setSuccess(true);
                 resultContainer.setTemplate(task);
                 return resultContainer;
-            }
+            }*/
 
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/edit";
@@ -155,7 +155,7 @@ public class PlanningTask_Web_Services {
             values.put("userid", userID);
             values.put("token",token);
             values.put("taskid",task.getID());
-            values.put("type", task.getType());
+            values.put("type", String.valueOf(task.getTypeId()));
             values.put("description", task.getDescription());
             values.put("year", task.getYearString());
             values.put("month", task.getMonthString());
@@ -212,11 +212,11 @@ public class PlanningTask_Web_Services {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
 
             //Only for debug
-            if(true) {
+           /* if(true) {
                 resultContainer.setSuccess(true);
                 resultContainer.setTemplate(task);
                 return resultContainer;
-            }
+            }*/
 
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/delete";

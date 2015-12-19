@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -48,6 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+import dmax.dialog.SpotsDialog;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -89,12 +93,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private View mNewProgress;
+    private TextView mLoading;
+    private static AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        dialog = new SpotsDialog(getApplicationContext());
         //customize the fonts for each label
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
@@ -137,6 +149,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mLoading = (TextView) findViewById(R.id.loading);
 
     }
 
@@ -231,6 +244,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            AlertDialog dialog = new SpotsDialog(this);
+            dialog.show();
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -254,6 +270,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
+       if (show)
+        {
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        //    AlertDialog dialog = new SpotsDialog(getApplicationContext());
+        //    dialog.show();
+
+        }
+        if (!show)
+        {
+         //   AlertDialog dialog = new SpotsDialog(getApplicationContext());
+         //   dialog.hide();
+        }
+
+
+/*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -266,22 +301,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            mProgressView.setVisibility(show ? View.GONE : View.GONE);
-//            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
+            //            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.GONE : View.GONE);
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
+
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.GONE : View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
          //   mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+  */
     }
 
     @Override
@@ -437,6 +477,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (flatDAO.getFlat() == null) {
                         flatDAO.save(flat);
 
+<<<<<<< HEAD
+=======
+                    String chatID = getCurrentUser().getServerid();
+                    String password = mPassword;
+/*
+                    try {
+                        JabberSmackAPI smackChat = new JabberSmackAPI();
+>>>>>>> 34f6e915735826d55c2af6a53caea247646e59d1
 
 
                     } else {
@@ -449,12 +497,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String chatID = getCurrentUser().getServerid();
                 String password = mPassword;
 
+<<<<<<< HEAD
                 connectChat call = new connectChat();
 
                 if (flat != null)
                     call.execute(chatID, password, flat.getName());
                 else
                     call.execute(chatID, password, "");
+=======
+                    } catch (Exception ex ) {
+                        ex.printStackTrace();
+                    }
+                */
+
+                connectChat call = new connectChat();
+                call.execute(chatID, password);
+>>>>>>> 34f6e915735826d55c2af6a53caea247646e59d1
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");

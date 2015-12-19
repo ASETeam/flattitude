@@ -79,6 +79,8 @@ public class MapObjectDAO extends DBDAO {
             mo.setLongitude(cursor.getDouble(5));
             list.add(mo);
         }
+        if(cursor != null)
+        { cursor.close();} else {}
         return list;
     }
 }

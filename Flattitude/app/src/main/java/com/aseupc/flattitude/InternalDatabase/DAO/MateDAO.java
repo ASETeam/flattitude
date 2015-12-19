@@ -78,6 +78,8 @@ public class MateDAO extends DBDAO {
             mate.setBirthdate(parseDate(cursor.getString(6)));
             list.add(mate);
         }
+        if(cursor != null)
+        { cursor.close();} else {}
         return list;
     }
 }

@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -23,19 +24,24 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true" />
 
-        <Button
+        <info.hoang8f.widget.FButton
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Invite"
             android:id="@+id/send_invitation"
-            android:layout_gravity="right|bottom" />
+            android:layout_gravity="right|bottom"
+            fbutton:buttonColor="@color/fbutton_color_emerald"
+            fbutton:shadowEnabled="true"
+            />
 
         <EditText
             android:layout_width="245dp"
             android:layout_height="wrap_content"
             android:id="@+id/invitee"
-            android:layout_gravity="left|bottom" />
+            android:layout_gravity="left|bottom"
+            android:inputType="textEmailAddress"
+            android:text="Type the email address here" />
 
         <ImageView
             android:layout_width="wrap_content"

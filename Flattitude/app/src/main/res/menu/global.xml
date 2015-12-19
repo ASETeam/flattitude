@@ -6,21 +6,20 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/user_profile" android:title="Change user profile"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/help" android:title="Quick tutorial"
+        android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/action_search"
-        android:icon="@drawable/ic_drawer"
+    <item android:id="@+id/no_notif"
+        android:icon="@drawable/ic_inactive"
         android:title="Action1"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:id="@+id/notif_received"
-        android:icon="@drawable/ic_message"
+        android:icon="@drawable/ic_active"
         android:title="Action2"
         app:showAsAction="always"
         />
-    <item android:id="@+id/logout"
-        android:icon="@drawable/ic_logout"
-        android:title="logout"
-        app:showAsAction="always"
-        />
+
+
 
 
 </menu>

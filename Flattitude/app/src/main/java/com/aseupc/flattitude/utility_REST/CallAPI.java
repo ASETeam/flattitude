@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.utility_REST;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,6 +11,11 @@ import com.aseupc.flattitude.Models.MUCRoomEntity;
 import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.Models.UserEntity;
+import com.aseupc.flattitude.R;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +46,112 @@ import org.simpleframework.xml.core.Persister;
  * http://blog.strikeiron.com/bid/73189/Integrate-a-REST-API-into-Android-Application-in-less-than-15-minutes
  */
 public class CallAPI  {
+
+    public void tutorial (Activity mainI){
+        final Activity main = mainI;
+        Target target_b = new ViewTarget(main.findViewById(R.id.budget_button));
+
+        ShowcaseView.Builder budget_r = new ShowcaseView.Builder(main, true)
+                .setTarget(target_b)
+                .setContentTitle("Budget management")
+                .setContentText("With this feature you can manage your financial expenses in group, to make sure of an equal involvement of everyone");
+        budget_r.setStyle(R.style.CustomShowcaseTheme2);
+       budget_r.build();
+        budget_r.setShowcaseEventListener(new OnShowcaseEventListener() {
+            @Override
+            public void onShowcaseViewHide(ShowcaseView showcaseView) {
+            }
+            @Override
+            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                Target target_c = new ViewTarget(main.findViewById(R.id.calendar_button));
+
+                ShowcaseView.Builder calendar_r = new ShowcaseView.Builder(main, true)
+                        .setTarget(target_c)
+                        .setContentTitle("Shared tasks")
+                        .setContentText("Plan some tasks with your flatmates");
+                calendar_r.setStyle(R.style.CustomShowcaseTheme2);
+                calendar_r.build();
+                calendar_r.setShowcaseEventListener(new OnShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        Target target_o = new ViewTarget(main.findViewById(R.id.map_button));
+
+                        ShowcaseView.Builder locator_r = new ShowcaseView.Builder(main, true)
+                                .setTarget(target_o)
+                                .setContentTitle("Shared objects locator")
+                                .setContentText("Afraid to lose shared keys, vehicles or even flatmates ? " +
+                                        "Don't worry objects can be located on a map in a few seconds. ");
+                        locator_r.setStyle(R.style.CustomShowcaseTheme2);
+                        locator_r.build();
+                        locator_r.setShowcaseEventListener(new OnShowcaseEventListener() {
+                            @Override
+                            public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                Target target_i = new ViewTarget(main.findViewById(R.id.add_button));
+
+                                ShowcaseView.Builder invite_r = new ShowcaseView.Builder(main, true)
+                                        .setTarget(target_i)
+                                        .setContentTitle("Invite new flat members")
+                                        .setContentText("Share the experience by inviting new flat members to your flat. ");
+                                invite_r.setStyle(R.style.CustomShowcaseTheme2);
+                                invite_r.build();
+                                invite_r.setShowcaseEventListener(new OnShowcaseEventListener() {
+                                    @Override
+                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        Target target_le = new ViewTarget(main.findViewById(R.id.leave_button));
+
+                                        ShowcaseView.Builder leave_r = new ShowcaseView.Builder(main, true)
+                                                .setTarget(target_le)
+                                                .setContentTitle("Leave this flat")
+                                                .setContentText("You can leave this flat to join others. ");
+                                        leave_r.setStyle(R.style.CustomShowcaseTheme2);
+                                        leave_r.build();
+
+
+                                    }
+
+                                    @Override
+                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+            }
+        });
+    }
 
     public static String printList (List<Notification> l)
     {

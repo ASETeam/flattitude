@@ -111,6 +111,8 @@ public class NotificationsDAO extends DBDAO {
             mo.setUser(cursor.getString(8));
             list.add(mo);
         }
+        if(cursor != null)
+        { cursor.close();} else {}
         return list;
     }
 
@@ -146,6 +148,8 @@ public class NotificationsDAO extends DBDAO {
             mo.setUser(cursor.getString(8));
             list.add(mo);
         }
+        if(cursor != null)
+        { cursor.close();} else {}
         return list;
     }
 

@@ -9,68 +9,66 @@
     <!--android:theme="@style/Base.V7.Widget.AppCompat.EditText"-->
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:background="@color/colorPink"
-        android:id="@+id/login_button"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAllCaps="false"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/skip_button" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:background="@color/white"
-        android:id="@+id/register_button"
-        android:textColor="@color/colorPink"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textAllCaps="false"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/skip_button" />
+        <ImageView
+            android:layout_width="369dp"
+            android:layout_height="373dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/logoflattitude"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/tagline"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Landing Flattitude" />
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/imageView"
-        android:src="@drawable/logoflattitude"
-        android:layout_marginBottom="55dp"
-        android:layout_alignBottom="@+id/page_slider"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="true" />
+        <ImageView
+            android:layout_width="329dp"
+            android:layout_height="120dp"
+            android:id="@+id/imageView3"
+            android:src="@drawable/ic_tag"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_margin="2dp"
+            android:cropToPadding="true"
+            android:foregroundGravity="center_horizontal|fill_vertical" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/page_slider"
-        android:src="@drawable/ic_slider"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="53dp"
-        android:layout_above="@+id/login_button"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tagline"
-        android:src="@drawable/ic_tag"
-        android:layout_alignTop="@+id/page_slider"
-        android:layout_alignParentStart="true" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:background="@color/white"
+                android:id="@+id/register_button"
+                android:textColor="@color/colorPink"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="right|bottom" />
 
-    <Button
-        style="@style/AlertDialog.AppCompat.Light"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skip"
-        android:id="@+id/skip_button"
-        android:layout_below="@+id/page_slider"
-        android:layout_centerHorizontal="true" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:background="@color/colorPink"
+                android:id="@+id/login_button"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="left|bottom" />
+        </FrameLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

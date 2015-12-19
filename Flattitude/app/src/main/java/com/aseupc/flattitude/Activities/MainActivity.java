@@ -1,13 +1,17 @@
 package com.aseupc.flattitude.Activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -45,6 +49,11 @@ import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +62,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity {
     private User thisUser;
@@ -65,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "BroadcastTest";
     private Intent ui_intent;
     Toolbar mToolbar;
+    public PendingIntent pIntent;
 
     public Menu getMenu() {
         return menu;
@@ -72,10 +84,14 @@ public class MainActivity extends AppCompatActivity {
 
     private JabberSmackAPI chatConnection;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
@@ -86,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         ab.setTitle(s);
         setTitle(s);
+
+        if (IDs.getInstance(getApplicationContext()).getNewUser())
+        {
+           showTutorial();
+            IDs.getInstance(getApplicationContext()).setConfirmedUser();
+        }
 
         // ---
         NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
@@ -112,38 +134,6 @@ public class MainActivity extends AppCompatActivity {
         {
             Log.i("NOTIFICATION ", retrieved.get(i).getId() + " " + retrieved.get(i).getTime().toString());
         }
-        //--
-
-        // Random Planning activites created
-        /*PlanningDAO plDao = new PlanningDAO(getApplicationContext());
-
-        for (int i = 0; i < 10; i++ ) {
-           Calendar Dday = Calendar.getInstance();
-           Dday.set(2015, new Random().nextInt(12), new Random().nextInt(27)+1, 12, 12, 12);
-            final Calendar  Ddayx = Dday;
-            PlanningTask task1 = new PlanningTask(new Random().nextInt(200000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
-            PlanningTask task2 = new PlanningTask(new Random().nextInt(2000000) + "", "Anas", "Jordi", "Clean kitchen", "Please do it", Ddayx);
-
-            plDao.save(task1);
-          //  plDao.save(task2);
-       }
-        List<PlanningTask> tasks = plDao.getPlanningTasks();
-        List<PlanningTask> Gtasks = plDao.getGroupedPlanningTasks();
-        Log.i("GAnas Tasks", plDao.getPlanningTasks().size() + "");
-        for (PlanningTask task:tasks
-             ) {
-            Calendar date = task.getPlannedTime();
-            String theDay = PlanningTask.getCleanDate(date);
-            Log.i("GAnas indiv", task.getID() + " " + task.getDescription() + " " + theDay);
-
-        }
-        Log.i("GAnas GTasks", plDao.getGroupedPlanningTasks().size() + "");
-        for (PlanningTask task:Gtasks
-                ) {
-            Log.i("GAnas indiv", task.getID() + " " + task.getDescription() + " " + task.getPlannedTime().getTime().toString());
-
-        }
-*/
 
         Intent serviceIntent = new Intent(this, SynchzonizationService.class);
         //startService(serviceIntent);
@@ -234,16 +224,13 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-         //   updateUI(intent);
+            updateUI(intent);
         }
     };
 
     private void updateUI(Intent intent) {
-        String counter = intent.getStringExtra("counter");
-        String time = intent.getStringExtra("time");
+
         String change = intent.getStringExtra("change");
-        Log.d(TAG, counter);
-        Log.d(TAG, time);
 
        /* TextView txtDateTime = (TextView) findViewById(R.id.txtDateTime);
         TextView txtCounter = (TextView) findViewById(R.id.txtCounter);
@@ -251,12 +238,28 @@ public class MainActivity extends AppCompatActivity {
         txtCounter.setText(counter); */
         if (change.equals("yes"))
         {
-            //mItem.setIcon(getApplicationContext().getDrawable(R.drawable.ic_alert));
-           // menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_alert));
-            menu.getItem(1).setVisible(true);
+
         }
+        updateNotification();
+
     }
 
+    public void updateNotification()
+    {
+        NotificationsDAO notificationsDAO = new NotificationsDAO(getApplicationContext());
+        IDs ids = IDs.getInstance(getApplicationContext());
+        List<Notification> notifs= notificationsDAO.getNotifications(ids.getUserId(getApplicationContext()));
+        if (notifs.size() > 0)
+        {
+            menu.getItem(1).setVisible(true);
+            menu.getItem(0).setVisible(false);
+        }
+        else
+        {
+            menu.getItem(1).setVisible(false);
+            menu.getItem(0).setVisible(true);
+        }
+    }
     public void confirmFireMissiles() {
         DialogFragment newFragment = new LeaveConfirmationFragment();
         newFragment.show(getSupportFragmentManager(), "confirmation");
@@ -276,15 +279,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menu.add("User Anas");
+
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
         this.menu = menu;
-        this.mItem = menu.getItem(1);
         this.currentContext =  getApplicationContext();
-        menu.getItem(1).setVisible(false);
-        menu.getItem(0).setVisible(false);
+//        menu.getItem(0).setVisible(true);
+        updateNotification();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -312,14 +314,14 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
 
         }
-        if (id == R.id.notif_received)
+        if ((id == R.id.notif_received) || (id == R.id.no_notif))
         {
             NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
             List<Notification> nots = (List<Notification>)notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
-            Log.i("Booba6", CallAPI.printList(nots));
+
             showNotifications();
         }
-        if (id == R.id.action_search) {
+        /*if (id == R.id.action_search) {
             Context context = getApplicationContext();
             CharSequence text = "Search action!";
             int duration = Toast.LENGTH_SHORT;
@@ -328,33 +330,50 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
             menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_message));
 
+        }*/
+
+        if (id == R.id.logoutinmenu)
+        {
+            SweetAlertDialog dialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Log out")
+                    .setContentText("Are you sure you want to log out ?")
+                    .setConfirmText("Yes,get me out of here!")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            if (thisUser != null) {
+                                // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
+                                UserDAO userDAO = new UserDAO(getApplicationContext());
+                                userDAO.deleteDept(thisUser);
+                                userDAO.deleteAll();
+                                //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
+                                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                                flatDAO.deleteAll();
+                                if (thisFlat != null)
+                                    flatDAO.deleteDept(thisFlat);
+                            }
+                            IDs.resetIDs();
+                            UserDAO userDAO = new UserDAO(getApplicationContext());
+                            userDAO.deleteAll();
+                            FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                            flatDAO.deleteAll();
+                            NotificationsDAO notDAO = new NotificationsDAO(getApplicationContext());
+                            //  notDAO.deleteAll();
+                            Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
+                            startActivity(ReturnHome);
+                            finish();
+                            sDialog.dismissWithAnimation();
+                    }
+                });
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+
+
         }
 
-        if (id == R.id.logout)
+        if (id == R.id.help)
         {
-            if (thisUser != null)
-            {
-               // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
-                UserDAO userDAO = new UserDAO(getApplicationContext());
-                userDAO.deleteDept(thisUser);
-                userDAO.deleteAll();
-             //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
-                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-                flatDAO.deleteAll();
-                if (thisFlat != null)
-                flatDAO.deleteDept(thisFlat);
-            }
-            IDs.resetIDs();
-            UserDAO userDAO = new UserDAO(getApplicationContext());
-            userDAO.deleteAll();
-            FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-            flatDAO.deleteAll();
-            NotificationsDAO notDAO = new NotificationsDAO(getApplicationContext());
-          //  notDAO.deleteAll();
-            Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
-            startActivity(ReturnHome);
-            finish();
-
+            showTutorial();
         }
 
         return super.onOptionsItemSelected(item);
@@ -509,6 +528,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public void showTutorial(){
+        Target target_c = new ViewTarget(findViewById(R.id.chat_button));
+        ShowcaseView.Builder chat_r = new ShowcaseView.Builder(this, true)
+                .setTarget(target_c)
+                .setContentTitle("Chat")
+                .setContentText("Feel like having a talk with your flatmates ? " +
+                        "Flattitude offers you the possibility to chat with them");
+        chat_r.setStyle(R.style.CustomShowcaseTheme2);
+        chat_r.build();
+        final Activity main = this;
+        chat_r.setShowcaseEventListener(new OnShowcaseEventListener() {
+            @Override
+            public void onShowcaseViewHide(ShowcaseView showcaseView) {
+            }
+
+            @Override
+            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                CallAPI api = new CallAPI();
+                api.tutorial(main);
+            }
+
+            @Override
+            public void onShowcaseViewShow(ShowcaseView showcaseView) {
+            }
+        });
     }
 
 }

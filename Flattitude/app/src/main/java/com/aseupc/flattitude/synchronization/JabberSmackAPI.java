@@ -89,9 +89,20 @@ public class JabberSmackAPI {
 	public void joinMUC (String roomName, String nickname) {
 		try {
 		    MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+<<<<<<< HEAD
 			String roomNameCorrected = roomName.replaceAll("\\s+","");
 
 		    this.currentMUC = manager.getMultiUserChat(roomNameCorrected + "@conference.ip-172-31-40-57");
+=======
+
+
+		//	String roomNameCorrected = roomName.replaceAll("\\s+","");
+
+//		    this.currentMUC = manager.getMultiUserChat(roomNameCorrected + "@conference.ip-172-31-40-57");
+
+		    this.currentMUC = manager.getMultiUserChat(roomName + "@conference.ip-172-31-40-57");
+
+>>>>>>> 34f6e915735826d55c2af6a53caea247646e59d1
 			this.currentMUC.join(nickname);
 			this.listener = new MUCManagerListenerImpl();
 

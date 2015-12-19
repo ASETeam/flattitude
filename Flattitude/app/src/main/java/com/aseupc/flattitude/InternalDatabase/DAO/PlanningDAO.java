@@ -104,6 +104,8 @@ public class PlanningDAO extends  DBDAO{
               //  mo.setTime(parseDate(cursor.getString(6)));
                 list.add(mo);
             }
+            if(cursor != null)
+            { cursor.close();} else {}
             return list;
         }
 

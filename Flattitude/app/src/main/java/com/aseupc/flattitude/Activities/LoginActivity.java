@@ -95,18 +95,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mNewProgress;
     private TextView mLoading;
     private static AlertDialog dialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        context = this;
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        dialog = new SpotsDialog(getApplicationContext());
+        dialog = new SpotsDialog(context);
         //customize the fonts for each label
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
@@ -277,13 +278,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        //    AlertDialog dialog = new SpotsDialog(getApplicationContext());
+        //    AlertDialog dialog = new SpotsDialog(context);
         //    dialog.show();
 
         }
         if (!show)
         {
-         //   AlertDialog dialog = new SpotsDialog(getApplicationContext());
+         //   AlertDialog dialog = new SpotsDialog(context);
          //   dialog.hide();
         }
 
@@ -344,7 +345,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Context context = getApplicationContext();
         UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         //User user = null;
@@ -416,9 +416,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             // AUTHENTICATION HERE
-            if (CallAPI.isNetworkAvailable(getApplicationContext()) == false)
+            if (CallAPI.isNetworkAvailable(context) == false)
             {
+                dialog.hide();
                 return false;
+
 
             }
             ResultContainer<User> result = UserFacade.verifyCredentials((String) mEmail, (String) mPassword);
@@ -472,13 +474,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 else if (resultFlat.getSucces() == true) {
 
                     //flat.setServerid(new Random().nextInt(324324) + "");
-                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    FlatDAO flatDAO = new FlatDAO(context);
                  //   Log.i("UserFlat", flat.getName());
                     if (flatDAO.getFlat() == null)
                     flatDAO.save(flat);
                     else
                     flatDAO.update(flat);
-                    Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
+                    Intent mainIntent = new Intent (context, MainActivity.class);
                     startActivity(mainIntent);
                 }
 
@@ -496,7 +498,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         //Join to room.
                         smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
 
-                        IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
+                        IDs.getInstance(context).setSmackChat(smackChat);
 
                     } catch (Exception ex ) {
                         ex.printStackTrace();
@@ -506,8 +508,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 connectChat call = new connectChat();
                 call.execute(chatID, password);
 
-            }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
-                CallAPI.makeToast(getApplicationContext(), "No internet connection");
+
+            }else if ((success == false) && (CallAPI.isNetworkAvailable(context) == false)){
+                CallAPI.makeToast(context, "No internet connection");
 
             }
             else {
@@ -524,6 +527,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         public class connectChat extends AsyncTask<String, Void, Void>
         {
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                dialog.hide();
+            }
 
             @Override
             protected Void doInBackground(String... params) {
@@ -532,12 +540,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //Login to Chat.
                     smackChat.login(params[0], params[1]);
-                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    FlatDAO flatDAO = new FlatDAO(context);
                     Flat flat = flatDAO.getFlat();
                     //Join to room.
                     smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
 
-                    IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
+                    IDs.getInstance(context).setSmackChat(smackChat);
 
                 } catch (Exception ex ) {
                     Log.e("CHAT ERROR", ex.getMessage());

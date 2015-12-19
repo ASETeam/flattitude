@@ -72,11 +72,12 @@ public class MainActivity extends AppCompatActivity {
     public static Menu menu;
     public static Context currentContext;
     public static MenuItem mItem;
-    public Context context;
+
     private static final String TAG = "BroadcastTest";
     private Intent ui_intent;
     Toolbar mToolbar;
     public PendingIntent pIntent;
+    private Context context;
 
     public Menu getMenu() {
         return menu;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context = this;
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
@@ -103,20 +104,20 @@ public class MainActivity extends AppCompatActivity {
         ab.setTitle(s);
         setTitle(s);
 
-        if (IDs.getInstance(getApplicationContext()).getNewUser())
+        if (IDs.getInstance(this).getNewUser())
         {
            showTutorial();
-            IDs.getInstance(getApplicationContext()).setConfirmedUser();
+            IDs.getInstance(this).setConfirmedUser();
         }
 
         // ---
         NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
-        context = getApplicationContext();
-        UserDAO userDAO1 = new UserDAO(getApplicationContext());
+
+        UserDAO userDAO1 = new UserDAO(context);
         User user1 = userDAO1.getUser();
         if (user1 == null)
         {
-            Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
+            Intent intent = new Intent(context, LandingActivity.class);
             startActivity(intent);
         }
         for(int i=0; i < 5; i++)
@@ -129,10 +130,9 @@ public class MainActivity extends AppCompatActivity {
         notif.setBody("This is a message posted by me");
      //   notDao.save(notif);
         }
-        List<Notification> retrieved = notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+        List<Notification> retrieved = notDao.getNotifications(IDs.getInstance(context).getUserId(context));
         for (int i = 0; i< retrieved.size(); i++)
         {
-            Log.i("NOTIFICATION ", retrieved.get(i).getId() + " " + retrieved.get(i).getTime().toString());
         }
 
         Intent serviceIntent = new Intent(this, SynchzonizationService.class);
@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent BudgetIntent = new Intent(view.getContext(), BudgetActivity.class);
-                //startActivity(BudgetIntent);
-                CallAPI.makeToast(getApplicationContext(), "Let's not go there. ");
+                startActivity(BudgetIntent);
+                CallAPI.makeToast(context, "Let's not go there. ");
             }
         });
 
@@ -197,9 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+        FlatDAO flatDAO = new FlatDAO(context);
         Flat flat = flatDAO.getFlat();
-        UserDAO userDAO = new UserDAO(getApplicationContext());
+        UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
        /*TextView mUser = (TextView) findViewById(R.id.user_id);
         TextView mFlat = (TextView) findViewById(R.id.flat_id);*/
@@ -209,12 +209,9 @@ public class MainActivity extends AppCompatActivity {
             thisFlat = flat;
             thisUser = user;
             setTitle(user.getFirstname() + " " + user.getLastname());
-
-          /*  mUser.setText(user.getServerid() + " - " + user.getEmail() + " Token : " + user.getToken());
-            mFlat.setText(flat.getServerid() + " - " + flat.getName());*/
         }
         else {
-            Intent returnGroup = new Intent(getApplicationContext(), GroupActivity.class);
+            Intent returnGroup = new Intent(context, GroupActivity.class);
             startActivity(returnGroup);
         }
 
@@ -246,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateNotification()
     {
-        NotificationsDAO notificationsDAO = new NotificationsDAO(getApplicationContext());
-        IDs ids = IDs.getInstance(getApplicationContext());
-        List<Notification> notifs= notificationsDAO.getNotifications(ids.getUserId(getApplicationContext()));
+        NotificationsDAO notificationsDAO = new NotificationsDAO(context);
+        IDs ids = IDs.getInstance(context);
+        List<Notification> notifs= notificationsDAO.getNotifications(ids.getUserId(context));
         if (notifs.size() > 0)
         {
             menu.getItem(1).setVisible(true);
@@ -284,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.global, menu);
         this.menu = menu;
-        this.currentContext =  getApplicationContext();
+        this.currentContext =  context;
 //        menu.getItem(0).setVisible(true);
         updateNotification();
         return super.onCreateOptionsMenu(menu);
@@ -306,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
                 if (id == R.id.action_settings) {
-            Context context = getApplicationContext();
             CharSequence text = "Settings unavailable!";
             int duration = Toast.LENGTH_SHORT;
 
@@ -316,21 +312,11 @@ public class MainActivity extends AppCompatActivity {
         }
         if ((id == R.id.notif_received) || (id == R.id.no_notif))
         {
-            NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
-            List<Notification> nots = (List<Notification>)notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+            NotificationsDAO notDao = new NotificationsDAO(context);
+            List<Notification> nots = (List<Notification>)notDao.getNotifications(IDs.getInstance(context).getUserId(context));
 
             showNotifications();
         }
-        /*if (id == R.id.action_search) {
-            Context context = getApplicationContext();
-            CharSequence text = "Search action!";
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_message));
-
-        }*/
 
         if (id == R.id.logoutinmenu)
         {
@@ -343,23 +329,22 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(SweetAlertDialog sDialog) {
                             if (thisUser != null) {
                                 // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
-                                UserDAO userDAO = new UserDAO(getApplicationContext());
+                                UserDAO userDAO = new UserDAO(context);
                                 userDAO.deleteDept(thisUser);
                                 userDAO.deleteAll();
-                                //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
-                                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                                FlatDAO flatDAO = new FlatDAO(context);
                                 flatDAO.deleteAll();
                                 if (thisFlat != null)
                                     flatDAO.deleteDept(thisFlat);
                             }
                             IDs.resetIDs();
-                            UserDAO userDAO = new UserDAO(getApplicationContext());
+                            UserDAO userDAO = new UserDAO(context);
                             userDAO.deleteAll();
-                            FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                            FlatDAO flatDAO = new FlatDAO(context);
                             flatDAO.deleteAll();
-                            NotificationsDAO notDAO = new NotificationsDAO(getApplicationContext());
+                            NotificationsDAO notDAO = new NotificationsDAO(context);
                             //  notDAO.deleteAll();
-                            Intent ReturnHome = new Intent(getApplicationContext(), LandingActivity.class);
+                            Intent ReturnHome = new Intent(context, LandingActivity.class);
                             startActivity(ReturnHome);
                             finish();
                             sDialog.dismissWithAnimation();
@@ -381,11 +366,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+        FlatDAO flatDAO = new FlatDAO(context);
         Flat flat = flatDAO.getFlat();
      /*   if (flat == null) //|| (thisUser == null))
         {
-            Intent returnGroup = new Intent(getApplicationContext(), GroupActivity.class);
+            Intent returnGroup = new Intent(context, GroupActivity.class);
             startActivity(returnGroup);
         }
         */
@@ -405,15 +390,15 @@ public class MainActivity extends AppCompatActivity {
                 builder.setMessage("Are you sure you want to leave this flat ?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                                FlatDAO flatDAO = new FlatDAO(context);
                                 //flatDAO.deleteDept(flatDAO.getFlat());
                                 flatDAO.deleteAll();
-                                IDs ids = IDs.getInstance(getApplicationContext());
+                                IDs ids = IDs.getInstance(context);
                                 CallLeaveFlat call = new CallLeaveFlat();
 
                                 ResultContainer<User> res = null;
                                 try {
-                                    res = call.execute(ids.getUserId(getApplicationContext()), ids.getFlatId(getApplicationContext())).get(50000, TimeUnit.MILLISECONDS);
+                                    res = call.execute(ids.getUserId(context), ids.getFlatId(context)).get(50000, TimeUnit.MILLISECONDS);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 } catch (ExecutionException e) {
@@ -422,18 +407,18 @@ public class MainActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                //UserFacade.quitFlat(ids.getUserId(getApplicationContext()), ids.getFlatId(getApplicationContext()));
+                                //UserFacade.quitFlat(ids.getUserId(context), ids.getFlatId(context));
                                 if (res.getSucces() == true)
                                 {
-                                    CallAPI.makeToast(getApplicationContext(), "You have just left the flat");
+                                    CallAPI.makeToast(context, "You have just left the flat");
                                 }
-                                Intent homeIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                                Intent homeIntent = new Intent(context, GroupActivity.class);
                                 startActivity(homeIntent);
                             }
                         })
                         .setNeutralButton("Test", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Intent homeIntent = new Intent(getApplicationContext(), GroupActivity.class);
+                                Intent homeIntent = new Intent(context, GroupActivity.class);
                                 startActivity(homeIntent);
                             }
                         })
@@ -456,8 +441,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected ResultContainer<User> doInBackground(String... params) {
             ResultContainer<User> res;
-            res = UserFacade.quitFlat(params[0], params[1]);
-
+            if (CallAPI.isNetworkAvailable(context) == false)
+            {
+                CallAPI.makeToast(context, "No internet connection available");
+                res =new ResultContainer<User>();
+                res.setSuccess(false);
+            }
+            else {
+                res = UserFacade.quitFlat(params[0], params[1]);
+            }
             return res;
         }
     }
@@ -482,8 +474,7 @@ public class MainActivity extends AppCompatActivity {
           //  final Integer[] icons = new Integer[] {R.drawable.ic_add, R.drawable.ic_calendar};
 
             NotificationsDAO notDao = new NotificationsDAO(getContext());
-            List<Notification> notifs = notDao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
-            Log.i("Booba4", CallAPI.printList(notifs));
+            List<Notification> notifs = notDao.getNotifications(IDs.getInstance(context).getUserId(context));
             ArrayList<String> notifbody = new ArrayList<String>();
             ArrayList<Integer> notificon = new ArrayList<Integer>();
             for(int i= 0; i < notifs.size(); i++)
@@ -507,9 +498,8 @@ public class MainActivity extends AppCompatActivity {
             final List<Notification> notifsF = notifs;
             for (int i = 0; i < a.length; i++)
             {
-                Log.i("Notif type", a[i].toString());
             }
-            final NotificationsDAO notificationsDAO= new NotificationsDAO(getApplicationContext());
+            final NotificationsDAO notificationsDAO= new NotificationsDAO(context);
             builder.setTitle("Notifications").setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item ) {
                     Notification notifU =  notifsF.get(item);
@@ -518,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
                   notificationsDAO.update(notifU);
                 if (notifU.getType().equals("MAP"))
                 {
-                    Intent intent = new Intent(getApplicationContext(), LocateObjectsActivity.class);
+                    Intent intent = new Intent(context, LocateObjectsActivity.class);
                     startActivity(intent);
                 }
                 }

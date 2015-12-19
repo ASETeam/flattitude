@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 
 public class LandingActivity extends AppCompatActivity {
 
+    private  Context context;
     @Override
     public void onBackPressed() {
         return;
@@ -36,6 +37,7 @@ public class LandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+        context = this;
 
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Button Login = (Button)findViewById(R.id.login_button);
@@ -43,13 +45,12 @@ public class LandingActivity extends AppCompatActivity {
         Button Register = (Button)findViewById(R.id.register_button);
         Register.setTypeface(customFont);
 
-        Context context = getApplicationContext();
+
         final UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         //User user = null;
 
         if (user == null) {
-            Log.i("Anas", "The user has not been saved to localDB");
             Button mLoginButton = (Button) findViewById(R.id.login_button);
             Button mRegisterButton = (Button) findViewById(R.id.register_button);
          //   Button mSkipButton = (Button) findViewById(R.id.skip_button);
@@ -123,7 +124,6 @@ public class LandingActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Context context = getApplicationContext();
         UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         //User user = null;

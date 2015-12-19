@@ -19,6 +19,7 @@ import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import org.w3c.dom.Text;
@@ -32,11 +33,12 @@ public class CreateFlat extends AppCompatActivity {
     private EditText mPostalCode;
     private EditText mCountry;
     private EditText mIban;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = this;
         //customized fonts:
         Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
         Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
@@ -96,7 +98,16 @@ public class CreateFlat extends AppCompatActivity {
                 flat.setPostcode(postal_code);
                 UserDAO userDAO = new UserDAO(getApplicationContext());
                 User user = userDAO.getUser();
-                ResultContainer<Flat> response = FlatFacade.createFlat(flat, user);
+                ResultContainer<Flat> response;
+                if (CallAPI.isNetworkAvailable(context) == false)
+                {
+                    CallAPI.makeToast(context, "No internet connection available");
+                    response =new ResultContainer<Flat>();
+                    response.setSuccess(false);
+                }
+                else {
+                   response = FlatFacade.createFlat(flat, user);
+                }
                 if (response.getSucces() == true)
                 {
                     Context context = getApplicationContext();

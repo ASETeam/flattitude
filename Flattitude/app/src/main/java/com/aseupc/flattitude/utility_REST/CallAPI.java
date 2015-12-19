@@ -200,7 +200,6 @@ public class CallAPI  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i("The GetUser", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
@@ -445,6 +444,34 @@ public static  void makeToast(Context ctx, String input )
             }
             return haveConnectedWifi || haveConnectedMobile;
         }
+
+    public static boolean haveWifi(Context context) {
+
+        boolean haveConnectedWifi = false;
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+        }
+        return haveConnectedWifi ;
+    }
+
+    public static boolean haveMobile(Context context) {
+
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return  haveConnectedMobile;
+    }
 
 
 }

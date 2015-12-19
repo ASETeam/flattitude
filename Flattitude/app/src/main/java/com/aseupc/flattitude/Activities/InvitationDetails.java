@@ -3,6 +3,7 @@ package com.aseupc.flattitude.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -39,11 +40,13 @@ public class InvitationDetails extends AppCompatActivity {
     private View mProgressView;
     private String MyFlatID;
     private String MyUserID;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation_details);
+        context = this;
         mProgressView = findViewById(R.id.progress_invitationdetails);
         String Flatname = "";
         String FlatID = "";
@@ -73,7 +76,7 @@ public class InvitationDetails extends AppCompatActivity {
 
         call.execute(FlatID);
 
-        UserDAO userDAO = new UserDAO(getApplicationContext());
+        UserDAO userDAO = new UserDAO(context);
         User user = userDAO.getUser();
         final String userID = user.getServerid();
         final String flatID = FlatID;
@@ -110,15 +113,15 @@ public class InvitationDetails extends AppCompatActivity {
         if (flatContainer.getSucces() == true)
         {
             if (accept ==1) {
-                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                FlatDAO flatDAO = new FlatDAO(context);
                 if( flatDAO.getFlat() != null)
                 flatDAO.update(flatContainer.getTemplate());
                else  flatDAO.save(flatContainer.getTemplate());
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(context, MainActivity.class);
                 startActivity(intent);
             }
             if (accept == 0) {
-                Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
+                Intent intent = new Intent(context, GroupActivity.class);
                 startActivity(intent);
             }
 

@@ -142,7 +142,6 @@ public class Map_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
-                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     String objectId = mainObject.getString("idObject");
                     resultContainer.setSuccess(true);
@@ -159,13 +158,12 @@ public class Map_Web_Services {
                 resultContainer.setSuccess(false);
                 resultContainer.addReason("Internal error");
             }
-            Log.i("GUILLE RESPONSE", response);
+
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<MapObject> response) {
-            Log.i("Registry has been", " changed in PostExecute");
         }
     }
 
@@ -198,7 +196,6 @@ public class Map_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
-                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     resultContainer.setSuccess(true);
                     resultContainer.setTemplate(object);
@@ -213,7 +210,6 @@ public class Map_Web_Services {
                 resultContainer.setSuccess(false);
                 resultContainer.addReason("Internal error");
             }
-            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
@@ -222,7 +218,6 @@ public class Map_Web_Services {
             // TODO: check this.exception
             // TODO: do something with the feed
 
-            Log.i("Registry has been", " changed in PostExecute");
         }
     }
 
@@ -299,7 +294,6 @@ public class Map_Web_Services {
             // TODO: check this.exception
             // TODO: do something with the feed
 
-            Log.i("Registry has been", " changed in PostExecute");
         }
     }
 }

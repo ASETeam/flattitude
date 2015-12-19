@@ -91,7 +91,6 @@ public class PlanningTask_Web_Services {
                 response = CallAPI.performPostCall(urlStr, values);
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
-                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     String id = mainObject.getString("taskId");
                     resultContainer.setSuccess(true);
@@ -114,13 +113,11 @@ public class PlanningTask_Web_Services {
                  resultContainer.setSuccess(false);
                  resultContainer.addReason("Internal error");
              }
-            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
-            Log.i("Registry has been", " changed in PostExecute");
             listener.onAddWSFinished(response);
         }
     }
@@ -168,7 +165,6 @@ public class PlanningTask_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
-                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     resultContainer.setSuccess(true);
                     resultContainer.setTemplate(task);
@@ -183,13 +179,11 @@ public class PlanningTask_Web_Services {
                 resultContainer.setSuccess(false);
                 resultContainer.addReason("Internal error");
             }
-            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
-            Log.i("Registry has been", " changed in PostExecute");
             listener.onEditWSFinished(response);
         }
     }
@@ -231,7 +225,6 @@ public class PlanningTask_Web_Services {
             try {
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
-                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     resultContainer.setSuccess(true);
                     resultContainer.setTemplate(task);
@@ -246,13 +239,11 @@ public class PlanningTask_Web_Services {
                 resultContainer.setSuccess(false);
                 resultContainer.addReason("Internal error");
             }
-            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
-            Log.i("Registry has been", " changed in PostExecute");
             listener.onDeleteWSFinished(response);
         }
     }

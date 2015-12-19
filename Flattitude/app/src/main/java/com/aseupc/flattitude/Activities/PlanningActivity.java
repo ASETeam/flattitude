@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -48,6 +49,7 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
     private Calendar currentSelected;
     private Date previous;
     private CaldroidFragment caldroidFragment;
+    private Context context;
 
     private static int ADD_CODE = 1;
     private static int EDIT_CODE = 2;
@@ -59,6 +61,7 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
         plans = (ListView) findViewById(R.id.plans_listview);
+        context = this;
 
         Button addButton = (Button) findViewById(R.id.button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +107,7 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
         t.replace(R.id.calendarView, caldroidFragment);
         t.commit();
 
-        PlanningDAO planDAO = new PlanningDAO(getApplicationContext());
+        PlanningDAO planDAO = new PlanningDAO(this);
         List<PlanningTask> tasks = planDAO.getPlanningTasks();
         for (PlanningTask task:tasks) {
             Date date = new Date(task.getPlannedTime().get(Calendar.YEAR)-1900,task.getPlannedTime().get(Calendar.MONTH), task.getPlannedTime().get(Calendar.DATE));
@@ -125,16 +128,15 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
         currentSelected.setTime(date);
         caldroidFragment.clearSelectedDates();
         if ((previous != null) && (backgrounddates.containsKey(previous))) {
-            Log.i("HAnas", "Entered background");
+
             caldroidFragment.setBackgroundResourceForDate(R.color.AnasBlue, previous);
         }
-        PlanningDAO dao = new PlanningDAO(getApplicationContext());
+        PlanningDAO dao = new PlanningDAO(this);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         List<PlanningTask> tasks = dao.getFilteredPlanningTasks(cal);
         for (PlanningTask task : tasks) {
-            Log.i("FAnas 7.5", task.getID() + " " + PlanningTask.getCleanDate(task.getPlannedTime()));
-            //CallAPI.makeToast(getApplicationContext(),task.getID() + " " + task.getPlannedTime().getTime().toString() );
+
         }
         ArrayList<String> resultStr = new ArrayList<String>();
         List<PlanningTask> planninTasks = new ArrayList<PlanningTask>();
@@ -143,7 +145,7 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
             planninTasks.add(tasks.get(i));
         }
 
-        ListAdapter customAdapter = new ListAdapter(getApplicationContext(), R.layout.itemlistrow, planninTasks,
+        ListAdapter customAdapter = new ListAdapter(this, R.layout.itemlistrow, planninTasks,
                 new ListAdapter.TaskDeletePressedListener() {
                     @Override
                     public void OnTaskDeletePressed(PlanningTask task) {
@@ -151,13 +153,12 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
                     }
                 });
         plans.setAdapter(customAdapter);
-        Log.i("FAnas 7.8", "AFTER");
 
         previous = date;
 
         caldroidFragment.clearBackgroundResourceForDate(date);
 
-        Log.i("FAnas 4,", date.toString());
+
         caldroidFragment.setSelectedDate(date);
         caldroidFragment.setCalendarDate(date);
         caldroidFragment.refreshView();

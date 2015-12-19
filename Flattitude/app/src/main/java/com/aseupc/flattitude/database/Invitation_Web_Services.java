@@ -45,29 +45,22 @@ public class Invitation_Web_Services {
         values.put("idFlat", flatID);
         values.put("accepted", respond);
 
-        Log.i("Respond", respond);
         response = CallAPI.performPostCall(urlStr, values);
         try {
             JSONObject mainObject = new JSONObject(response);
-            //Log.i("INVITE 3", mainObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("Respond", response);
 
         ResponseString = response;
         if (ResponseString != null)
         {
-            //Log.i("INVITE 1: ", ResponseString);
+
             try {
                 JSONObject mainObject = new JSONObject(ResponseString);
                 String success = mainObject.getString("success");
-             //   Log.i("INVITE 2 :", success);
                 if (success == "true") {
                     resultContainer.setSuccess(true);
-                    // Temporary solution : dummy user
-                    // resultContainer.setTemplate(CallAPI.getUser(userId));
-
                 }
                 else if (success == "false"){
                     resultContainer.setSuccess(false);
@@ -101,11 +94,9 @@ public class Invitation_Web_Services {
 
         if (ResponseString != null)
         {
-            Log.i("INVITE 1: ", ResponseString);
             try {
                 JSONObject mainObject = new JSONObject(ResponseString);
                 String success = mainObject.getString("success");
-                Log.i("INVITE 2 :", success);
                 if (success == "true") {
                     resultContainer.setSuccess(true);
                     // Temporary solution : dummy user
@@ -153,10 +144,6 @@ public class Invitation_Web_Services {
             InputStream is = con.getInputStream();
             System.out.println("Redirected URL: " + con.getURL());
             is.close();
-
-
-            Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
-
         } catch (Exception e) {
             //   System.out.println(e.getMessage());
         }
@@ -167,7 +154,6 @@ public class Invitation_Web_Services {
             e.printStackTrace();
         }
 
-        Log.i("Json Result string :", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
@@ -230,18 +216,15 @@ public class Invitation_Web_Services {
             response = CallAPI.performPostCall(urlStr, values);
             try {
                 JSONObject mainObject = new JSONObject(response);
-                Log.i("INVITE 3", mainObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.i("INVITE 4", response);
             return response;
         }
 
         protected void onPostExecute(String response) {
 
 
-            Log.i("Registry has been", " changed in PostExecute");
 
         }
     }

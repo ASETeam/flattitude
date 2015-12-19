@@ -45,35 +45,28 @@ public class Notifications_Web_Services {
             in = new BufferedInputStream(urlConnection.getInputStream());
 
             URLConnection con = url.openConnection();
-            System.out.println("Orignal URL: " + con.getURL());
             con.connect();
-            System.out.println("Connected URL: " + con.getURL());
             InputStream is = con.getInputStream();
-            System.out.println("Redirected URL: " + con.getURL());
             is.close();
 
 
-            Log.i("Anas 4", urlConnection.getResponseCode() + " " + urlConnection.getResponseMessage());
 
         } catch (Exception e) {
             //   System.out.println(e.getMessage());
         }
         // resultToDisplay = (String) in.toString();
         try {
-            Log.i("AFara", resultToDisplay);
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Log.i("Json Result string :", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
 
             if (success.equals("true")) {
                 JSONArray invites = mainObject.getJSONArray("invitation_notifications"); // Needs control
-                Log.i("Booba", invites + " ");
                 for (int i = 0; i < invites.length(); i++) {
                     if (invites.get(i) != null) {
                         JSONObject invitation = invites.getJSONObject(i);
@@ -94,7 +87,6 @@ public class Notifications_Web_Services {
                     }
                 }
                 JSONArray invites2 = mainObject.getJSONArray("object_notifications"); // Needs control
-                Log.i("Booba2", invites2 + "");
                 for (int i = 0; i < invites2.length(); i++) {
                     if (invites2.get(i) != null) {
                         JSONObject invitation2 = invites2.getJSONObject(i);
@@ -115,7 +107,6 @@ public class Notifications_Web_Services {
                 }
 
                 JSONArray invites3 = mainObject.getJSONArray("task_notifications"); // Needs control
-                Log.i("Booba7", invites3 + "");
                 for (int i = 0; i < invites3.length(); i++) {
                     if (invites3.get(i) != null) {
                         JSONObject invitation2 = invites2.getJSONObject(i);
@@ -163,7 +154,7 @@ public class Notifications_Web_Services {
             InputStream is = con.getInputStream();
             System.out.println("Redirected URL: " + con.getURL());
             is.close();
-            Log.i("Anas 4", urlConnection.getResponseCode() + " " + urlConnection.getResponseMessage());
+
         } catch (Exception e) {
         }
         try {
@@ -172,7 +163,7 @@ public class Notifications_Web_Services {
             e.printStackTrace();
         }
 
-        Log.i("Json Result string :", resultToDisplay);
+
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");

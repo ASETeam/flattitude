@@ -17,13 +17,42 @@ public class IDs {
     private String flatId;
     private JabberSmackAPI smackChat;
     private boolean newUser;
+    private double balance;
+    private double personalExpense;
+    private boolean haveInternet;
 
+    public void setHaveInternet(boolean haveInternet) {
+        this.haveInternet = haveInternet;
+    }
+
+    public boolean getHaveInternet()
+    {
+        return haveInternet;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setPersonalExpense(double personalExpense) {
+        this.personalExpense = personalExpense;
+    }
+
+    public double getPersonalExpense() {
+        return personalExpense;
+    }
 
     private IDs(Context context){
         userId = null;
         userToken = null;
         flatId = null;
         newUser = false;
+        personalExpense = -112.23;
+        balance = 2343;
 
         UserDAO uDAO = new UserDAO(context);
         User u = uDAO.getUser();

@@ -8,6 +8,8 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="AnasBlue">#FFDAF9FF</color>
+    <color name="LightGreen">#bfd4c1</color>
+
 
     <color name="fbutton_color_turquoise">#1abc9c</color>
     <color name="fbutton_color_green_sea">#16a085</color>

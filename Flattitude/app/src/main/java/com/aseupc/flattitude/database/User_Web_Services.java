@@ -77,7 +77,6 @@ public class User_Web_Services {
     public  ResultContainer<User> ws_verifyCredentials(String email, String password) {
         ResultContainer<User> resultContainer = new ResultContainer<User>();
         String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/login/" + email + "/" + password;
-        Log.i("Json Input Str", urlString);
         String resultToDisplay = "";
         ParseResults result = null;
         InputStream in = null;
@@ -103,10 +102,6 @@ public class User_Web_Services {
             InputStream is = con.getInputStream();
             System.out.println("Redirected URL: " + con.getURL());
             is.close();
-
-
-            Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
-
         } catch (Exception e) {
          //   System.out.println(e.getMessage());
         }
@@ -116,8 +111,6 @@ public class User_Web_Services {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Log.i("Json Result string :", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
@@ -125,7 +118,6 @@ public class User_Web_Services {
 
             if (success.equals("true")) {
                 resultContainer.setSuccess(true);
-                Log.i("EMAIL return", CallAPI.getUser(userid).getEmail());
                 String token = mainObject.getString("token");
                 User user = CallAPI.getUser(userid);
                 user.setToken(token);
@@ -162,11 +154,9 @@ public class User_Web_Services {
 
         if (FinalizeThread != null)
         {
-            Log.i("We start with Json: ", FinalizeThread);
             try {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
-                Log.i("When we receive JSON", success);
                 if (success == "true") {
                  resultContainer.setSuccess(true);
                 }
@@ -222,22 +212,17 @@ public class User_Web_Services {
 
         try {
             JSONObject mainObject = new JSONObject(response);
-            Log.i("GUILLE RESPONSE", mainObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("GUILLE RESPONSE", response);
         FinalizeThread = response;
 
 
-        Log.i("We Before with Json: ", FinalizeThread);
         if (FinalizeThread != null)
         {
-            Log.i("We start with Json: ", FinalizeThread);
             try {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
-                Log.i("When we receive JSON", success);
                 if (success == "true") {
                     String userId = mainObject.getString("id");
 
@@ -283,7 +268,6 @@ public class User_Web_Services {
             ResultContainer<Flat> resultContainer = new ResultContainer<Flat>();
 
             String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/userflat/"+ userID;
-            Log.i("Json Input Str", urlString);
             String resultToDisplay = "";
             ParseResults result = null;
             InputStream in = null;
@@ -293,7 +277,6 @@ public class User_Web_Services {
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.connect();
                 in = new BufferedInputStream(urlConnection.getInputStream());
-                Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
 
             } catch (Exception e) {
                   e.printStackTrace();
@@ -305,7 +288,6 @@ public class User_Web_Services {
                 e.printStackTrace();
             }
 
-            Log.i("Json Result string :", resultToDisplay);
             try {
                 JSONObject mainObject = new JSONObject(resultToDisplay);
                 String success = mainObject.getString("success");
@@ -374,18 +356,15 @@ public class User_Web_Services {
 
             try {
                 JSONObject mainObject = new JSONObject(response);
-                Log.i("GUILLE RESPONSE", mainObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.i("GUILLE RESPONSE", response);
             return response;
         }
 
         protected void onPostExecute(String response) {
 
             setStatusRegister(response);
-            Log.i("Registry has been", " changed in PostExecute");
 
         }
     }
@@ -403,7 +382,6 @@ public class User_Web_Services {
             String userID = strings[0];
             String token = strings [1];
             String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/logout/"+ userID;
-            Log.i("Json Input Str", urlString);
             String resultToDisplay = "";
             ParseResults result = null;
             InputStream in = null;
@@ -417,7 +395,6 @@ public class User_Web_Services {
                // urlConnection.setRequestProperty("Auth", token);
                 in = new BufferedInputStream(urlConnection.getInputStream());
 
-                Log.i("Anas 4", urlConnection.getResponseCode() + " " +  urlConnection.getResponseMessage());
 
             } catch (Exception e) {
                 //   System.out.println(e.getMessage());
@@ -429,7 +406,6 @@ public class User_Web_Services {
                 e.printStackTrace();
             }
 
-            Log.i("Json Result string :", resultToDisplay);
             try {
                 JSONObject mainObject = new JSONObject(resultToDisplay);
                 String success = mainObject.getString("success");
@@ -453,7 +429,6 @@ public class User_Web_Services {
             // TODO: check this.exception
             // TODO: do something with the feed
 
-            Log.i("Registry has been", " changed in PostExecute");
 
         }
     }
@@ -469,7 +444,6 @@ public class User_Web_Services {
             ParseResults result = null;
             InputStream in = null;
             // HTTP Get
-            Log.i("Anas", "Before HTTP");
             try {
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -478,7 +452,6 @@ public class User_Web_Services {
                 conn.setRequestMethod("GET");
                 conn.setDoOutput(true);
                 in = new BufferedInputStream(conn.getInputStream());
-                Log.i("Anas", "After HTTP");
 
             } catch (Exception e) {
                 //   System.out.println(e.getMessage());

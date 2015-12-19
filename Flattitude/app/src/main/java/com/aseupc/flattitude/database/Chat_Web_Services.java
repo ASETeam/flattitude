@@ -151,8 +151,6 @@ public class Chat_Web_Services {
 
     class callGetFlatInfo extends AsyncTask<String, Void, ResultContainer<Flat>> {
 
-
-
         @Override
         protected ResultContainer<Flat> doInBackground(String... params) {
             ResultContainer<Flat> response = new ResultContainer<>();

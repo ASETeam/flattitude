@@ -427,44 +427,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Flat flat = resultFlat.getTemplate();
 
                 if (resultFlat.getSucces() == false){
-                Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
-                startActivity(intent);}
+                    Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
+                    startActivity(intent);}
                 else if (resultFlat.getSucces() == true) {
 
                     //flat.setServerid(new Random().nextInt(324324) + "");
                     FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-                 //   Log.i("UserFlat", flat.getName());
-                    if (flatDAO.getFlat() == null)
-                    flatDAO.save(flat);
-                    else
-                    flatDAO.update(flat);
-                    Intent mainIntent = new Intent (getApplicationContext(), MainActivity.class);
-                    startActivity(mainIntent);
+                    //   Log.i("UserFlat", flat.getName());
+                    if (flatDAO.getFlat() == null) {
+                        flatDAO.save(flat);
+
+
+
+                    } else {
+                        flatDAO.update(flat);
+                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(mainIntent);
+                    }
                 }
 
+                String chatID = getCurrentUser().getServerid();
+                String password = mPassword;
 
-
-                    String chatID = getCurrentUser().getServerid();
-                    String password = mPassword;
-<<<<<<< HEAD
-                    try {
-                        JabberSmackAPI smackChat = new JabberSmackAPI();
-
-                        //Login to Chat.
-                        smackChat.login(chatID, password);
-
-                        //Join to room.
-                        smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
-
-                        IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
-
-                    } catch (Exception ex ) {
-                        ex.printStackTrace();
-                    }
-=======
                 connectChat call = new connectChat();
-                call.execute(chatID, password);
->>>>>>> 161a9c7c27b5758f4ecc3070d4f7c67d5b332ad3
+
+                if (flat != null)
+                    call.execute(chatID, password, flat.getName());
+                else
+                    call.execute(chatID, password, "");
 
             }else if ((success == false) && (CallAPI.isNetworkAvailable(getApplicationContext()) == false)){
                 CallAPI.makeToast(getApplicationContext(), "No internet connection");
@@ -492,10 +482,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //Login to Chat.
                     smackChat.login(params[0], params[1]);
-                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
-                    Flat flat = flatDAO.getFlat();
+
                     //Join to room.
-                    smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
+                    if (!params[2].equals(""))
+                        smackChat.joinMUC(params[2], getCurrentUser().getFirstname());
 
                     IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
 

@@ -13,13 +13,22 @@ import java.util.Date;
 public class Notification {
     private int id;
     private String type;
-    private boolean seennotification;
+    private String seennotification;
     private String body;
     private String author;
     private Date time;
     private Integer myIcon;
     private int serverID;
     private String objectID;
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getObjectID() {
         return objectID;
@@ -76,6 +85,12 @@ public class Notification {
             case "CHAT" :
                 this.myIcon = R.drawable.ic_chat;
                 break;
+            case "MAP" :
+                this.myIcon = R.drawable.ic_map;
+                break;
+            case "PLANNING" :
+                this.myIcon = R.drawable.ic_calendar;
+                break;
             default:
                 this.myIcon = R.drawable.ic_message;
                 break;
@@ -83,11 +98,11 @@ public class Notification {
 
     }
 
-    public boolean isSeennotification() {
+    public String isSeennotification() {
         return seennotification;
     }
 
-    public void setSeennotification(boolean seennotification) {
+    public void setSeennotification(String seennotification) {
         this.seennotification = seennotification;
     }
 

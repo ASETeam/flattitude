@@ -95,8 +95,11 @@ public class ParseResults {
             case "INVITATION":
                 response = author + " invited you to join a flat on " + notification.getTime();
                 break;
-            case "LOCALIZATION":
+            case "MAP":
                 response = author + " shared an object with you on " + notification.getTime();
+                break;
+            case "PLANNING":
+                response = author + " planed a task on " + notification.getTime();
                 break;
             default:
                 response = "A new notification has been posted about " + notification.getType();

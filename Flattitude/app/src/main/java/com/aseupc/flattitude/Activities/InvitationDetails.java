@@ -85,7 +85,7 @@ public class InvitationDetails extends AppCompatActivity {
             public void onClick(View view) {
 
                 callRespondInvitation callA = new callRespondInvitation();
-                callA.execute(userID, flatID, "true");
+                callA.execute(userID, flatID, 1);
             }
         });
         Button mDecline = (Button) findViewById(R.id.decline_button);
@@ -93,13 +93,13 @@ public class InvitationDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 callRespondInvitation callA = new callRespondInvitation();
-                callA.execute(userID, flatID, "false");
+                callA.execute(userID, flatID, 2);
             }
         });
 
     }
 
-    private void saveAndRedirect(ResultContainer<Flat> flatContainer, String accept)
+    private void saveAndRedirect(ResultContainer<Flat> flatContainer, int accept)
     {
         String success;
         if (flatContainer.getSucces() == true)
@@ -109,13 +109,15 @@ public class InvitationDetails extends AppCompatActivity {
         Log.i("Send Acceptation", success);
         if (flatContainer.getSucces() == true)
         {
-            if (accept == "true") {
+            if (accept ==1) {
                 FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                if( flatDAO.getFlat() != null)
                 flatDAO.update(flatContainer.getTemplate());
+               else  flatDAO.save(flatContainer.getTemplate());
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
-            if (accept == "false") {
+            if (accept == 0) {
                 Intent intent = new Intent(getApplicationContext(), GroupActivity.class);
                 startActivity(intent);
             }
@@ -201,17 +203,22 @@ public class InvitationDetails extends AppCompatActivity {
 
     }
 
-    class callRespondInvitation extends AsyncTask<String, Void, ResultContainer<Flat>> {
-        private String accept;
+    class callRespondInvitation extends AsyncTask<Object, Void, ResultContainer<Flat>> {
+        private int accept;
 
         @Override
-        protected ResultContainer<Flat> doInBackground(String... params) {
-            String userID = params[0];
-            String flatID = params[1];
-            String acceptation = params[2];
+        protected ResultContainer<Flat> doInBackground(Object... params) {
+            String userID = (String) params[0];
+            String flatID =(String) params[1];
+            int acceptation = (int) params[2];
             accept = acceptation;
             Log.i("SentParam", "User id : " + userID + " - Flat id :  " + flatID );
-            ResultContainer<Flat> response = FlatFacade.respondInvitation(userID, flatID, acceptation);
+           String accString = "";
+            if (acceptation == 1 )
+                accString = "true";
+            else if (acceptation == 0)
+                accString = "false";
+            ResultContainer<Flat> response = FlatFacade.respondInvitation(userID, flatID, accString);
             Flat flat = FlatFacade.getInfo(MyFlatID).getTemplate();
             response.setTemplate(flat);
             return response;
@@ -220,6 +227,7 @@ public class InvitationDetails extends AppCompatActivity {
         @Override
         protected void onPostExecute(ResultContainer<Flat> flatResultContainer) {
             super.onPostExecute(flatResultContainer);
+            Log.i("LibSession", accept + "");
             saveAndRedirect(flatResultContainer, accept);
         }
 

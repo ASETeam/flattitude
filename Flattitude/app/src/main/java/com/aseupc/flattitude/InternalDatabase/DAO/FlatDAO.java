@@ -87,6 +87,11 @@ public class FlatDAO extends DBDAO {
             flat.setIban(cursor.getString(7));
             return flat;
         }
-        else return null;
+
+        if(cursor != null)
+        { cursor.close();} else {}
+
+
+         return null;
     }
 }

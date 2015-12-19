@@ -56,6 +56,8 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planning);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
         plans = (ListView) findViewById(R.id.plans_listview);
 
         Button addButton = (Button) findViewById(R.id.button);

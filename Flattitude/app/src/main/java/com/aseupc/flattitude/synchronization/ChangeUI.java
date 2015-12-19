@@ -1,17 +1,23 @@
 package com.aseupc.flattitude.synchronization;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.telecom.Call;
 import android.util.Log;
 
+import com.aseupc.flattitude.Activities.MainActivity;
 import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
+import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.database.Notifications_Web_Services;
 import com.aseupc.flattitude.database.User_Web_Services;
 import com.aseupc.flattitude.databasefacade.UserFacade;
@@ -57,7 +63,7 @@ public class ChangeUI extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 5000000); // 1 second * 1000
+        handler.postDelayed(sendUpdatesToUI, 30000); // 1 second * 1000
        // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
         Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
@@ -69,7 +75,7 @@ public class ChangeUI extends Service {
         public void run() {
            // DisplayLoggingInfo();
             SycnhronizeNotifications();
-            handler.postDelayed(this, 5000); // 5 seconds
+            handler.postDelayed(this, 30000); // 5 seconds
         }
     };
 
@@ -124,17 +130,23 @@ public class ChangeUI extends Service {
             ResultContainer<User> response = notifs.execute(user.getServerid()).get(500000, TimeUnit.MILLISECONDS);
             //ResultContainer<User> response =  UserFacade.getNotifications(user.getServerid());
             ArrayList<Notification> notifications = response.getTemplate().getNotifications();
+            Log.i("Booba 2.5", CallAPI.printList(notifications));
             int nothing = 0;
             Log.i("AFara2", "We are in the backgroundproces");
             for (int i = 0; i < notifications.size(); i++)
             {
                 Notification thisNotif = notifications.get(i);
                 NotificationsDAO not_Dao = new NotificationsDAO(getApplicationContext());
-                List<Notification> internal_Notifications = not_Dao.getNotifications();
-                if (!internal_Notifications.contains(thisNotif))
+
+                List<Notification> internal_Notifications = not_Dao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
+                List<Notification> selectList = not_Dao.selectNotification(thisNotif.getId() + "");
+                Log.i("Booba3", CallAPI.printList(selectList));
+                if (selectList.size() == 0)
+
                 {
-                    thisNotif.setSeennotification(false);
-                    thisNotif.setId(new Random().nextInt(4000000));
+                    thisNotif.setSeennotification("false");
+                   // thisNotif.setId(new Random().nextInt(4000000));
+                    thisNotif.setUser(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
                     not_Dao.save(thisNotif);
                     Timestamp tstamp  = new Timestamp(System.currentTimeMillis());
                   //  UserFacade.retrievedNotifications(thisNotif.getServerID() + "", tstamp.toString());
@@ -144,8 +156,25 @@ public class ChangeUI extends Service {
             Log.i("AFara3", "We are After the backgroundproces");
             UserDAO userDAO = new UserDAO(getApplicationContext());
 
-            if (nothing == 1)
-            intent.putExtra("change", "yes");
+            if (nothing == 1) {
+                intent.putExtra("change", "yes");
+
+                Intent intenti = new Intent(this, MainActivity.class);
+                PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intenti, 0);
+                NotificationManager notificationManager = (NotificationManager)
+                        getSystemService(NOTIFICATION_SERVICE);
+
+                android.app.Notification n  = new android.app.Notification.Builder(this)
+                        .setContentTitle("Flatittude")
+                        .setContentText("You have unseen notifications !")
+                        .setSmallIcon(R.drawable.ic_logo_app)
+                        .setContentIntent(pIntent)
+                        .setAutoCancel(true)
+                        .build();
+
+
+                notificationManager.notify(0, n);
+            }
             else
                 intent.putExtra("change", "no");
             sendBroadcast(intent);

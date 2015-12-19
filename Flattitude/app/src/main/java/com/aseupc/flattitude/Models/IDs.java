@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
+import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 
 /**
  * Created by Jordi on 02/12/2015.
@@ -14,11 +15,15 @@ public class IDs {
     private String userId;
     private String userToken;
     private String flatId;
+    private JabberSmackAPI smackChat;
+    private boolean newUser;
+
 
     private IDs(Context context){
         userId = null;
         userToken = null;
         flatId = null;
+        newUser = false;
 
         UserDAO uDAO = new UserDAO(context);
         User u = uDAO.getUser();
@@ -36,6 +41,10 @@ public class IDs {
         if(instance == null)
             instance = new IDs(context);
         return instance;
+    }
+
+    public static void resetIDs(){
+        instance = null;
     }
 
     public String getUserId(Context context){
@@ -71,4 +80,23 @@ public class IDs {
         }
        return flatId;
     }
+
+    public JabberSmackAPI getSmackChat() {
+        return smackChat;
+    }
+
+    public void setSmackChat(JabberSmackAPI smackChat) {
+        this.smackChat = smackChat;
+    }
+
+    public void setNewUser() {
+        this.newUser = true;
+    }
+    public void setConfirmedUser() {
+        this.newUser = false;
+    }
+    public boolean getNewUser(){
+        return newUser;
+    }
+
 }

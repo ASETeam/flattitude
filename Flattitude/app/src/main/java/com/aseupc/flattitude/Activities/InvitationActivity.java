@@ -26,12 +26,23 @@ public class InvitationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+        setTitle("Invite people to your flat ");
+        mInvitee = (EditText) findViewById(R.id.invitee);
+        mInvitee.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+            mInvitee.setText("");
+            }
+        });
         Button mSendInvite = (Button) findViewById(R.id.send_invitation);
         mSendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean processed = false;
-                mInvitee = (EditText) findViewById(R.id.invitee);
+
+
                 String toInvite = (String) mInvitee.getText().toString();
                 String userID;
                 String flatID;
@@ -67,7 +78,7 @@ public class InvitationActivity extends AppCompatActivity {
                 }
                 else {
                     // CharSequence text = result.getReason.... ;
-                    CharSequence text = "Invitation could not be sent !";
+                    CharSequence text = "This user is not yet using Flattitude !";
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(getApplicationContext(), text, duration);
                     toast.show();

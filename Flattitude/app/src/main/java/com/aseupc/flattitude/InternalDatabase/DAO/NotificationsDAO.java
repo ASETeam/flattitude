@@ -38,6 +38,7 @@ public class NotificationsDAO extends DBDAO {
         //  values.put(DataBaseHelper.NOTIFICATION_TIME, mo.getTime().toString());
         values.put(DataBaseHelper.NOTIFICATION_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
         values.put(DataBaseHelper.NOTIFICATION_AUTHOR, mo.getAuthor());
+        values.put(DataBaseHelper.NOTIFICATION_USER, mo.getUser());
 
 
         long result =  database.insertWithOnConflict(DataBaseHelper.NOTIFICATIONS_TABLENAME, null, values, database.CONFLICT_FAIL);
@@ -57,6 +58,7 @@ public class NotificationsDAO extends DBDAO {
       //  values.put(DataBaseHelper.NOTIFICATION_TIME, mo.getTime().toString());
         values.put(DataBaseHelper.NOTIFICATION_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
         values.put(DataBaseHelper.NOTIFICATION_AUTHOR, mo.getAuthor());
+        values.put(DataBaseHelper.NOTIFICATION_USER, mo.getUser());
 
         long result = database.update(DataBaseHelper.NOTIFICATIONS_TABLENAME,
                 values, WHERE_ID_EQUALS,
@@ -69,8 +71,13 @@ public class NotificationsDAO extends DBDAO {
                 WHERE_ID_EQUALS, new String[] { String.valueOf(not.getId()) });
     }
 
+    public int deleteAll() {
+        return database.delete(DataBaseHelper.NOTIFICATIONS_TABLENAME,
+                null, null);
+    }
 
-    public List<Notification> getNotifications() {
+
+    public List<Notification> getNotifications(String userID) {
         Cursor cursor;
         cursor = database.query(DataBaseHelper.NOTIFICATIONS_TABLENAME,
                 new String[] {
@@ -81,8 +88,12 @@ public class NotificationsDAO extends DBDAO {
                         DataBaseHelper.NOTIFICATION_TASKTYPE,
                         DataBaseHelper.NOTIFICATION_TYPE,
                         DataBaseHelper.NOTIFICATION_TIME,
-                        DataBaseHelper.NOTIFICATION_OBJECTNAME},
-                null, null, DataBaseHelper.NOTIFICATION_TIME, null,null, "10");
+                        DataBaseHelper.NOTIFICATION_OBJECTNAME,
+                        DataBaseHelper.NOTIFICATION_USER
+                },
+               DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"' AND "+ DataBaseHelper.NOTIFICATION_HASNOTIFICATION + " = 'false'", null, null, null,null, null);
+              //  DataBaseHelper.NOTIFICATION_USER + " = " + "'" + userID  +"'", null, null, null,null, null);
+
 
 
         List<Notification> list = new LinkedList<>();
@@ -92,13 +103,53 @@ public class NotificationsDAO extends DBDAO {
             Notification mo = new Notification();
             mo.setId(cursor.getInt(0));
             mo.setAuthor(cursor.getString(1));
-            mo.setSeennotification(seen);
+            mo.setSeennotification(cursor.getString(2));
             mo.setBody(cursor.getString(3));
 
             mo.setType(cursor.getString(5));
             mo.setTime(parseDate(cursor.getString(6)));
+            mo.setUser(cursor.getString(8));
             list.add(mo);
         }
+        if(cursor != null)
+        { cursor.close();} else {}
+        return list;
+    }
+
+    public List<Notification> selectNotification(String id){
+        Cursor cursor;
+        cursor = database.query(DataBaseHelper.NOTIFICATIONS_TABLENAME,
+                new String[] {
+                        DataBaseHelper.NOTIFICATION_ID,
+                        DataBaseHelper.NOTIFICATION_AUTHOR,
+                        DataBaseHelper.NOTIFICATION_HASNOTIFICATION,
+                        DataBaseHelper.NOTIFICATION_BODY,
+                        DataBaseHelper.NOTIFICATION_TASKTYPE,
+                        DataBaseHelper.NOTIFICATION_TYPE,
+                        DataBaseHelper.NOTIFICATION_TIME,
+                        DataBaseHelper.NOTIFICATION_OBJECTNAME,
+                        DataBaseHelper.NOTIFICATION_USER},
+                DataBaseHelper.NOTIFICATION_ID + " = " + "'" + id  +"'", null, null, null,null, null);
+
+
+
+        List<Notification> list = new LinkedList<>();
+        while(cursor.moveToNext()) {
+            boolean seen;
+            if (cursor.getString(2) == "true") seen = true; else seen = false;
+            Notification mo = new Notification();
+            mo.setId(cursor.getInt(0));
+            mo.setAuthor(cursor.getString(1));
+            mo.setSeennotification(cursor.getString(2));
+            mo.setBody(cursor.getString(3));
+
+            mo.setType(cursor.getString(5));
+            mo.setTime(parseDate(cursor.getString(6)));
+            mo.setUser(cursor.getString(8));
+            list.add(mo);
+        }
+        if(cursor != null)
+        { cursor.close();} else {}
         return list;
     }
 

@@ -28,6 +28,11 @@ import java.util.concurrent.TimeoutException;
 public class LandingActivity extends AppCompatActivity {
 
     @Override
+    public void onBackPressed() {
+        return;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
@@ -47,7 +52,7 @@ public class LandingActivity extends AppCompatActivity {
             Log.i("Anas", "The user has not been saved to localDB");
             Button mLoginButton = (Button) findViewById(R.id.login_button);
             Button mRegisterButton = (Button) findViewById(R.id.register_button);
-            Button mSkipButton = (Button) findViewById(R.id.skip_button);
+         //   Button mSkipButton = (Button) findViewById(R.id.skip_button);
             //Button mMapButton = (Button) findViewById(R.id.map_button);
             mLoginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -63,7 +68,7 @@ public class LandingActivity extends AppCompatActivity {
                     startActivity(intentRegister);
                 }
             });
-            mSkipButton.setOnClickListener(new View.OnClickListener() {
+          /*  mSkipButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     callGetUser call = new callGetUser();
@@ -83,7 +88,7 @@ public class LandingActivity extends AppCompatActivity {
                     startActivity(intentSkip);
 
                 }
-            });
+            });*/
 
 
         }

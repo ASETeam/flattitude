@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
     package="com.aseupc.flattitude">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -22,9 +24,11 @@
 
     <application
         android:allowBackup="true"
+        tools:replace="android:icon,android:theme"
         android:icon="@drawable/logoflattitude"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
         <service
             android:name=".synchronization.SynchzonizationService"
             android:enabled="true"
@@ -62,6 +66,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".Activities.MainActivity"
+
             android:label="@string/title_activity_main"
             android:uiOptions="splitActionBarWhenNarrow" />
         <activity

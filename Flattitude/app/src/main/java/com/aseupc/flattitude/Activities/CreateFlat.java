@@ -14,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
+import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
@@ -72,7 +74,7 @@ public class CreateFlat extends AppCompatActivity {
         mAddress = (EditText) findViewById(R.id.address);
         mCity = (EditText) findViewById(R.id.city);
         mPostalCode = (EditText) findViewById(R.id.postal_code);
-        mCountry = (EditText) findViewById(R.id.postcode);
+        mCountry = (EditText) findViewById(R.id.country);
         mIban = (EditText) findViewById(R.id.iban);
 
         final Button mCreateFlat = (Button) findViewById(R.id.create_button);
@@ -92,7 +94,9 @@ public class CreateFlat extends AppCompatActivity {
                 flat.setCity(city);
                 flat.setCountry(country);
                 flat.setPostcode(postal_code);
-                ResultContainer<Flat> response = FlatFacade.createFlat(flat);
+                UserDAO userDAO = new UserDAO(getApplicationContext());
+                User user = userDAO.getUser();
+                ResultContainer<Flat> response = FlatFacade.createFlat(flat, user);
                 if (response.getSucces() == true)
                 {
                     Context context = getApplicationContext();

@@ -95,6 +95,9 @@ public class UserDAO extends DBDAO {
             user.setToken(cursor.getString(9));
             return user;
         }
-        else return null;
+        if(cursor != null)
+        { cursor.close();} else {}
+
+         return null;
     }
 }

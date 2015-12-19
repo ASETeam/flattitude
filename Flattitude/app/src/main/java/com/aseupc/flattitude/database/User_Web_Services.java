@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.database;
 import android.os.AsyncTask;
+import android.telecom.Call;
 import android.util.Log;
 
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
@@ -139,7 +140,52 @@ public class User_Web_Services {
 
     }
 
+    public ResultContainer<User> ws_quitFlat(String userID, String flatID)
+    {
+        ResultContainer<User> resultContainer = new ResultContainer<User>();
+        String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/quit";
+        callQuit call = new callQuit();
+        HashMap<String, String> values = new HashMap<>();
+        String FinalizeThread;
+        values.put("idUser", userID);
+        values.put("idFlat", flatID);
+        String res;
+        res = CallAPI.performPostCall(urlString, values);
 
+        try {
+            JSONObject mainObject = new JSONObject(res);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        FinalizeThread = res;
+
+
+        if (FinalizeThread != null)
+        {
+            Log.i("We start with Json: ", FinalizeThread);
+            try {
+                JSONObject mainObject = new JSONObject(FinalizeThread);
+                String success = mainObject.getString("success");
+                Log.i("When we receive JSON", success);
+                if (success == "true") {
+                 resultContainer.setSuccess(true);
+                }
+                else if (success == "false"){
+                    resultContainer.setSuccess(false);
+                   // String reason = mainObject.getString("reason");
+                  //  resultContainer.addReason(reason);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return resultContainer;
+
+
+
+    }
 
 
     public ResultContainer<User> ws_registerUser(String email, String password, String firstname, String lastname, String phonenumber) {
@@ -171,6 +217,7 @@ public class User_Web_Services {
         values.put("firstname", user.getFirstname());
         values.put("lastname", user.getLastname());
         values.put("phonenbr", user.getPhonenbr());
+
         response = CallAPI.performPostCall(urlStr, values);
 
         try {
@@ -193,6 +240,10 @@ public class User_Web_Services {
                 Log.i("When we receive JSON", success);
                 if (success == "true") {
                     String userId = mainObject.getString("id");
+
+                    //Perform registration to the Chat Server.
+                    CallAPI.performChatRegister(userId, values);
+
                     resultContainer.setSuccess(true);
                     // Temporary solution : dummy user
                    // resultContainer.setTemplate(CallAPI.getUser(userId));
@@ -288,6 +339,18 @@ public class User_Web_Services {
             }
             return resultContainer;
 
+        }
+    }
+
+
+    class callQuit extends AsyncTask<String, Void, ResultContainer<User>>
+    {
+        @Override
+        protected ResultContainer<User> doInBackground(String... params) {
+            String userID = params[0];
+            String flatID = params[1];
+
+            return null;
         }
     }
 

@@ -129,7 +129,6 @@ public class Map_Web_Services {
             String userID = strings[0];
             String token = strings [1];
             String flatID = strings[2];
-            flatID = "50"; //TODO: remove this line once the flat of the user is correctly retrieved at login
             values.put("userid", userID);
             values.put("flatid", flatID);
             values.put("token",token);

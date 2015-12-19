@@ -68,7 +68,7 @@ public class IDs {
                 userToken = u.getToken();
             }
         }
-        return userToken;
+        return userToken == null ? "" : userToken;
     }
 
     public String getFlatId(Context context){

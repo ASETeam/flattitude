@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.InternalDatabase.AsyncTasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
@@ -7,6 +8,7 @@ import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.MapObject;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
@@ -36,10 +38,10 @@ public class AsyncEditObjectTask extends AsyncTask<String,Integer,MapObject> {
         super.onPreExecute();
 
         //Synchronize with server
-        UserDAO uDAO = new UserDAO(((LocateObjectsActivity) listener).getApplicationContext());
-        User u = uDAO.getUser();
+        Context c = (LocateObjectsActivity) listener;
+        IDs ids = IDs.getInstance(c);
         Map_Web_Services ws = new Map_Web_Services();
-        res = ws.ws_editObject(newObject, u.getServerid(), u.getToken());
+        res = ws.ws_editObject(newObject, ids.getUserId(c), ids.getUserToken(c));
     }
 
 

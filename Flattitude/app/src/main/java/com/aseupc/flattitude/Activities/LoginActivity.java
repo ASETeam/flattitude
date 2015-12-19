@@ -419,10 +419,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Put user in local DB
 
                 UserDAO userDAO = new UserDAO(context);
+                User user = getCurrentUser();
+                user.setPassword(mPassword);
                 if (userDAO.getUser() == null)
-                    userDAO.save(getCurrentUser());
+                    userDAO.save(user);
                 else
-                    userDAO.update(getCurrentUser());
+                    userDAO.update(user);
                 Log.i("Anas1", "Before checking flat");
                 ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
                 Flat flat = resultFlat.getTemplate();
@@ -436,13 +438,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         flatDAO.save(flat);
                         chatID = getCurrentUser().getServerid();
                         password = mPassword;
-                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(mainIntent);
+
                     } else {
                         Log.i("Anas2", "main activity");
                         flatDAO.update(flat);
-                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(mainIntent);
+
                     }
                 }
 
@@ -455,6 +455,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 else
                     call.execute(chatID, password, "");
 
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainIntent);
 
             } else if ((success == false) && (CallAPI.isNetworkAvailable(context) == false)) {
                 CallAPI.makeToast(context, "No internet connection");

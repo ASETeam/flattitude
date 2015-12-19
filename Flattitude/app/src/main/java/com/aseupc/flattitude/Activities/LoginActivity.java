@@ -59,7 +59,6 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-
     private User currentUser;
 
     public User getCurrentUser() {
@@ -104,22 +103,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         context = this;
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         dialog = new SpotsDialog(context);
         //customize the fonts for each label
-        Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
-        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
-        TextView email_address_login_label = (TextView)findViewById(R.id.email_address_login_label);
+        Typeface customFontButton = Typeface.createFromAsset(getAssets(), "Montserrat-Regular.ttf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(), "Quicksand_Book.otf");
+        TextView email_address_login_label = (TextView) findViewById(R.id.email_address_login_label);
         email_address_login_label.setTypeface(customFont);
-        AutoCompleteTextView email = (AutoCompleteTextView)findViewById(R.id.email);
+        AutoCompleteTextView email = (AutoCompleteTextView) findViewById(R.id.email);
         email.setTypeface(customFont);
-        TextView password_login_label = (TextView)findViewById(R.id.password_login_label);
+        TextView password_login_label = (TextView) findViewById(R.id.password_login_label);
         password_login_label.setTypeface(customFont);
-        EditText password = (EditText)findViewById(R.id.password);
+        EditText password = (EditText) findViewById(R.id.password);
         password.setTypeface(customFont);
-        Button login_button = (Button)findViewById(R.id.login_button);
+        Button login_button = (Button) findViewById(R.id.login_button);
         login_button.setTypeface(customFontButton);
 
         // Set up the login form.
@@ -271,58 +270,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-       if (show)
-        {
+        if (show) {
             View view = this.getCurrentFocus();
             if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        //    AlertDialog dialog = new SpotsDialog(context);
-        //    dialog.show();
+            //    AlertDialog dialog = new SpotsDialog(context);
+            //    dialog.show();
 
         }
-        if (!show)
-        {
-         //   AlertDialog dialog = new SpotsDialog(context);
-         //   dialog.hide();
+        if (!show) {
+            //   AlertDialog dialog = new SpotsDialog(context);
+            //   dialog.hide();
         }
 
-
-/*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
-            //            mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                    mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
-
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoading.setVisibility(show ? View.VISIBLE : View.GONE);
-         //   mNewProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-  */
     }
 
     @Override
@@ -416,20 +378,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             // AUTHENTICATION HERE
-            if (CallAPI.isNetworkAvailable(context) == false)
-            {
+            if (CallAPI.isNetworkAvailable(context) == false) {
                 dialog.hide();
                 return false;
 
 
             }
             ResultContainer<User> result = UserFacade.verifyCredentials((String) mEmail, (String) mPassword);
-            if (result.getSucces() == true)
-            {
-               setCurrentUser(result.getTemplate());
-                return true;}
-            else
-            return false;
+            if (result.getSucces() == true) {
+                setCurrentUser(result.getTemplate());
+                return true;
+            } else
+                return false;
 
 
           /*  for (String credential : DUMMY_CREDENTIALS) {
@@ -448,89 +408,70 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
+            String chatID = getCurrentUser().getServerid();
+            String password = mPassword;
 
-           // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
+            // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
             Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
-               // finish();
+                // finish();
                 // Put user in local DB
 
                 UserDAO userDAO = new UserDAO(context);
-                if(userDAO.getUser() == null)
-                userDAO.save(getCurrentUser());
+                if (userDAO.getUser() == null)
+                    userDAO.save(getCurrentUser());
                 else
-                userDAO.update(getCurrentUser());
-
-                Log.i("XJordi", getCurrentUser().getFirstname());
-                Log.i("XJordi 2", userDAO.getUser().getFirstname());
-
+                    userDAO.update(getCurrentUser());
+                Log.i("Anas1", "Before checking flat");
                 ResultContainer<Flat> resultFlat = UserFacade.getFlat(getCurrentUser().getServerid());
                 Flat flat = resultFlat.getTemplate();
 
-                if (resultFlat.getSucces() == false){
-                Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
-                startActivity(intent);}
-                else if (resultFlat.getSucces() == true) {
-
-                    //flat.setServerid(new Random().nextInt(324324) + "");
-                    FlatDAO flatDAO = new FlatDAO(context);
-                 //   Log.i("UserFlat", flat.getName());
-                    if (flatDAO.getFlat() == null)
-                    flatDAO.save(flat);
-                    else
-                    flatDAO.update(flat);
-                    Intent mainIntent = new Intent (context, MainActivity.class);
-                    startActivity(mainIntent);
+                if (resultFlat.getSucces() == false) {
+                    Intent intent = new Intent(loginB.getContext(), GroupActivity.class);
+                    startActivity(intent);
+                } else if (resultFlat.getSucces() == true) {
+                    FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                    if (flatDAO.getFlat() == null) {
+                        flatDAO.save(flat);
+                        chatID = getCurrentUser().getServerid();
+                        password = mPassword;
+                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(mainIntent);
+                    } else {
+                        Log.i("Anas2", "main activity");
+                        flatDAO.update(flat);
+                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(mainIntent);
+                    }
                 }
 
-
-
-                    String chatID = getCurrentUser().getServerid();
-                    String password = mPassword;
-/*
-                    try {
-                        JabberSmackAPI smackChat = new JabberSmackAPI();
-
-                        //Login to Chat.
-                        smackChat.login(chatID, password);
-
-                        //Join to room.
-                        smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
-
-                        IDs.getInstance(context).setSmackChat(smackChat);
-
-                    } catch (Exception ex ) {
-                        ex.printStackTrace();
-                    }
-                */
-
                 connectChat call = new connectChat();
-                call.execute(chatID, password);
+
+                chatID = getCurrentUser().getServerid();
+                password = mPassword;
+                if (flat != null)
+                    call.execute(chatID, password, flat.getName());
+                else
+                    call.execute(chatID, password, "");
 
 
-            }else if ((success == false) && (CallAPI.isNetworkAvailable(context) == false)){
+            } else if ((success == false) && (CallAPI.isNetworkAvailable(context) == false)) {
                 CallAPI.makeToast(context, "No internet connection");
 
-            }
-            else {
+            } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
         }
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
 
         public class connectChat extends AsyncTask<String, Void, Void>
         {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                dialog.hide();
+               // dialog.hide();
             }
 
             @Override
@@ -540,15 +481,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //Login to Chat.
                     smackChat.login(params[0], params[1]);
+
                     FlatDAO flatDAO = new FlatDAO(context);
                     Flat flat = flatDAO.getFlat();
-                    //Join to room.
-                    smackChat.joinMUC(flat.getName(), getCurrentUser().getFirstname());
 
-                    IDs.getInstance(context).setSmackChat(smackChat);
+                    //Join to room.
+                    if (!params[2].equals(""))
+                        smackChat.joinMUC(params[2], getCurrentUser().getFirstname());
+
+                    IDs.getInstance(getApplicationContext()).setSmackChat(smackChat);
 
                 } catch (Exception ex ) {
                     Log.e("CHAT ERROR", ex.getMessage());
+                    ex.printStackTrace();
                 }
                 return null;
 

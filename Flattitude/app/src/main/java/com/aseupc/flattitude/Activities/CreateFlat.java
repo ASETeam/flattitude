@@ -3,8 +3,10 @@ package com.aseupc.flattitude.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +18,12 @@ import android.widget.Toast;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.utility_REST.CallAPI;
+import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import org.w3c.dom.Text;
@@ -121,10 +125,15 @@ public class CreateFlat extends AppCompatActivity {
                    else flatDao.update(flat);
                     Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(homeIntent);
+
+                    connectChat call = new connectChat();
+                    call.execute(flat.getName(), user.getFirstname());
                 }
         }
 
     }); }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,5 +155,25 @@ public class CreateFlat extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public class connectChat extends AsyncTask<String, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
+
+                //Join to room after flat creation.
+                smackChat.joinMUC(params[0], params[1]);
+
+            } catch (Exception ex ) {
+                Log.e("CHAT ERROR", ex.getMessage());
+            }
+            return null;
+
+        }
     }
 }

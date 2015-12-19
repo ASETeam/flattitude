@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // ---
-        NotificationsDAO notDao = new NotificationsDAO(getApplicationContext());
+        NotificationsDAO notDao = new NotificationsDAO(context);
 
         UserDAO userDAO1 = new UserDAO(context);
         User user1 = userDAO1.getUser();

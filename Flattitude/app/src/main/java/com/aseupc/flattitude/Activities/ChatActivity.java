@@ -19,6 +19,10 @@ import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 
+import org.jivesoftware.smack.packet.Message;
+
+import java.util.List;
+
 public class ChatActivity extends AppCompatActivity {
 
     private ChatArrayAdapter adapter;
@@ -39,8 +43,6 @@ public class ChatActivity extends AppCompatActivity {
         messagesList = (ListView) findViewById(R.id.chat_list_view);
         adapter = new ChatArrayAdapter(getApplicationContext(), R.layout.chat);
         messageTextField = (EditText) findViewById(R.id.chat_message_input);
-
-
         messageTextField.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -69,6 +71,9 @@ public class ChatActivity extends AppCompatActivity {
                 messagesList.setSelection(adapter.getCount() - 1);
             }
         });
+
+        chatSmack = IDs.getInstance(getApplicationContext()).getSmackChat();
+        chatSmack.getListener().activateChatWindow(this);
     }
 
 
@@ -97,14 +102,39 @@ public class ChatActivity extends AppCompatActivity {
 
     private boolean sendChatMessage() {
         JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
-//        Log.i("Bib5", smackChat.toString());
+
         smackChat.sendGroupMessage(messageTextField.getText().toString());
-        smackChat.setReceiveListener(adapter);
 
         adapter.add(new ChatMessage(messageTextField.getText().toString()));
 
         messageTextField.setText("");
         return true;
+    }
+
+    //This method has to be called when the ChatActivity is created, in order to update the List of Messages.
+    public void updateMessages(List<Message> oldMessages) {
+
+        for (Message message : oldMessages) {
+            String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
+
+            if (chatSmack.getUserName().equalsIgnoreCase(receiver))
+                adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
+            else
+                adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
+        }
+
+
+    }
+
+    //In case the ChatActivity is created, the listener sends the message back to here.
+    public void showMessage(Message message) {
+        String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
+
+        if (chatSmack.getUserName().equalsIgnoreCase(receiver))
+            adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
+        else
+            adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
+
     }
 }
 

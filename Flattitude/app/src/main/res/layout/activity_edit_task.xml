@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/LightGreen"
     tools:context="com.aseupc.flattitude.Activities.EditTaskActivity">
 
     <android.support.design.widget.AppBarLayout

@@ -83,6 +83,7 @@ public class IDs {
         newUser = false;
         personalExpense = -112.23;
         balance = 2343;
+        smackChat = null;
 
         UserDAO uDAO = new UserDAO(context);
         User u = uDAO.getUser();
@@ -106,6 +107,7 @@ public class IDs {
     }
 
     public static void resetIDs(){
+
         instance = null;
     }
 
@@ -144,14 +146,15 @@ public class IDs {
     }
 
     public JabberSmackAPI getSmackChat(Context ctx) {
+       // smackChat = null;
         if (smackChat == null)
         {
            connectChat call = new connectChat();
-
             JabberSmackAPI obj= null;
             try {
                 obj = call.execute(ctx).get(50000, TimeUnit.MILLISECONDS);
                 Log.i("Give", "up");
+                smackChat = obj;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -164,6 +167,30 @@ public class IDs {
         else
         return smackChat;
     }
+
+    public JabberSmackAPI getSmackChat(Context ctx, boolean initial) {
+        smackChat = null;
+        if (smackChat == null)
+        {
+            connectChat call = new connectChat();
+            JabberSmackAPI obj= null;
+            try {
+                obj = call.execute(ctx).get(50000, TimeUnit.MILLISECONDS);
+                Log.i("Give", "up");
+                smackChat = obj;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+            return obj;
+        }
+        else
+            return smackChat;
+    }
+
 
     public User getUser(Context context) {
         if(flat==null){
@@ -215,6 +242,10 @@ public class IDs {
                 //Login to Chat.
                 smackChat.login(getUserId(context), getPassword());
 
+                Log.i("Jak UserID", getUserId(context));
+                Log.i("Jak UserPWD", getPassword());
+                Log.i("Jak Flatnm", flatname);
+                Log.i("Jak UserFName",getUser(context).getFirstname());
 
                 //Join to room.
                 if (getFlat(context).getName() != null)

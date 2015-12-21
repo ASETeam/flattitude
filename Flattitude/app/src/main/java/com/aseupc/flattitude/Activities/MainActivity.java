@@ -192,8 +192,15 @@ public class MainActivity extends AppCompatActivity {
         goChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                JabberSmackAPI smackObject = IDs.getInstance(context).getSmackChat(context, true);
+
+              //  smackObject = IDs.getInstance(context).getSmackChat(context, true);
+                if (smackObject != null) {
                 Intent chatIntent = new Intent(view.getContext(), ChatActivity.class);
-                startActivity(chatIntent);
+                startActivity(chatIntent);}
+                else {
+                    CallAPI.makeToast(context, "Could not connect to the chat");
+                }
             }
         });
 

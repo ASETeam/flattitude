@@ -58,9 +58,9 @@ public class JabberSmackAPI {
 	
 	public void sendMessage(String message, String to) throws Exception {
 	    ChatManager cm = ChatManager.getInstanceFor(connection);
-	    cm.addChatListener(new ChatManagerListenerImpl());
+	    cm.addChatListener(new ChatManagerListenerImpl( ));
 	    
-	    Chat chat = cm.createChat(to);    
+	    Chat chat = cm.createChat(to);
 	    chat.sendMessage(message);
 	}
 	

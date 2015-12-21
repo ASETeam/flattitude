@@ -38,11 +38,16 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         context = this;
+        chatSmack = IDs.getInstance(context).getSmackChat(context);
+        Log.i("Jak chatsmak", chatSmack.getUserName());
+        setTitle("Chat");
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
 
         sendButton = (Button) findViewById(R.id.chat_send_button);
         messagesList = (ListView) findViewById(R.id.chat_list_view);
+        messagesList.setDivider(null);
         adapter = new ChatArrayAdapter(getApplicationContext(), R.layout.chat);
         messageTextField = (EditText) findViewById(R.id.chat_message_input);
         messageTextField.setOnKeyListener(new View.OnKeyListener() {
@@ -75,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         chatSmack = IDs.getInstance(context).getSmackChat(context);
+
         chatSmack.getListener().activateChatWindow(this);
     }
 
@@ -112,29 +118,36 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     //This method has to be called when the ChatActivity is created, in order to update the List of Messages.
-    public void updateMessages(List<Message> oldMessages) {
+    public void updateMessages(final List<Message> oldMessages) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                List<Message>  oldMessagesCopy = oldMessages;
+                for (Message message : oldMessagesCopy)
 
-        for (Message message : oldMessages) {
-            String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
+                {
+                    String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
 
-            if (chatSmack.getUserName().equalsIgnoreCase(receiver))
-                adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
-            else
-                adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
+                    if (chatSmack.getUserName().equalsIgnoreCase(receiver))
+                        adapter.add(new ChatMessage("Me" + ": \n" + message.getBody()));
+                    else
+                        adapter.add(new ChatMessage(receiver + ": \n " + message.getBody(), true));
+                }
+            }
+        });
+    }
+
+
+        //In case the ChatActivity is created, the listener sends the message back to here.
+        public void showMessage(final Message message) {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
+
+                    if (chatSmack.getUserName().equalsIgnoreCase(receiver))
+                        adapter.add(new ChatMessage("Me" + ": \n" + message.getBody()));
+                    else
+                        adapter.add(new ChatMessage(receiver + ": \n" + message.getBody(), true));
+                }});
         }
-
-
-    }
-
-    //In case the ChatActivity is created, the listener sends the message back to here.
-    public void showMessage(Message message) {
-        String receiver = message.getFrom().substring(message.getFrom().indexOf("/") + 1);
-
-        if (chatSmack.getUserName().equalsIgnoreCase(receiver))
-            adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
-        else
-            adapter.add(new ChatMessage(receiver + ": " + message.getBody(), false));
-
-    }
 }
 

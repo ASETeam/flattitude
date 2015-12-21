@@ -451,11 +451,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 chatID = getCurrentUser().getServerid();
                 password = mPassword;
-                if (flat != null)
-                    call.execute(chatID, password, flat.getName());
+                IDs.getInstance(context).setPassword(mPassword);
+               /* if (flat != null)
+                  call.execute(chatID, password, flat.getName());
                 else
-                    call.execute(chatID, password, "");
-
+                   call.execute(chatID, password, "");
+*/
                 Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mainIntent);
 

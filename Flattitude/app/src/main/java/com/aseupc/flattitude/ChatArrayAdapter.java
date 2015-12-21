@@ -1,6 +1,7 @@
 package com.aseupc.flattitude;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,11 +51,18 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             v = inflater.inflate(R.layout.chat, parent, false);
         }
         layout = (LinearLayout) v.findViewById(R.id.Message1);
+
         ChatMessage message = getItem(position);
         chatText = (TextView) v.findViewById(R.id.SingleMessage);
         chatText.setText(message.getMessage());
 
         layout.setGravity(message.isLeftSide() ? Gravity.LEFT : Gravity.RIGHT);
+       // chatText.setBackground(message.isLeftSide() ? R.color.colorBackgroundBlue : R.color.colorPinkFocus);
+      // chatText.setBackground(getRR.color.colorBackgroundBlue);
+        chatText.setTextColor(Color.BLACK);
+
+      //  R.color.red_btn_bg_color
+        chatText.setBackgroundColor(message.isLeftSide() ? Color.parseColor("#bfd4c1") : Color.parseColor("#f1AAAA"));
 
         return v;
     }

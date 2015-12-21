@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.Activities;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,12 +31,13 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageTextField;
     private Button sendButton;
     private JabberSmackAPI chatSmack;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        context = this;
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
 
@@ -72,11 +74,9 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        chatSmack = IDs.getInstance(getApplicationContext()).getSmackChat();
+        chatSmack = IDs.getInstance(context).getSmackChat(context);
         chatSmack.getListener().activateChatWindow(this);
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,11 +101,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private boolean sendChatMessage() {
-        JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
+        JabberSmackAPI smackChat = IDs.getInstance(context).getSmackChat(context);
 
         smackChat.sendGroupMessage(messageTextField.getText().toString());
 
-        adapter.add(new ChatMessage(messageTextField.getText().toString()));
+        //adapter.add(new ChatMessage(messageTextField.getText().toString()));
 
         messageTextField.setText("");
         return true;

@@ -112,6 +112,9 @@ public class MainActivity extends AppCompatActivity {
 
         // ---
         NotificationsDAO notDao = new NotificationsDAO(context);
+        FlatDAO flatDao = new FlatDAO(context);
+        String flatname = flatDao.getFlat().getName();
+        IDs.getInstance(context).setFlatname(flatname);
 
         UserDAO userDAO1 = new UserDAO(context);
         User user1 = userDAO1.getUser();

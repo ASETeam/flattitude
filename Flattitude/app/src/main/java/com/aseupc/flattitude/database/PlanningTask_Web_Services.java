@@ -4,12 +4,26 @@ import android.util.Log;
 
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.utility_REST.CallAPI;
+import com.aseupc.flattitude.utility_REST.ParseResults;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +59,11 @@ public class PlanningTask_Web_Services {
         call.execute(userID,token,flatID);
     }
 
+    public void ws_getTasks(String userID, String token, String flatID, GetTasksWSListener listener) {
+        callGet call = new callGet(listener);
+        call.execute(userID,token,flatID);
+    }
+
     class callCreate extends AsyncTask<String, Void, ResultContainer<PlanningTask>> {
 
         private PlanningTask task;
@@ -60,39 +79,30 @@ public class PlanningTask_Web_Services {
         protected ResultContainer<PlanningTask> doInBackground(String... strings) {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<>();
 
-            //Only for debug
-            if(true) {
-                resultContainer.setSuccess(true);
-                Random r = new Random();
-                task.setID(String.valueOf(r.nextInt(200000)));
-                resultContainer.setTemplate(task);
-                return resultContainer;
-            }
-
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/create";
             HashMap<String, String> values = new HashMap<>();
             String userID = strings[0];
             String token = strings [1];
             String flatID = strings[2];
-            flatID = "50"; //TODO: remove this line once the flat of the user is correctly retrieved at login
             values.put("userid", userID);
             values.put("flatid", flatID);
             values.put("token",token);
-            values.put("type", task.getType());
+            values.put("type", String.valueOf(task.getTypeId()));
             values.put("description", task.getDescription());
             values.put("year", task.getYearString());
             values.put("month", task.getMonthString());
             values.put("day", task.getDayString());
             values.put("hour", task.getHourString());
             values.put("minute", task.getMinuteString());
-            values.put("duration","10"); //TODO: do we have duration?
+            values.put("duration","10");
             try {
                 response = CallAPI.performPostCall(urlStr, values);
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
+                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
-                    String id = mainObject.getString("taskId");
+                    String id = mainObject.getString("idTask");
                     resultContainer.setSuccess(true);
                     task.setID(id);
                     resultContainer.setTemplate(task);
@@ -113,11 +123,13 @@ public class PlanningTask_Web_Services {
                  resultContainer.setSuccess(false);
                  resultContainer.addReason("Internal error");
              }
+            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
+            Log.i("Registry has been", " changed in PostExecute");
             listener.onAddWSFinished(response);
         }
     }
@@ -137,13 +149,6 @@ public class PlanningTask_Web_Services {
         protected ResultContainer<PlanningTask> doInBackground(String... strings) {
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
 
-            //Only for debug
-            if(true) {
-                resultContainer.setSuccess(true);
-                resultContainer.setTemplate(task);
-                return resultContainer;
-            }
-
             String response = "";
             String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/edit";
             HashMap<String, String> values = new HashMap<>();
@@ -152,19 +157,20 @@ public class PlanningTask_Web_Services {
             values.put("userid", userID);
             values.put("token",token);
             values.put("taskid",task.getID());
-            values.put("type", task.getType());
+            values.put("type", String.valueOf(task.getTypeId()));
             values.put("description", task.getDescription());
             values.put("year", task.getYearString());
             values.put("month", task.getMonthString());
             values.put("day", task.getDayString());
             values.put("hour", task.getHourString());
             values.put("minute", task.getMinuteString());
-            values.put("duration","10"); //TODO: do we have duration?
+            values.put("duration","10");
             response = CallAPI.performPostCall(urlStr, values);
 
             try {
                 JSONObject mainObject = new JSONObject(response);
                 String success = mainObject.getString("success");
+                Log.i("GUILLE RESPONSE", mainObject.toString());
                 if (success == "true") {
                     resultContainer.setSuccess(true);
                     resultContainer.setTemplate(task);
@@ -179,11 +185,13 @@ public class PlanningTask_Web_Services {
                 resultContainer.setSuccess(false);
                 resultContainer.addReason("Internal error");
             }
+            Log.i("GUILLE RESPONSE", response);
             return resultContainer;
         }
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
+            Log.i("Registry has been", " changed in PostExecute");
             listener.onEditWSFinished(response);
         }
     }
@@ -204,36 +212,54 @@ public class PlanningTask_Web_Services {
 
 
             ResultContainer<PlanningTask> resultContainer = new ResultContainer<PlanningTask>();
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/delete/";
+            urlStr = urlStr + task.getID();
 
-            //Only for debug
-            if(true) {
-                resultContainer.setSuccess(true);
-                resultContainer.setTemplate(task);
-                return resultContainer;
+            InputStream in = null;
+            String resultToDisplay = null;
+            URL url = null;
+            try {
+                url = new URL(urlStr);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
             }
 
-            String response = "";
-            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/delete";
-            HashMap<String, String> values = new HashMap<>();
-            String userID = strings[0];
-            String token = strings [1];
-            values.put("userid", userID);
-            values.put("token",token);
-            values.put("taskid", task.getID());
-            response = CallAPI.performPostCall(urlStr, values);
-
+            // resultToDisplay = (String) in.toString();
             try {
-                JSONObject mainObject = new JSONObject(response);
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                JSONObject mainObject = new JSONObject(resultToDisplay);
                 String success = mainObject.getString("success");
-                if (success == "true") {
-                    resultContainer.setSuccess(true);
+
+                if (success == "true") {resultContainer.setSuccess(true);
                     resultContainer.setTemplate(task);
                 }
-                else if (success == "false"){
+                else if (success == "false") {
                     resultContainer.setSuccess(false);
                     String reason = mainObject.getString("reason");
                     resultContainer.addReason(reason);
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
                 resultContainer.setSuccess(false);
@@ -244,7 +270,105 @@ public class PlanningTask_Web_Services {
 
         @Override
         protected void onPostExecute(ResultContainer<PlanningTask> response) {
+            Log.i("Registry has been", " changed in PostExecute");
             listener.onDeleteWSFinished(response);
+        }
+    }
+
+    class callGet extends AsyncTask<String, Void, ResultContainer<List<PlanningTask>>> {
+
+        private GetTasksWSListener listener;
+
+        public callGet(GetTasksWSListener listener) {
+            super();
+            this.listener = listener;
+        }
+
+        @Override
+        protected ResultContainer<List<PlanningTask>> doInBackground(String... strings) {
+            ResultContainer<List<PlanningTask>> resultContainer = new ResultContainer<>();
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/tasks/get/";
+            String flatId = strings[2];
+            urlStr = urlStr + flatId;
+
+            InputStream in = null;
+            String resultToDisplay = null;
+            URL url = null;
+            try {
+                url = new URL(urlStr);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+
+            try {
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                JSONObject mainObject = new JSONObject(resultToDisplay);
+                String success = mainObject.getString("success");
+
+                if (success == "true") {
+                    resultContainer.setSuccess(true);
+                    List<PlanningTask> tasks = new LinkedList<>();
+                    JSONArray tasksjson = mainObject.getJSONArray("tasks");
+                    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    for(int i = 0; i < tasksjson.length(); i++){
+                        JSONObject taskjson = tasksjson.getJSONObject(i);
+                        PlanningTask task = new PlanningTask();
+                        task.setID(taskjson.getString("id"));
+                        task.setType(taskjson.getInt("type"));
+                        task.setDescription(taskjson.getString("description"));
+                        task.setAuthor(taskjson.getString("author"));
+                        String datetime = taskjson.getString("date").split("\\.")[0];
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(f.parse(datetime));
+                        task.setPlannedTime(c);
+                        tasks.add(task);
+                    }
+
+                    resultContainer.setTemplate(tasks);
+                } else if (success == "false") {
+                    resultContainer.setSuccess(false);
+                    String reason = mainObject.getString("reason");
+                    resultContainer.addReason(reason);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            catch (ParseException e){
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            return resultContainer;
+        }
+
+        @Override
+        protected void onPostExecute(ResultContainer<List<PlanningTask>> response) {
+            Log.i("Registry has been", " changed in PostExecute");
+            listener.onGetWSFinished(response);
         }
     }
 
@@ -256,5 +380,8 @@ public class PlanningTask_Web_Services {
     }
     public interface DeletePlanningTaskWSListener {
         public void onDeleteWSFinished(ResultContainer<PlanningTask> result);
+    }
+    public interface GetTasksWSListener {
+        void onGetWSFinished(ResultContainer<List<PlanningTask>> result);
     }
 }

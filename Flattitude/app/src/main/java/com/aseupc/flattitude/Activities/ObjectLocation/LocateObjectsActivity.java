@@ -29,9 +29,14 @@ import android.widget.ListView;
 import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncAddObjectTask;
 import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncEditObjectTask;
 import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncRemoveObjectTask;
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncUpdateObjects;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.MapObject;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.database.Map_Web_Services;
+import com.aseupc.flattitude.utility_REST.CallAPI;
+import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -59,8 +64,9 @@ public class LocateObjectsActivity extends AppCompatActivity
         EditObjectFragment.OnEditFragmentInteractionListener,
         AsyncAddObjectTask.OnObjectAddedListener,
         AsyncEditObjectTask.OnObjectEditedListener,
-        AsyncRemoveObjectTask.OnObjectRemovedListener
-
+        AsyncRemoveObjectTask.OnObjectRemovedListener,
+        AsyncUpdateObjects.OnUpdateListener,
+        Map_Web_Services.GetObjectsWSListener
 {
 
     private static final float flagXAnchor = 0.2f;
@@ -97,7 +103,32 @@ public class LocateObjectsActivity extends AppCompatActivity
         mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
         mOverlayDialog.setCancelable(false);
         mProgressView = findViewById(R.id.progressBar);
-        showProgress(true);
+        showProgress(false);
+        //showProgress(true);
+        synchronize();
+    }
+    private void synchronize(){
+        IDs ids = IDs.getInstance(this);
+        Map_Web_Services ws = new Map_Web_Services();
+        ws.ws_getObjects(ids.getUserId(this), ids.getUserToken(this), ids.getFlatId(this), this);
+    }
+
+
+    @Override
+    public void onGetWSFinished(ResultContainer<List<MapObject>> result) {
+        if(!result.getSucces()){
+            AsyncLoadingTask load = new AsyncLoadingTask(this);
+            load.execute((Void) null);
+            CallAPI.makeToast(this, "You are offline. New changes aren't displayed");
+        }
+        else{
+            AsyncUpdateObjects sync = new AsyncUpdateObjects(result.getTemplate(), this);
+            sync.execute();
+        }
+    }
+
+    @Override
+    public void onUpdateFinished(){
         AsyncLoadingTask load = new AsyncLoadingTask(this);
         load.execute((Void) null);
     }
@@ -253,7 +284,7 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitNewObjectFragment();
-        showProgress(true);
+        //showProgress(true);
     }
 
     @Override
@@ -272,7 +303,7 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitEditObjectFragment();
-        showProgress(true);
+        //showProgress(true);
     }
 
 
@@ -303,7 +334,7 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitEditObjectFragment();
-        showProgress(true);
+        //showProgress(true);
     }
 
 
@@ -393,14 +424,14 @@ public class LocateObjectsActivity extends AppCompatActivity
         markerIdToObject.put(marker.getId(), of);
         objectIdToMarker.put(of.getId(), marker);
         adapter.notifyDataSetChanged();
-        showProgress(false);
+        //showProgress(false);
         editionObject = null;
 
     }
 
     @Override
     public void onAddFail() {
-        showProgress(false);
+        //showProgress(false);
         showObjectNotAdded();
         editionObject = null;
     }
@@ -415,16 +446,16 @@ public class LocateObjectsActivity extends AppCompatActivity
         marker.setPosition(newObject.getPosition());
         adapter.notifyDataSetChanged();
         editionObject = null;
-        showProgress(false);
+        //showProgress(false);
     }
 
     @Override
     public void onEditFail() {
         Marker marker = objectIdToMarker.get(editionObject.getId());
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
-        marker.setAnchor(flagXAnchor,flagXAnchor);
+        marker.setAnchor(flagXAnchor, flagXAnchor);
         marker.setPosition(editionObject.getPosition());
-        showProgress(false);
+        //showProgress(false);
         showObjectNotEdited();
         editionObject = null;
     }
@@ -438,7 +469,7 @@ public class LocateObjectsActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
         marker.remove();
         editionObject = null;
-        showProgress(false);
+        //showProgress(false);
     }
 
     @Override
@@ -447,7 +478,7 @@ public class LocateObjectsActivity extends AppCompatActivity
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
         marker.setAnchor(flagXAnchor, flagXAnchor);
         marker.setPosition(editionObject.getPosition());
-        showProgress(false);
+        //showProgress(false);
         editionObject = null;
         showObjectNotRemoved();
     }
@@ -484,7 +515,6 @@ public class LocateObjectsActivity extends AppCompatActivity
                     .findFragmentById(R.id.map);
 
 
-
             MapObjectDAO objectDAO = new MapObjectDAO(getApplicationContext());
             objects = objectDAO.getMapObjects();
             markerOptions = new LinkedList<>();
@@ -496,12 +526,8 @@ public class LocateObjectsActivity extends AppCompatActivity
                         .title(object.getName())
                         .draggable(true)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag))
-                        .anchor(flagXAnchor,flagYAnchor));
+                        .anchor(flagXAnchor, flagYAnchor));
             }
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
 
             buildGoogleApiClient();
 
@@ -510,6 +536,9 @@ public class LocateObjectsActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Boolean result) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
             addButton = (Button) findViewById(R.id.add_button);
             addButton.setOnClickListener(new OnClickListener() {
                 @Override
@@ -593,7 +622,7 @@ public class LocateObjectsActivity extends AppCompatActivity
                     });
                 }
             });
-            showProgress(false);
+            //showProgress(false);
         }
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

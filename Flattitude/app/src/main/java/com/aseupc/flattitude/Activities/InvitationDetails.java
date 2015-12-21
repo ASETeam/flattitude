@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,32 @@ public class InvitationDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation_details);
+        //fonts:
+        Typeface customFontButton = Typeface.createFromAsset(getAssets(),"Montserrat-Regular.ttf");
+        Typeface customFont = Typeface.createFromAsset(getAssets(),"Quicksand_Book.otf");
+        TextView flatname = (TextView)findViewById(R.id.flatname);
+        flatname.setTypeface(customFontButton);
+        TextView addressLabel = (TextView)findViewById(R.id.textView13);
+        addressLabel.setTypeface(customFont);
+        TextView address = (TextView)findViewById(R.id.address);
+        address.setTypeface(customFont);
+        TextView cityLabel = (TextView)findViewById(R.id.textView16);
+        cityLabel.setTypeface(customFont);
+        TextView city = (TextView)findViewById(R.id.city);
+        city.setTypeface(customFont);
+        TextView postcodeLabel = (TextView)findViewById(R.id.textView20);
+        postcodeLabel.setTypeface(customFont);
+        TextView postcode = (TextView)findViewById(R.id.postcode);
+        postcode.setTypeface(customFont);
+        TextView countryLabel = (TextView)findViewById(R.id.textView17);
+        countryLabel.setTypeface(customFont);
+        TextView country = (TextView)findViewById(R.id.country);
+        country.setTypeface(customFont);
+        Button accept_button = (Button)findViewById(R.id.accept_button);
+        accept_button.setTypeface(customFontButton);
+        Button decline_button = (Button)findViewById(R.id.decline_button);
+        decline_button.setTypeface(customFontButton);
+
         context = this;
         mProgressView = findViewById(R.id.progress_invitationdetails);
         String Flatname = "";

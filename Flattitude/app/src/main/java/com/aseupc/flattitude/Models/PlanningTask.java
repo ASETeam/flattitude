@@ -36,6 +36,16 @@ public class PlanningTask implements Serializable{
         };
     }
 
+    public int getTypeId(){
+        if(Type.equals(CLEANING_TASK))
+            return 0;
+        else if(Type.equals(PARTY))
+            return 1;
+        else if(Type.equals(OTHER))
+            return 2;
+        return -1;
+    }
+
     public PlanningTask(){
         this.Destination = "111"; //TODO: provisional
     }
@@ -105,6 +115,10 @@ public class PlanningTask implements Serializable{
 
     public void setType(String type) {
         Type = type;
+    }
+
+    public void setType(int id){
+        this.Type = getTypes()[id];
     }
 
     public void setPlannedTime(Calendar plannedTime) {

@@ -1,23 +1,14 @@
 package com.aseupc.flattitude.InternalDatabase.AsyncTasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.aseupc.flattitude.Activities.ObjectLocation.LocateObjectsActivity;
-import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.MapObjectDAO;
-import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
-import com.aseupc.flattitude.Models.Flat;
+import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.MapObject;
-import com.aseupc.flattitude.Models.User;
-import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.database.Map_Web_Services;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.Random;
 
 /**
  * Created by Jordi on 23/11/2015.
@@ -38,12 +29,10 @@ public class AsyncAddObjectTask extends AsyncTask<String,Integer,MapObject> {
         super.onPreExecute();
 
         //Synchronize with server
-        UserDAO uDAO = new UserDAO(((LocateObjectsActivity) listener).getApplicationContext());
-        User u = uDAO.getUser();
-        FlatDAO fDAO = new FlatDAO(((LocateObjectsActivity) listener).getApplicationContext());
-        Flat f = fDAO.getFlat();
+        Context c = (LocateObjectsActivity) listener;
+        IDs ids = IDs.getInstance(c);
         Map_Web_Services ws = new Map_Web_Services();
-        res = ws.ws_addObject(object, u.getServerid(), u.getToken(), f.getServerid());
+        res = ws.ws_addObject(object, ids.getUserId(c), ids.getUserToken(c), ids.getFlatId(c));
     }
 
     @Override

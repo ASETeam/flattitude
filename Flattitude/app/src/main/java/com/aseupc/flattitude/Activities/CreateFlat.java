@@ -164,7 +164,7 @@ public class CreateFlat extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             try {
-                JabberSmackAPI smackChat = IDs.getInstance(getApplicationContext()).getSmackChat();
+                JabberSmackAPI smackChat = IDs.getInstance(context).getSmackChat(context);
 
                 //Join to room after flat creation.
                 Log.i("Anas 3", params[0] + "  -  "+ params[1]);

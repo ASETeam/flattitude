@@ -1,5 +1,6 @@
 package com.aseupc.flattitude.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -27,6 +28,8 @@ import com.aseupc.flattitude.synchronization.JabberSmackAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import org.w3c.dom.Text;
+
+import dmax.dialog.SpotsDialog;
 
 public class CreateFlat extends AppCompatActivity {
 //nothing here
@@ -100,7 +103,7 @@ public class CreateFlat extends AppCompatActivity {
                 flat.setCity(city);
                 flat.setCountry(country);
                 flat.setPostcode(postal_code);
-                UserDAO userDAO = new UserDAO(getApplicationContext());
+                UserDAO userDAO = new UserDAO(context);
                 User user = userDAO.getUser();
                 ResultContainer<Flat> response;
                 if (CallAPI.isNetworkAvailable(context) == false)
@@ -110,20 +113,23 @@ public class CreateFlat extends AppCompatActivity {
                     response.setSuccess(false);
                 }
                 else {
+                    AlertDialog dialog = new SpotsDialog(context);
+                    dialog.show();
                    response = FlatFacade.createFlat(flat, user);
+                    dialog.hide();
                 }
                 if (response.getSucces() == true)
                 {
-                    Context context = getApplicationContext();
+
                     CharSequence text = "Flat created !";
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
-                    FlatDAO flatDao = new FlatDAO(getApplicationContext());
+                    FlatDAO flatDao = new FlatDAO(context);
                     if (flatDao.getFlat() == null)
                     flatDao.save(flat);
                    else flatDao.update(flat);
-                    Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent homeIntent = new Intent(context, MainActivity.class);
                     startActivity(homeIntent);
 
                     connectChat call = new connectChat();

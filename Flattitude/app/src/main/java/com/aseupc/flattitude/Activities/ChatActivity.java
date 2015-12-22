@@ -39,7 +39,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         context = this;
         chatSmack = IDs.getInstance(context).getSmackChat(context);
-        Log.i("Jak chatsmak", chatSmack.getUserName());
+        //Log.i("Jak chatsmak", chatSmack.getUserName());
         setTitle("Chat");
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);

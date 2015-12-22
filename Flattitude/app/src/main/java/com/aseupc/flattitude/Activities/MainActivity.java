@@ -104,11 +104,6 @@ public class MainActivity extends AppCompatActivity {
         ab.setTitle(s);
         setTitle(s);
 
-        if (IDs.getInstance(this).getNewUser())
-        {
-           showTutorial();
-            IDs.getInstance(this).setConfirmedUser();
-        }
 
         // ---
         NotificationsDAO notDao = new NotificationsDAO(context);
@@ -225,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(returnGroup);
         }
 
+
+        if (IDs.getInstance(this).getNewUser())
+        {
+           // showTutorial();
+            IDs.getInstance(this).setConfirmedUser();
+        }
 
     }
 
@@ -521,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(context, LocateObjectsActivity.class);
                     startActivity(intent);
                 }
+                    updateNotification();
                 }
             });
             // Create the AlertDialog object and return it

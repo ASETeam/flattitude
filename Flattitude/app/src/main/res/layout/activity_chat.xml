@@ -10,7 +10,9 @@
             android:id="@+id/chat_list_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="80dp" ></ListView>
+            android:layout_marginBottom="80dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"/>
 
         <RelativeLayout
             android:id="@+id/chat_form"

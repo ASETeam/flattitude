@@ -50,19 +50,20 @@ public class ChatArrayAdapter extends ArrayAdapter<ChatMessage> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.chat, parent, false);
         }
-        layout = (LinearLayout) v.findViewById(R.id.Message1);
+        layout = (LinearLayout) v.findViewById(R.id.messageLayout);
 
         ChatMessage message = getItem(position);
-        chatText = (TextView) v.findViewById(R.id.SingleMessage);
+        chatText = (TextView) v.findViewById(R.id.messageView);
         chatText.setText(message.getMessage());
 
         layout.setGravity(message.isLeftSide() ? Gravity.LEFT : Gravity.RIGHT);
-       // chatText.setBackground(message.isLeftSide() ? R.color.colorBackgroundBlue : R.color.colorPinkFocus);
-      // chatText.setBackground(getRR.color.colorBackgroundBlue);
+        chatText.setBackgroundResource(message.isLeftSide()
+                ? R.drawable.received_message_chat_background
+                : R.drawable.sent_message_chat_background);
         chatText.setTextColor(Color.BLACK);
 
       //  R.color.red_btn_bg_color
-        chatText.setBackgroundColor(message.isLeftSide() ? Color.parseColor("#bfd4c1") : Color.parseColor("#f1AAAA"));
+        //chatText.setBackgroundColor(message.isLeftSide() ? Color.parseColor("#bfd4c1") : Color.parseColor("#f1AAAA"));
 
         return v;
     }

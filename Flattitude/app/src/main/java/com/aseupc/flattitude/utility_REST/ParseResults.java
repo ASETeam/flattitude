@@ -43,7 +43,6 @@ public class ParseResults {
             br = new BufferedReader(new InputStreamReader(is));
             while ((line = br.readLine()) != null) {
                 sb.append(line);
-                Log.i("Line", line);
             }
 
         } catch (IOException e) {
@@ -68,7 +67,6 @@ public class ParseResults {
         String inputStr;
         while ((inputStr = streamReader.readLine()) != null) {
             responseStrBuilder.append(inputStr);
-            Log.i("Anas 5", inputStr);
 
         }
 

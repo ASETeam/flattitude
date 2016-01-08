@@ -3,11 +3,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.aseupc.flattitude.Models.MapObject;
+import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ParseResults;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -109,6 +113,11 @@ public class Map_Web_Services {
             response.addReason("Internal error");
         }
         return response;
+    }
+
+    public void ws_getObjects(String userID, String token, String flatID, GetObjectsWSListener listener) {
+        callGet call = new callGet(listener);
+        call.execute(userID,token,flatID);
     }
 
     class callCreate extends AsyncTask<String, Void, ResultContainer<MapObject>> {
@@ -300,5 +309,98 @@ public class Map_Web_Services {
 
             Log.i("Registry has been", " changed in PostExecute");
         }
+    }
+
+
+    class callGet extends AsyncTask<String, Void, ResultContainer<List<MapObject>>> {
+
+        private GetObjectsWSListener listener;
+
+        public callGet(GetObjectsWSListener listener) {
+            super();
+            this.listener = listener;
+        }
+
+        @Override
+        protected ResultContainer<List<MapObject>> doInBackground(String... strings) {
+            ResultContainer<List<MapObject>> resultContainer = new ResultContainer<>();
+            String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/sharedobjects/get/";
+            String flatId = strings[2];
+            urlStr = urlStr + flatId;
+
+            InputStream in = null;
+            String resultToDisplay = null;
+            URL url = null;
+            try {
+                url = new URL(urlStr);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection urlConnection = null;
+            try {
+                urlConnection = (HttpURLConnection) url.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                in = new BufferedInputStream(urlConnection.getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+
+            try {
+                resultToDisplay = ParseResults.getStringFromInputStream(in);
+            } catch (IOException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            try {
+                JSONObject mainObject = new JSONObject(resultToDisplay);
+                String success = mainObject.getString("success");
+
+                if (success == "true") {
+                    resultContainer.setSuccess(true);
+                    List<MapObject> objects = new LinkedList<>();
+                    JSONArray objectsjson = mainObject.getJSONArray("objects");
+                    for(int i = 0; i < objectsjson.length(); i++){
+                        JSONObject objectjson = objectsjson.getJSONObject(i);
+                        MapObject object = new MapObject();
+                        object.setName(objectjson.getString("name"));
+                        object.setDescription(objectjson.getString("description"));
+                        object.setLatitude(objectjson.getDouble("latitude"));
+                        object.setLongitude(objectjson.getDouble("longitude"));
+                        object.setServerId(objectjson.getString("id"));
+                        objects.add(object);
+                    }
+
+                    resultContainer.setTemplate(objects);
+                } else if (success == "false") {
+                    resultContainer.setSuccess(false);
+                    String reason = mainObject.getString("reason");
+                    resultContainer.addReason(reason);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                resultContainer.setSuccess(false);
+                resultContainer.addReason("Internal error");
+            }
+            return resultContainer;
+        }
+
+        @Override
+        protected void onPostExecute(ResultContainer<List<MapObject>> response) {
+            Log.i("Registry has been", " changed in PostExecute");
+            listener.onGetWSFinished(response);
+        }
+    }
+
+    public interface GetObjectsWSListener {
+        void onGetWSFinished(ResultContainer<List<MapObject>> result);
     }
 }

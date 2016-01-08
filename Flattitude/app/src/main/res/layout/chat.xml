@@ -12,9 +12,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="6dp"
-            android:background="@color/common_signin_btn_default_background"
-            android:text="Hello friends!"/>
+            android:background="@drawable/rounder_corners"
+            android:text="Hello friends!"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:singleLine="false"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp" />
 
     </LinearLayout>
 

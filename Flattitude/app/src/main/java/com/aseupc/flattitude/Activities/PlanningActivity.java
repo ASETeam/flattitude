@@ -22,11 +22,13 @@ import android.widget.CalendarView;
 import android.widget.ListView;
 
 import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncRemovePlanningTaskTask;
+import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncUpdateTasks;
 import com.aseupc.flattitude.InternalDatabase.DAO.PlanningDAO;
 import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.database.PlanningTask_Web_Services;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ListAdapter;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.roomorama.caldroid.CaldroidFragment;
@@ -39,7 +41,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-public class PlanningActivity extends AppCompatActivity implements PlanningTask_Web_Services.DeletePlanningTaskWSListener, AsyncRemovePlanningTaskTask.OnTaskRemovedListener {
+public class PlanningActivity extends AppCompatActivity
+        implements PlanningTask_Web_Services.DeletePlanningTaskWSListener,
+        AsyncRemovePlanningTaskTask.OnTaskRemovedListener,
+        AsyncUpdateTasks.OnUpdateListener,
+        PlanningTask_Web_Services.GetTasksWSListener
+{
     private CalendarView mCalendar;
     private Map<Date,Integer> backgrounddates;
     private ListView plans;
@@ -60,39 +67,6 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
         plans = (ListView) findViewById(R.id.plans_listview);
 
-        Button addButton = (Button) findViewById(R.id.button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addClicked(v);
-            }
-        });
-        backgrounddates = new HashMap<>();
-        computeCalendar();
-
-        plans.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListAdapter adapter = (ListAdapter) parent.getAdapter();
-                editTaskPressed(adapter.getItem(position),view);
-            }
-        });
-
-        mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
-        mOverlayDialog.setCancelable(false);
-        mProgressView = findViewById(R.id.progressBar);
-        currentSelected = null;
-        showProgress(false);
-    }
-
-    private void addClicked(View v){
-        Intent intent = new Intent(v.getContext(), NewTaskActivity.class);
-        intent.putExtra("date",currentSelected);
-        startActivityForResult(intent, ADD_CODE);
-    }
-
-    public void computeCalendar(){
-        mCalendar = (CalendarView) findViewById(R.id.calendarView);
         caldroidFragment = new CaldroidFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
@@ -103,6 +77,69 @@ public class PlanningActivity extends AppCompatActivity implements PlanningTask_
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.calendarView, caldroidFragment);
         t.commit();
+
+        Button addButton = (Button) findViewById(R.id.button);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addClicked(v);
+            }
+        });
+
+
+        plans.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListAdapter adapter = (ListAdapter) parent.getAdapter();
+                editTaskPressed(adapter.getItem(position), view);
+            }
+        });
+
+        mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
+        mOverlayDialog.setCancelable(false);
+        mProgressView = findViewById(R.id.progressBar);
+        currentSelected = null;
+        showProgress(false);
+        synchronize();
+    }
+
+    private void loadActivityContent(){
+        backgrounddates = new HashMap<>();
+        computeCalendar();
+    }
+
+    private void synchronize(){
+        IDs ids = IDs.getInstance(this);
+        PlanningTask_Web_Services ws = new PlanningTask_Web_Services();
+        ws.ws_getTasks(ids.getUserId(this), ids.getUserToken(this), ids.getFlatId(this), this);
+    }
+
+    @Override
+    public void onGetWSFinished(ResultContainer<List<PlanningTask>> result) {
+        if(!result.getSucces()){
+            loadActivityContent();
+            CallAPI.makeToast(this, "You are offline. New changes aren't displayed");
+        }
+        else{
+            AsyncUpdateTasks sync = new AsyncUpdateTasks(result.getTemplate(), this);
+            sync.execute();
+        }
+    }
+
+    @Override
+    public void onUpdateFinished(){
+        loadActivityContent();
+    }
+
+    private void addClicked(View v){
+        Intent intent = new Intent(v.getContext(), NewTaskActivity.class);
+        intent.putExtra("date",currentSelected);
+        startActivityForResult(intent, ADD_CODE);
+    }
+
+    public void computeCalendar(){
+        mCalendar = (CalendarView) findViewById(R.id.calendarView);
+
 
         PlanningDAO planDAO = new PlanningDAO(getApplicationContext());
         List<PlanningTask> tasks = planDAO.getPlanningTasks();

@@ -2,6 +2,9 @@ package com.aseupc.flattitude.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,6 +33,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import dmax.dialog.SpotsDialog;
+
 public class RegisteringActivity extends AppCompatActivity {
 
     private EditText mPasswordView;
@@ -36,6 +42,7 @@ public class RegisteringActivity extends AppCompatActivity {
     private EditText mLastnameView;
     private EditText mPhonenumberView;
     private EditText mEmailView;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +81,19 @@ public class RegisteringActivity extends AppCompatActivity {
         mFirstnameView = (EditText) findViewById(R.id.first_name);
         mLastnameView = (EditText) findViewById(R.id.last_name);
         mPhonenumberView = (EditText) findViewById(R.id.phone_number);
-
+        final Activity registering = this;
         final Button mRegisterButton = (Button) findViewById(R.id.register_button);
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View view1 = registering.getCurrentFocus();
+                if (view1 != null) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+                }
+                dialog = new SpotsDialog(registering);
+                dialog.show();
+
                 String email_address = mEmailView.getText().toString();
                 String password = mPasswordView.getText().toString();
                 String fname = mFirstnameView.getText().toString();
@@ -91,7 +106,7 @@ public class RegisteringActivity extends AppCompatActivity {
                // Intent TestIntent = new Intent(mRegisterButton.getContext(), TestActivity.class);
               //  startActivity(TestIntent);
                 User retrievedUser = userDAO.getUser();
-                Log.i("RETRIEVED USER", retrievedUser.getEmail());*/
+              */
 
                 //ResultContainer<User> result = UserFacade.registerUser(email_address, password, fname, lname, pnumber);
                 User user = new User();
@@ -107,14 +122,13 @@ public class RegisteringActivity extends AppCompatActivity {
                     userConn.save(result.getTemplate());
                     Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
                     startActivity(valideIntent);
-                    Log.i("Registering ", "Correct");
+
                 } else {
                     if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0)) {
                         String reason = result.getReturnDescriptions().get(0);
                         mFeedback.setText(reason);
                     }
 
-                    Log.i("Registering", "Incorrect");
                 }
 */
             }
@@ -177,23 +191,22 @@ public class RegisteringActivity extends AppCompatActivity {
     }*/
 
     private void callbackRegister(ResultContainer<User> result){
+        dialog.hide();
         if (result.getSucces() == true) {
             UserDAO userConn = new UserDAO(mPhonenumberView.getContext());
             userConn.save(result.getTemplate());
             IDs.getInstance(getApplicationContext()).setNewUser();
             Intent valideIntent = new Intent(mPhonenumberView.getContext(), GroupActivity.class);
             startActivity(valideIntent);
-            Log.i("Registering ", "Correct");
         } else {
             if ((result.getReturnDescriptions() != null) && (result.getReturnDescriptions().size() > 0)) {
                 String reason = result.getReturnDescriptions().get(0);
                 CharSequence text = reason;
                 int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                Toast toast = Toast.makeText(this, text, duration);
                 toast.show();
             }
 
-            Log.i("Registering", "Incorrect");
         }
 
     }

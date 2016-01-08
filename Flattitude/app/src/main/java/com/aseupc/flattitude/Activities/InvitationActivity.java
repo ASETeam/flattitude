@@ -1,35 +1,75 @@
 package com.aseupc.flattitude.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
+import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
+import com.etsy.android.grid.StaggeredGridView;
+
+import java.util.ArrayList;
 
 public class InvitationActivity extends AppCompatActivity {
     private EditText mInvitee;
+    private Context context;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitation);
+        context = this;
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
         setTitle("Invite people to your flat ");
         mInvitee = (EditText) findViewById(R.id.invitee);
+
+        ArrayList<String> resultStr = new ArrayList<String>();
+        ArrayList<Integer> imageStr = new ArrayList<Integer>();
+
+        resultStr.add("Jordi Flattitude");
+        resultStr.add("Guille Flattitude");
+        resultStr.add("Anisa Flattitude");
+        resultStr.add("Valentin Flattitude");
+        resultStr.add("Fara  Flattiude");
+            imageStr.add(R.drawable.ic_user);
+        imageStr.add(R.drawable.ic_user);
+        imageStr.add(R.drawable.ic_userf);
+        imageStr.add(R.drawable.ic_user);
+        imageStr.add(R.drawable.ic_userf);
+
+        ArrayAdapterWithIcon adapter = new ArrayAdapterWithIcon(this, resultStr, imageStr);
+
+        StaggeredGridView gridView = (StaggeredGridView) findViewById(R.id.grid_view);
+
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CallAPI.makeToast(context, "Let's not go there!");
+            }
+        });
+
+
+
         mInvitee.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -48,7 +88,7 @@ public class InvitationActivity extends AppCompatActivity {
                 String flatID;
 
 
-                UserDAO userDAO = new UserDAO(getApplicationContext());
+                UserDAO userDAO = new UserDAO(context);
                 User me = userDAO.getUser();
                 if (me != null) {
                  userID = me.getServerid();}
@@ -57,7 +97,7 @@ public class InvitationActivity extends AppCompatActivity {
                 }
 
 
-                FlatDAO flatDAO = new FlatDAO(getApplicationContext());
+                FlatDAO flatDAO = new FlatDAO(context);
                 Flat flat = flatDAO.getFlat();
                 if (flat != null)
                 { flatID = flat.getServerid();
@@ -73,14 +113,14 @@ public class InvitationActivity extends AppCompatActivity {
                 {
                     CharSequence text = "Invitation sent !";
                     int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                    Toast toast = Toast.makeText(context, text, duration);
                      toast.show();
                 }
                 else {
                     // CharSequence text = result.getReason.... ;
                     CharSequence text = "This user is not yet using Flattitude !";
                     int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                    Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                 }
 

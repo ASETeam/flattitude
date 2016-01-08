@@ -33,7 +33,6 @@ public class Chat_Web_Services {
         ThisFlat.setServerid(flatID);
         String resultToDisplay = null;
         String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/info/" + flatID;
-        Log.i("GETFLAT URL", urlString);
         ParseResults result = null;
         InputStream in = null;
 
@@ -62,7 +61,6 @@ public class Chat_Web_Services {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i("The GetFlat", resultToDisplay);
         try {
             JSONObject mainObject = new JSONObject(resultToDisplay);
             String success = mainObject.getString("success");
@@ -119,13 +117,10 @@ public class Chat_Web_Services {
         }
 
 
-        Log.i("We Before with Json: ", FinalizeThread);
         if (FinalizeThread != null) {
-            Log.i("FLAT JSON: ", FinalizeThread);
             try {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
-                Log.i("When we receive JSON", success);
                 if (success == "true") {
                     //String userId = mainObject.getString("id");
                     String flatID = mainObject.getString("id");
@@ -151,8 +146,6 @@ public class Chat_Web_Services {
 
     class callGetFlatInfo extends AsyncTask<String, Void, ResultContainer<Flat>> {
 
-
-
         @Override
         protected ResultContainer<Flat> doInBackground(String... params) {
             ResultContainer<Flat> response = new ResultContainer<>();
@@ -161,7 +154,6 @@ public class Chat_Web_Services {
             ThisFlat.setServerid(flatID);
             String resultToDisplay = null;
             String urlString = "https://flattiserver-flattitude.rhcloud.com/flattiserver/flat/info/" + flatID;
-            Log.i("GETFLAT URL", urlString);
             ParseResults result = null;
             InputStream in = null;
 
@@ -190,7 +182,6 @@ public class Chat_Web_Services {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.i("The GetFlat", resultToDisplay);
             try {
                 JSONObject mainObject = new JSONObject(resultToDisplay);
                 String success = mainObject.getString("success");
@@ -249,18 +240,15 @@ public class Chat_Web_Services {
             response = CallAPI.performPostCall(urlStr, values);
             try {
                 JSONObject mainObject = new JSONObject(response);
-                Log.i("GUILLE RESPONSE", mainObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.i("GUILLE RESPONSE", response);
             return response;
         }
 
         protected void onPostExecute(String response) {
 
 
-            Log.i("Registry has been", " changed in PostExecute");
 
         }
     }

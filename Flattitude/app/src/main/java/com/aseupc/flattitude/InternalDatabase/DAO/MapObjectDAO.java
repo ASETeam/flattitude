@@ -57,6 +57,20 @@ public class MapObjectDAO extends DBDAO {
             WHERE_SERVERID_EQUALS, new String[] { mo.getServerId() });
     }
 
+    public void insertOrUpdate(List<MapObject> objects){
+        database.delete(DataBaseHelper.MAPOBJECT_TABLENAME, null, null);
+        for(MapObject mo : objects){
+            ContentValues values = new ContentValues();
+            values.put(DataBaseHelper.MAPOBJECT_SERVERID, mo.getServerId());
+            values.put(DataBaseHelper.MAPOBJECT_NAME, mo.getName());
+            values.put(DataBaseHelper.MAPOBJECT_DESCRIPTION, mo.getDescription());
+            values.put(DataBaseHelper.MAPOBJECT_LATITUDE, mo.getLatitude());
+            values.put(DataBaseHelper.MAPOBJECT_LONGITUDE, mo.getLongitude());
+
+            database.insert(DataBaseHelper.MAPOBJECT_TABLENAME, null, values);
+        }
+    }
+
     public List<MapObject> getMapObjects() {
         Cursor cursor = database.query(DataBaseHelper.MAPOBJECT_TABLENAME,
             new String[] {

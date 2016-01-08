@@ -117,6 +117,10 @@ public class PlanningTask implements Serializable{
         Type = type;
     }
 
+    public void setType(int id){
+        this.Type = getTypes()[id];
+    }
+
     public void setPlannedTime(Calendar plannedTime) {
         PlannedTime = plannedTime;
     }

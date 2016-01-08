@@ -1,3 +1,4 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -12,16 +13,19 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Flatname"
+        android:gravity="center_horizontal"
         android:id="@+id/flatname"
+        android:textSize="20dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/textView13"
         android:layout_below="@+id/flatname"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_alignParentStart="true"
         android:layout_marginTop="35dp"
         android:text="Address: " />
@@ -30,17 +34,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Address"
         android:id="@+id/address"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_below="@+id/textView13"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:text="Les Corts"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Postcode"
+        android:text="08029"
         android:id="@+id/postcode"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_below="@+id/textView20"
         android:layout_alignParentEnd="true" />
 
@@ -50,6 +57,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="City:"
         android:id="@+id/textView16"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_marginTop="37dp"
         android:layout_below="@+id/address"
         android:layout_alignParentStart="true" />
@@ -60,6 +69,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Country:"
         android:id="@+id/textView17"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_marginTop="45dp"
         android:layout_below="@+id/postcode"
         android:layout_alignParentStart="true" />
@@ -68,8 +79,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="City"
+        android:text="Barcelona"
         android:id="@+id/city"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_below="@+id/textView16"
         android:layout_alignEnd="@+id/address" />
 
@@ -77,8 +90,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Country"
+        android:text="Spain"
         android:id="@+id/country"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_below="@+id/textView17"
         android:layout_alignParentEnd="true" />
 
@@ -88,26 +103,36 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Postcode:"
         android:id="@+id/textView20"
+        android:textSize="17dp"
+        android:textColor="@color/black"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:text="Accept Invitation"
+        android:background="@color/colorBackgroundBlue"
+        android:text="Join"
         android:id="@+id/accept_button"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@android:color/holo_blue_light"
         android:layout_toStartOf="@+id/flatname" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="120sp"
         android:layout_height="wrap_content"
-        android:text="Decline Invitation"
+        android:background="@color/colorPink"
+        android:text="Decline"
         android:id="@+id/decline_button"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_orange_light"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/flatname" />
 

@@ -29,6 +29,7 @@ import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
+import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.asha.ChromeLikeSwipeLayout;
@@ -143,7 +144,8 @@ public class GroupActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.logout)
+        } else    if (id == R.id.logoutinmenu)
+
         {
             UserDAO userDAO = new UserDAO(getApplicationContext());
             User thisUser = userDAO.getUser();
@@ -182,17 +184,20 @@ public class GroupActivity extends AppCompatActivity {
     {
         showProgress(false);
         ArrayList<String> resultStr = new ArrayList<String>();
+        ArrayList<Integer> imageStr = new ArrayList<Integer>();
         for (int i = 0; i < flats.size(); i++)
         {
             resultStr.add(flats.get(i).getName());
+            imageStr.add(R.drawable.ic_logo_app);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 resultStr );
 
+        ArrayAdapterWithIcon adapter=new ArrayAdapterWithIcon(this, resultStr, imageStr);
 
-        invitations.setAdapter(arrayAdapter);
+        invitations.setAdapter(adapter);
 
         final ArrayList<Flat> finalFlats = flats;
         final ArrayList<String> finalResult = resultStr;

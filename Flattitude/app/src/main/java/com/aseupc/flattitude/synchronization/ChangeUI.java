@@ -46,12 +46,28 @@ public class ChangeUI extends Service {
     Intent intent;
 
     int counter = 0;
+    int timeout = 35000;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        if (CallAPI.isNetworkAvailable(this) == false)
+        {
+            CallAPI.makeToast(this, "No internet connection available");
+            timeout = 999999999;
+        }
+        else
+        {
+            if (CallAPI.haveMobile(this))
+            {timeout = 60000;}
+            else
+            {
+                timeout = 35000;
+            }
+        }
+
+
         intent = new Intent(BROADCAST_ACTION);
-        Log.i("Anas", "ChangeUI Service created here !  onCreate");
     }
 
    /* @Override
@@ -63,9 +79,8 @@ public class ChangeUI extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 30000); // 1 second * 1000
+        handler.postDelayed(sendUpdatesToUI, timeout); // 1 second * 1000
        // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
-        Log.i("Anas", "Service started here !  onStartCommand");
         return START_STICKY;
     }
 
@@ -75,18 +90,15 @@ public class ChangeUI extends Service {
         public void run() {
            // DisplayLoggingInfo();
             SycnhronizeNotifications();
-            handler.postDelayed(this, 30000); // 5 seconds
+            handler.postDelayed(this, timeout); // 5 seconds
         }
     };
 
     private void DisplayLoggingInfo() {
         Log.d(TAG, "entered DisplayLoggingInfo");
 
-        Log.i("KATT", "Before DAO EXECUTION");
         UserDAO userDAO = new UserDAO(getApplicationContext());
         User user1 = userDAO.getUser();
-        Log.i("My User", user1.getEmail());
-        Log.i("KATT", "After Execution");
 
         intent.putExtra("time", new Date().toLocaleString());
         intent.putExtra("counter", String.valueOf(++counter));
@@ -118,11 +130,14 @@ public class ChangeUI extends Service {
         sendBroadcast(intent);
     }
 
-
-
-
     public void SycnhronizeNotifications(){
-        Log.i("AFara1", "We are in the backgroundproces");
+        if (CallAPI.isNetworkAvailable(this) == false)
+        {
+           CallAPI.makeToast(this, "No internet connection available");
+            return;
+        }
+
+
         getNotification notifs = new getNotification();
         UserDAO dao = new UserDAO(getApplicationContext());
         User user = dao.getUser();
@@ -130,9 +145,9 @@ public class ChangeUI extends Service {
             ResultContainer<User> response = notifs.execute(user.getServerid()).get(500000, TimeUnit.MILLISECONDS);
             //ResultContainer<User> response =  UserFacade.getNotifications(user.getServerid());
             ArrayList<Notification> notifications = response.getTemplate().getNotifications();
-            Log.i("Booba 2.5", CallAPI.printList(notifications));
+
             int nothing = 0;
-            Log.i("AFara2", "We are in the backgroundproces");
+
             for (int i = 0; i < notifications.size(); i++)
             {
                 Notification thisNotif = notifications.get(i);
@@ -140,7 +155,7 @@ public class ChangeUI extends Service {
 
                 List<Notification> internal_Notifications = not_Dao.getNotifications(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
                 List<Notification> selectList = not_Dao.selectNotification(thisNotif.getId() + "");
-                Log.i("Booba3", CallAPI.printList(selectList));
+
                 if (selectList.size() == 0)
 
                 {
@@ -153,8 +168,9 @@ public class ChangeUI extends Service {
                     nothing = 1;
                 }
             }
-            Log.i("AFara3", "We are After the backgroundproces");
-            UserDAO userDAO = new UserDAO(getApplicationContext());
+
+            UserDAO userDAO = new UserDAO(this);
+
 
             if (nothing == 1) {
                 intent.putExtra("change", "yes");
@@ -170,10 +186,12 @@ public class ChangeUI extends Service {
                         .setSmallIcon(R.drawable.ic_logo_app)
                         .setContentIntent(pIntent)
                         .setAutoCancel(true)
+                        .setPriority(android.app.Notification.PRIORITY_HIGH)
                         .build();
 
 
                 notificationManager.notify(0, n);
+
             }
             else
                 intent.putExtra("change", "no");
@@ -210,10 +228,6 @@ public class ChangeUI extends Service {
         protected ResultContainer<User> doInBackground(User... params) {
             User_Web_Services User_Ws = new User_Web_Services();
             ResultContainer<User> response = User_Ws.ws_verifyCredentials("test@test.com", "test");
-            if (response.getSucces() == true)
-                Log.i("Anas", "Login is successfull");
-            else
-            Log.i("Anas", "Login is NOT successfull");
             return response;
         }
     }
@@ -223,9 +237,6 @@ public class ChangeUI extends Service {
         protected ResultContainer<User> doInBackground(User... params) {
             User_Web_Services User_Ws = new User_Web_Services();
             ResultContainer<User> response = User_Ws.ws_registerUser("Anajjs", "popo", "kokok", "okok", "okokok");
-            if (response.getSucces() == true)
-                Log.i("Anas", "Register is successfull");
-            else { Log.i("Anas", "Register is NOT successfull");}
             return response;
         }
     }

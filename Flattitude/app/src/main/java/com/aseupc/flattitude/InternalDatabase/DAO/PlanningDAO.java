@@ -71,6 +71,22 @@ public class PlanningDAO extends  DBDAO{
                     WHERE_ID_EQUALS, new String[] { String.valueOf(not.getID()) });
         }
 
+    public void insertOrUpdate(List<PlanningTask> tasks){
+        database.delete(DataBaseHelper.PLANNING_TABLENAME, null, null);
+        for(PlanningTask task : tasks){
+            ContentValues values = new ContentValues();
+            values.put(DataBaseHelper.PLANNING_ID, task.getID());
+            values.put(DataBaseHelper.PLANNING_AUTHOR, task.getAuthor());
+            values.put(DataBaseHelper.PLANNING_DESCRIPTION, task.getDescription());
+            values.put(DataBaseHelper.PLANNING_DESTINATION, task.getDestination());
+            values.put(DataBaseHelper.PLANNING_TIME, task.getTimeStringWithSec());
+            values.put(DataBaseHelper.PLANNING_DATE, task.getDateString());
+            values.put(DataBaseHelper.PLANNING_TYPE, task.getType());
+            long ret = database.insert(DataBaseHelper.PLANNING_TABLENAME, null, values);
+            ret++;
+        }
+    }
+
 
         public List<PlanningTask> getPlanningTasks() {
             Cursor cursor;

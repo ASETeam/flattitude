@@ -7,102 +7,77 @@
     tools:context="com.aseupc.flattitude.Activities.BudgetActivity"
     android:background="@color/LightGreen">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView2"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
-
-    </ScrollView>
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true">
+        >
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Money in the bank"
-            android:id="@+id/textView"
+            android:text="Balances"
             android:background="@color/colorAccent"
             android:alpha="0.5"
-            android:layout_weight="0.10"
             android:autoText="false"
             android:breakStrategy="high_quality"
             android:gravity="center_horizontal|fill_vertical"
             android:textColor="@color/caldroid_white"
             android:textStyle="bold" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="15dp">
+            <TableRow>
+                <TextView
+                    android:id="@+id/personalBudgetBalance"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/budget_circle"
+                    android:layout_gravity="bottom"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:typeface="monospace"
+                    />
 
-            <ImageView
-                android:layout_width="148dp"
-                android:layout_height="148dp"
-                android:id="@+id/budget_img"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:foregroundGravity="center_vertical"
-                android:contentDescription="Moneyz"
-                android:focusable="false"
-                android:alpha="0.5" />
+                <TextView
+                    android:id="@+id/commonBudgetBalance"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/budget_circle"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:textColor="@color/colorAccent"
+                    android:typeface="monospace"
+                    />
+            </TableRow>
 
-        </FrameLayout>
+            <TableRow>
+                <TextView android:text="Personal" android:layout_marginRight="20dp" android:textAlignment="center"/>
+                <TextView android:text="Common" android:textAlignment="center"/>
+            </TableRow>
+        </TableLayout>
 
-        <TextView
+        <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Personal balance"
-            android:id="@+id/textView3"
-            android:background="@color/colorAccent"
-            android:alpha="0.5"
-            android:layout_weight="0.10"
-            android:autoText="false"
-            android:breakStrategy="high_quality"
-            android:gravity="center_horizontal|fill_vertical"
-            android:textColor="@color/caldroid_white"
-            android:textStyle="bold" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="122dp"
-            android:focusable="false"
-            android:contextClickable="false"
-            android:layoutMode="clipBounds">
-
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/seekBar"
-                android:indeterminate="false"
-                android:max="2000"
-                android:layout_margin="10dp"
-                android:layout_gravity="center"
-                android:alpha="1"
-                android:thumbTintMode="screen"
-                android:progress="500"
-                android:splitTrack="false" />
-        </FrameLayout>
+            android:text="New Operation"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Expenses history"
-            android:id="@+id/textView5"
             android:background="@color/colorAccent"
             android:alpha="0.5"
-            android:layout_weight="0.10"
             android:autoText="false"
             android:breakStrategy="high_quality"
             android:gravity="center_horizontal|fill_vertical"
@@ -110,18 +85,10 @@
             android:textStyle="bold" />
 
         <ListView
-            android:layout_width="match_parent"
-            android:layout_height="73dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/listView_budget"
             android:scrollIndicators="none" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2"
-            android:layout_weight="0.10"
-            android:layout_gravity="right" />
 
     </LinearLayout>
 

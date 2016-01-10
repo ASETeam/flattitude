@@ -1,8 +1,13 @@
 package com.aseupc.flattitude.Activities;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.Shape;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.aseupc.flattitude.Models.IDs;
@@ -23,6 +29,7 @@ import java.util.ArrayList;
 public class BudgetActivity extends AppCompatActivity {
     private Context context;
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,23 +40,16 @@ public class BudgetActivity extends AppCompatActivity {
 
         setTitle("Budget Management");
 
-        SeekBar seekbar = (SeekBar) findViewById(R.id.seekBar);
+        double flatBalance = IDs.getInstance(context).getBalance();
+        TextView flatBalanceView = (TextView) findViewById(R.id.commonBudgetBalance);
+        flatBalanceView.setText(flatBalance + "€");
 
-        double balance = IDs.getInstance(context).getBalance();
-        TextDrawable drawable2 = TextDrawable.builder()
-                .beginConfig()
-                .textColor(R.color.colorAccent)
+        double personalBalance = IDs.getInstance(context).getPersonalExpense();
+        TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
 
-        .useFont(Typeface.MONOSPACE)
-                .fontSize(100) /* size in px */
-
-                .toUpperCase()
-                .endConfig()
-                .buildRound(balance + "€", Color.RED)
-                ;
-
-        ImageView image = (ImageView) findViewById(R.id.budget_img);
-        image.setImageDrawable(drawable2);
+        GradientDrawable bgPersonalShape = (GradientDrawable)personalBalanceView.getBackground();
+        bgPersonalShape.setColor(Color.parseColor("#d0e3e4"));
+        personalBalanceView.setText(personalBalance + "€");
 
         ListView listView = (ListView) findViewById(R.id.listView_budget);
         listView.setVisibility(View.VISIBLE);

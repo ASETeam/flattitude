@@ -59,7 +59,7 @@
                     />
             </TableRow>
 
-            <TableRow>
+            <TableRow android:layout_marginTop="10dp">
                 <TextView android:text="Personal" android:layout_marginRight="20dp" android:textAlignment="center"/>
                 <TextView android:text="Common" android:textAlignment="center"/>
             </TableRow>

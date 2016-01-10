@@ -22,7 +22,10 @@ import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,27 +60,30 @@ public class BudgetActivity extends AppCompatActivity {
 
         // List of fictives operation in order to test
         ArrayList<BudgetOperation> operations = new ArrayList<BudgetOperation>();
-        operations.add(new BudgetOperation(currentUser, currentFlat, 10, "Putting 10 € on the common account"));
-        operations.add(new BudgetOperation(null, currentFlat, 10, "Shopping for common food"));
-        operations.add(new BudgetOperation(currentUser, currentFlat, 1, "Putting 1 € on the common account"));
+        operations.add(new BudgetOperation(currentUser, currentFlat, new Date(), 10, "Putting 10 € on the common account"));
+        operations.add(new BudgetOperation(null, currentFlat, new Date(), 10, "Shopping for common food"));
+        operations.add(new BudgetOperation(currentUser, currentFlat, new Date(), 1, "Putting 1 € on the common account"));
 
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        String keys[] = {"date", "title", "description"};
 
         HashMap<String, String> element;
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         for (BudgetOperation operation : operations) {
             element = new HashMap<String, String>();
 
-            element.put("title", operation.getUser() == null ?
+            element.put(keys[0], dateFormat.format(operation.getDate())+": ");
+            element.put(keys[1], operation.getUser() == null ?
                     "" + operation.getAmount() + "€ were used from the common budget" :
                     operation.getUser().getLastname() + " put " + operation.getAmount() + "€ on the common budget");
-            element.put("description", operation.getDescription());
+            element.put(keys[2], operation.getDescription());
             list.add(element);
         }
 
         ListAdapter adapter = new SimpleAdapter(this, list,
-                android.R.layout.simple_list_item_2,
-                new String[] {"title", "description"},
-                new int[] {android.R.id.text1, android.R.id.text2});
+                R.layout.budget_list_element,
+                keys,
+                new int[] {R.id.date_budget_operation, R.id.title_budget_operation, R.id.description_budget_operation});
 
         ListView operationsListView = (ListView) findViewById(R.id.listView_budget);
         operationsListView.setAdapter(adapter);

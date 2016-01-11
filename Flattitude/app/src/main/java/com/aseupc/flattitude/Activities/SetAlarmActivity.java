@@ -4,9 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -27,24 +30,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncAddPlanningTaskTask;
 import com.aseupc.flattitude.InternalDatabase.AsyncTasks.AsyncEditPlanningTaskTask;
+import com.aseupc.flattitude.InternalDatabase.DAO.PlanningDAO;
 import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.database.PlanningTask_Web_Services;
-import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class EditTaskActivity extends AppCompatActivity
+public class SetAlarmActivity extends AppCompatActivity
         implements TimePickerDialog.OnTimeSetListener,
-        DatePickerDialog.OnDateSetListener,
-        PlanningTask_Web_Services.EditPlanningTaskWSListener,
-        AsyncEditPlanningTaskTask.OnTaskEditedListener
+        DatePickerDialog.OnDateSetListener
 {
 
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -52,34 +52,27 @@ public class EditTaskActivity extends AppCompatActivity
 
     private EditText date;
     private EditText time;
-    private EditText timeReminder;
-    private EditText dateReminder;
-    private EditText description;
-    private Spinner type;
     private Calendar calendar;
-    private Calendar reminder;
+    private Calendar original;
     private PlanningTask task;
-    private Calendar originalDate;
-    private ArrayAdapter<String> adapter;
-    private View mProgressView;
-    private Dialog mOverlayDialog; //display an invisible overlay dialog to prevent user interaction and pressing back
+    private CheckBox reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_task);
+        setContentView(R.layout.activity_set_alarm);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         task = (PlanningTask) getIntent().getSerializableExtra("task");
-        calendar = task.getPlannedTime();
-        originalDate = Calendar.getInstance();
-        originalDate.setTime(task.getPlannedTime().getTime());
+        calendar = Calendar.getInstance();
+        original = task.getAlarmTime();
+        if(original != null)
+            calendar.setTime(original.getTime());
 
-        final EditTaskActivity finalThis = this;
+        final SetAlarmActivity finalThis = this;
 
         date = (EditText) findViewById(R.id.date);
-        date.setText(dateFormat.format(calendar.getTime()));
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +84,6 @@ public class EditTaskActivity extends AppCompatActivity
         });
 
         time = (EditText) findViewById(R.id.time);
-        time.setText(timeFormat.format(calendar.getTime()));
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,39 +94,73 @@ public class EditTaskActivity extends AppCompatActivity
             }
         });
 
-        description = (EditText) findViewById(R.id.description);
-        description.setText(task.getDescription());
+        date.setText(dateFormat.format(calendar.getTime()));
+        time.setText(timeFormat.format(calendar.getTime()));
 
-        type = (Spinner) findViewById(R.id.type);
-        adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_dropdown_item, PlanningTask.getTypes());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        type.setAdapter(adapter);
-        type.setSelection(adapter.getPosition(task.getType()));
+        reminder = (CheckBox) findViewById(R.id.alarmCheckBox);
+        reminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkChanged(isChecked);
+            }
+        });
+
+        if(original==null) {
+            reminder.setChecked(false);
+            checkChanged(false);
+        }
+        else{
+            reminder.setChecked(true);
+            checkChanged(true);
+            date.setText(dateFormat.format(original.getTime()));
+            time.setText(timeFormat.format(original.getTime()));
+        }
 
         Button confirmButton = (Button) findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editTask();
+                setAlarm();
             }
         });
 
-
-        mOverlayDialog = new Dialog(this, android.R.style.Theme_Panel);
-        mOverlayDialog.setCancelable(false);
-        mProgressView = findViewById(R.id.progressBar);
-        showProgress(false);
     }
 
-    private void editTask(){
-        //showProgress(true);
-        task.setPlannedTime(calendar);
-        task.setDescription(description.getText().toString());
-        task.setType(type.getSelectedItem().toString());
-        IDs ids = IDs.getInstance(this);
-        PlanningTask_Web_Services ws = new PlanningTask_Web_Services();
-        ws.ws_editTask(task, ids.getUserId(this), ids.getUserToken(this), ids.getFlatId(this), this);
+    void checkChanged(boolean b){
+        TextView timeTV = (TextView) findViewById(R.id.time_label);
+        TextView dateTV = (TextView) findViewById(R.id.date_label);
+        timeTV.setEnabled(b);
+        dateTV.setEnabled(b);
+        time.setEnabled(b);
+        date.setEnabled(b);
+    }
+
+    private void setAlarm(){
+        if(!reminder.isChecked())
+            task.setAlarmTime(null);
+        else task.setAlarmTime(calendar);
+        PlanningDAO dao = new PlanningDAO(this);
+        dao.update(task);
+
+        if((original == null && task.getAlarmTime() != null) || !original.equals(task.getAlarmTime())) {
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent i = new Intent(this, AlarmReceiver.class);
+
+            if(original!=null){
+                PendingIntent pi = PendingIntent.getBroadcast(this, Integer.parseInt(task.getID()), i, PendingIntent.FLAG_CANCEL_CURRENT);
+                //pi.cancel();
+                am.cancel(pi);
+            }
+            if (reminder.isChecked()) {
+                i.putExtra("task", task);
+                PendingIntent pi = PendingIntent.getBroadcast(this, Integer.parseInt(task.getID()), i,0);
+                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+            }
+        }
+
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 
     @Override
@@ -150,70 +176,6 @@ public class EditTaskActivity extends AppCompatActivity
         calendar.set(Calendar.MONTH,month);
         calendar.set(Calendar.YEAR, year);
         date.setText(dateFormat.format(calendar.getTime()));
-    }
-
-    @Override
-    public void onEditWSFinished(ResultContainer<PlanningTask> result) {
-        if(result.getSucces()){
-            //Internal database
-            AsyncEditPlanningTaskTask async = new AsyncEditPlanningTaskTask(result.getTemplate(),this);
-            async.execute();
-        }
-        else {
-            //showProgress(false);
-            showTaskNotEdited();
-        }
-    }
-
-    @Override
-    public void OnEditedOnDatabase(PlanningTask task) {
-        //showProgress(false);
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("originalDate",originalDate);
-        returnIntent.putExtra("task",task);
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
-    }
-
-    public void showTaskNotEdited()
-    {
-        new AlertDialog.Builder(this)
-                .setTitle("Edition failed")
-                .setMessage("The task couldn't be edited. Check your internet connection and try again")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-
-        if(show) mOverlayDialog.show();
-        else mOverlayDialog.hide();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
     }
 
     public static class DatePickerFragment extends DialogFragment {

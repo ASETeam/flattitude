@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Jordi on 19/10/2015.
  */
 public class DataBaseHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "db";
     private Context context;
 
@@ -156,6 +156,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String PLANNING_DESCRIPTION = "description";
     public static final String PLANNING_DATE = "date";
     public static final String PLANNING_TIME = "time";
+    public static final String PLANNING_ALARMDATE = "alarmdate";
+    public static final String PLANNING_ALARMTIME = "alarmtime";
 
     private static final String PLANNING_TABLE_CREATE =
             "CREATE TABLE " + PLANNING_TABLENAME + " (" +
@@ -165,7 +167,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     PLANNING_TYPE + " TEXT," +
                     PLANNING_DESCRIPTION + " TEXT," +
                     PLANNING_TIME + " TEXT , " +
-                    PLANNING_DATE + " TEXT " +
+                    PLANNING_DATE + " TEXT ," +
+                    PLANNING_ALARMTIME + " TEXT , " +
+                    PLANNING_ALARMDATE + " TEXT " +
                     ");";
 
     private static DataBaseHelper instance;

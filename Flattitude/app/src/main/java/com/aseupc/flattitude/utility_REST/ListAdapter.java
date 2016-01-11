@@ -19,14 +19,14 @@ import java.util.List;
  */
 public class ListAdapter extends ArrayAdapter<PlanningTask> {
 
-    private TaskDeletePressedListener listener;
+    private TaskButtonsListener listener;
 
-    public ListAdapter(Context context, int textViewResourceId, TaskDeletePressedListener listener) {
+    public ListAdapter(Context context, int textViewResourceId, TaskButtonsListener listener) {
         super(context, textViewResourceId);
         this.listener = listener;
     }
 
-    public ListAdapter(Context context, int resource, List<PlanningTask> items, TaskDeletePressedListener listener) {
+    public ListAdapter(Context context, int resource, List<PlanningTask> items, TaskButtonsListener listener) {
         super(context, resource, items);
         this.listener = listener;
     }
@@ -71,13 +71,24 @@ public class ListAdapter extends ArrayAdapter<PlanningTask> {
                     listener.OnTaskDeletePressed(getItem(position));
                 }
             });
+
+            Button setAlarmButton = (Button) v.findViewById(R.id.alarmButton);
+            setAlarmButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,
+                    p.getAlarmTime() == null ? R.drawable.ic_inactive : R.drawable.ic_active,0);
+            setAlarmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnTaskSetAlarmPressed(getItem(position));
+                }
+            });
         }
 
         return v;
     }
 
-    public interface TaskDeletePressedListener{
+    public interface TaskButtonsListener{
         public void OnTaskDeletePressed(PlanningTask task);
+        public void OnTaskSetAlarmPressed(PlanningTask task);
     }
 
 }

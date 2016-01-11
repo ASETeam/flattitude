@@ -17,6 +17,7 @@ public class PlanningTask implements Serializable{
     private String Type;
     private String Description;
     private Calendar PlannedTime;
+    private Calendar AlarmTime;
 
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private static final SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
@@ -47,7 +48,8 @@ public class PlanningTask implements Serializable{
     }
 
     public PlanningTask(){
-        this.Destination = "111"; //TODO: provisional
+        this.Destination = "111";
+        this.AlarmTime = null;
     }
 
     public PlanningTask(String id, String author, String destination, String type, String description, Calendar plannedTime) {
@@ -57,6 +59,7 @@ public class PlanningTask implements Serializable{
         Description = description;
         PlannedTime = plannedTime;
         ID = id;
+        AlarmTime = null;
     }
 
     public String getID()
@@ -142,8 +145,35 @@ public class PlanningTask implements Serializable{
         }
     }
 
+    public void setAlarmTime(String date, String time){
+        if(date == null)
+            AlarmTime=null;
+        else {
+            try {
+                String[] decomposedDate = date.split("/");
+                String[] decomposedTime = time.split(":");
+                AlarmTime = Calendar.getInstance();
+                AlarmTime.set(Calendar.YEAR, Integer.parseInt(decomposedDate[2]));
+                AlarmTime.set(Calendar.MONTH, Integer.parseInt(decomposedDate[1]) - 1);
+                AlarmTime.set(Calendar.DAY_OF_MONTH, Integer.parseInt(decomposedDate[0]));
+                AlarmTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(decomposedTime[0]));
+                AlarmTime.set(Calendar.MINUTE, Integer.parseInt(decomposedTime[1]));
+                AlarmTime.set(Calendar.SECOND, Integer.parseInt(decomposedTime[2]));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void setDescription(String description) {
         Description = description;
+    }
+
+    public String getAlarmDateString(){
+        if(AlarmTime==null)
+            return null;
+        else
+            return dateFormat.format(AlarmTime.getTime());
     }
 
     public String getDateString(){
@@ -170,11 +200,26 @@ public class PlanningTask implements Serializable{
         return timeFormat.format(PlannedTime.getTime())+":00";
     }
 
+    public String getAlarmTimeStringWithSec(){
+        if(AlarmTime == null)
+            return null;
+        else
+            return timeFormat.format(AlarmTime.getTime())+":00";
+    }
+
     public String getHourString(){
         return hourFormat.format(PlannedTime.getTime());
     }
 
     public String getMinuteString(){
         return minuteFormat.format(PlannedTime.getTime());
+    }
+
+    public Calendar getAlarmTime() {
+        return AlarmTime;
+    }
+
+    public void setAlarmTime(Calendar alarmTime) {
+        AlarmTime = alarmTime;
     }
 }

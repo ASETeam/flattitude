@@ -1,6 +1,7 @@
 package com.aseupc.flattitude.Activities;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -9,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.view.View;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -20,7 +23,6 @@ import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +35,18 @@ import java.util.Map;
 public class BudgetActivity extends AppCompatActivity {
     private Context context;
 
+    /**
+     * The pop up which display the information to create a new budget operation
+     */
+    private Dialog newOperationDialog;
+
+    /**
+     * The adapter of the last operations list
+     */
+    private BaseAdapter listAdapter;
+
+    private List<Map<String, String>> list;
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +58,23 @@ public class BudgetActivity extends AppCompatActivity {
 
         setTitle("Budget Management");
 
+        // Get and display the budget balance of the flat
         double flatBalance = IDs.getInstance(context).getBalance();
         TextView flatBalanceView = (TextView) findViewById(R.id.commonBudgetBalance);
         flatBalanceView.setText(flatBalance + "€");
 
+        // Get and display the personal budget balance
         double personalBalance = IDs.getInstance(context).getPersonalExpense();
         TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
-
         GradientDrawable bgPersonalShape = (GradientDrawable)personalBalanceView.getBackground();
         bgPersonalShape.setColor(Color.parseColor("#d0e3e4"));
         personalBalanceView.setText(personalBalance + "€");
 
+        // Add a click listener to the button
+        Button newOperationButton = (Button) findViewById(R.id.new_budget_operation_button);
+        newOperationButton.setOnClickListener(newOperationClickListener);
+
+        // In order to fulfill the list
         Flat currentFlat = IDs.getInstance(context).getFlat(context);
         User currentUser = IDs.getInstance(context).getUser(context);
 
@@ -64,46 +84,19 @@ public class BudgetActivity extends AppCompatActivity {
         operations.add(new BudgetOperation(null, currentFlat, new Date(), 10, "Shopping for common food"));
         operations.add(new BudgetOperation(currentUser, currentFlat, new Date(), 1, "Putting 1 € on the common account"));
 
-        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        String keys[] = {"date", "title", "description"};
+        list = new ArrayList<Map<String, String>>();
 
-        HashMap<String, String> element;
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         for (BudgetOperation operation : operations) {
-            element = new HashMap<String, String>();
-
-            element.put(keys[0], dateFormat.format(operation.getDate())+": ");
-            element.put(keys[1], operation.getUser() == null ?
-                    "" + operation.getAmount() + "€ were used from the common budget" :
-                    operation.getUser().getLastname() + " put " + operation.getAmount() + "€ on the common budget");
-            element.put(keys[2], operation.getDescription());
-            list.add(element);
+            list.add(putOperationInMap(operation));
         }
 
-        ListAdapter adapter = new SimpleAdapter(this, list,
+        listAdapter = new SimpleAdapter(this, list,
                 R.layout.budget_list_element,
                 keys,
                 new int[] {R.id.date_budget_operation, R.id.title_budget_operation, R.id.description_budget_operation});
 
         ListView operationsListView = (ListView) findViewById(R.id.listView_budget);
-        operationsListView.setAdapter(adapter);
-
-//        //operationsListView.setVisibility(View.VISIBLE);
-//        ArrayList<String> resultStr = new ArrayList<String>();
-//        ArrayList<Integer> imageStr = new ArrayList<Integer>();
-//        resultStr.add("Valentin");
-//        resultStr.add("Jordi");
-//        resultStr.add("Fara");
-//        imageStr.add(R.drawable.vavou);
-//        imageStr.add(R.drawable.jordi);
-//        imageStr.add(R.drawable.fara);
-//
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                resultStr );
-//
-//        ArrayAdapterWithIcon adapter=new ArrayAdapterWithIcon(this, resultStr, imageStr);
+        operationsListView.setAdapter(listAdapter);
     }
 
     @Override
@@ -127,4 +120,103 @@ public class BudgetActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * The Id of the pop up which allows the user to create a new budget operation
+     */
+    private final static int ID_NEW_OPERATION_POPUP = 0;
+
+    /**
+     * The click listener of the new operation button
+     */
+    private View.OnClickListener newOperationClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showDialog(ID_NEW_OPERATION_POPUP);
+        }
+    };
+
+    /**
+     * The click listener of the create operation button
+     */
+    private View.OnClickListener putMoneyOnCommonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            createOperation(Float.parseFloat(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount)).getText().toString()),
+                    ((EditText)newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), true);
+            dismissDialog(ID_NEW_OPERATION_POPUP);
+        }
+    };
+
+    /**
+     * The click listener of the create operation button
+     */
+    private View.OnClickListener pullMoneyOnCommonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            createOperation(Float.parseFloat(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount)).getText().toString()),
+                    ((EditText)newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), false);
+            dismissDialog(ID_NEW_OPERATION_POPUP);
+        }
+    };
+
+    /**
+     * Create the new operation pop up
+     * Subscribe to events for the buttons of the dialog
+     * @param id the id of the pop up (only the new operation pop up for this activity)
+     * @return the created pop up
+     */
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        newOperationDialog = new Dialog(context);
+        newOperationDialog.setContentView(R.layout.budget_operation_popup);
+        newOperationDialog.setCancelable(true);
+        newOperationDialog.setCanceledOnTouchOutside(true);
+        newOperationDialog.setTitle("New budget operation");
+        ((Button) newOperationDialog.findViewById(R.id.create_pull_budget_operation_button)).setOnClickListener(pullMoneyOnCommonClickListener);
+        ((Button) newOperationDialog.findViewById(R.id.create_put_budget_operation_button)).setOnClickListener(putMoneyOnCommonClickListener);
+        return newOperationDialog;
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        ((EditText) dialog.findViewById(R.id.new_budget_operation_description)).setText("");
+        ((EditText) dialog.findViewById(R.id.new_budget_operation_amount)).setText("");
+    }
+
+    /**
+     * Create a new operation and add it to the list view
+     * @param amount the amount of the operation
+     * @param description the description of the operation
+     */
+    private void createOperation(float amount, String description, boolean toCommon) {
+        BudgetOperation newOperation = new BudgetOperation(toCommon ? IDs.getInstance(context).getUser(context) : null,
+                IDs.getInstance(context).getFlat(context), new Date(), amount, description);
+
+        list.add(0, putOperationInMap(newOperation));
+        listAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Return a formated operation in order to appear correctly in the layout
+     * @param budgetOperation
+     * @return
+     */
+    private HashMap<String, String> putOperationInMap(BudgetOperation budgetOperation) {
+        final DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+        HashMap<String, String> element = new HashMap<String, String>();
+
+        element.put(keys[0], dateFormat.format(budgetOperation.getDate())+": ");
+        element.put(keys[1], budgetOperation.getUser() == null ?
+                "" + budgetOperation.getAmount() + "€ were used from the common budget" :
+                budgetOperation.getUser().getLastname() + " put " + budgetOperation.getAmount() + "€ on the common budget");
+        element.put(keys[2], budgetOperation.getDescription());
+
+        return element;
+    }
+
+    /**
+     * The keys for the attribute names in the map of operations
+     */
+    private static final String keys[] = {"date", "title", "description"};
 }

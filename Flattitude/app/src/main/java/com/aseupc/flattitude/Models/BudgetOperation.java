@@ -73,7 +73,7 @@ public class BudgetOperation {
         this.date = date;
     }
 
-    public BudgetOperation(User user, Flat flat,Date date, float amount, String description) {
+    public BudgetOperation(User user, Flat flat, Date date, float amount, String description) {
         this.user = user;
         this.flat = flat;
         this.date = date;

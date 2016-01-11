@@ -18,7 +18,7 @@
         <EditText
             android:id="@+id/new_budget_operation_amount"
             android:inputType="numberDecimal"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content" />
 
     </LinearLayout>

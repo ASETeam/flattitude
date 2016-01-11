@@ -21,7 +21,7 @@ public class BudgetOperation {
     /**
      * The amount of the budget operation
      */
-    private float amount;
+    private double amount;
 
     /**
      * The description of the budget operation
@@ -49,7 +49,7 @@ public class BudgetOperation {
         this.flat = flat;
     }
 
-    public float getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -73,7 +73,7 @@ public class BudgetOperation {
         this.date = date;
     }
 
-    public BudgetOperation(User user, Flat flat, Date date, float amount, String description) {
+    public BudgetOperation(User user, Flat flat, Date date, double amount, String description) {
         this.user = user;
         this.flat = flat;
         this.date = date;

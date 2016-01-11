@@ -136,8 +136,14 @@ public class BudgetActivity extends AppCompatActivity {
     private View.OnClickListener putMoneyOnCommonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            createOperation(Float.parseFloat(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount)).getText().toString()),
-                    ((EditText)newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), true);
+            try {
+                double amount = Double.parseDouble(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount))
+                        .getText().toString());
+                createOperation(amount,
+                        ((EditText)newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), true);
+            } catch (NumberFormatException | NullPointerException e) {
+                e.printStackTrace();
+            }
             dismissDialog(ID_NEW_OPERATION_POPUP);
         }
     };
@@ -148,8 +154,14 @@ public class BudgetActivity extends AppCompatActivity {
     private View.OnClickListener pullMoneyOnCommonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            createOperation(Float.parseFloat(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount)).getText().toString()),
-                    ((EditText)newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), false);
+            double amount;
+            try {
+                amount = Double.parseDouble(((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_amount)).getText().toString());
+                createOperation(amount,
+                        ((EditText) newOperationDialog.findViewById(R.id.new_budget_operation_description)).getText().toString(), false);
+            } catch (NumberFormatException | NullPointerException e) {
+                e.printStackTrace();
+            }
             dismissDialog(ID_NEW_OPERATION_POPUP);
         }
     };
@@ -183,7 +195,7 @@ public class BudgetActivity extends AppCompatActivity {
      * @param amount the amount of the operation
      * @param description the description of the operation
      */
-    private void createOperation(float amount, String description, boolean toCommon) {
+    private void createOperation(double amount, String description, boolean toCommon) {
         IDs ids = IDs.getInstance(context);
         BudgetOperation newOperation = new BudgetOperation(toCommon ? ids.getUser(context) : null,
                 ids.getFlat(context), new Date(), amount, description);

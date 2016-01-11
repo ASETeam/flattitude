@@ -3,6 +3,7 @@ package com.aseupc.flattitude.InternalDatabase.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.aseupc.flattitude.InternalDatabase.DBDAO;
@@ -39,9 +40,9 @@ public class PlanningDAO extends  DBDAO{
             values.put(DataBaseHelper.PLANNING_DESCRIPTION, mo.getDescription());
             values.put(DataBaseHelper.PLANNING_DESTINATION, mo.getDestination());
             values.put(DataBaseHelper.PLANNING_TIME, mo.getTimeStringWithSec());
-            Log.i("XAnas", PlanningTask.getOnlyDate(mo.getPlannedTime()));
             values.put(DataBaseHelper.PLANNING_DATE, mo.getDateString());
-        //    values.put(DataBaseHelper.PLANNING_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+            values.put(DataBaseHelper.PLANNING_ALARMTIME, mo.getAlarmTimeStringWithSec());
+            values.put(DataBaseHelper.PLANNING_ALARMDATE, mo.getAlarmDateString());
             values.put(DataBaseHelper.PLANNING_TYPE, mo.getType());
 
             return database
@@ -57,7 +58,8 @@ public class PlanningDAO extends  DBDAO{
             values.put(DataBaseHelper.PLANNING_DESTINATION, mo.getDestination());
             values.put(DataBaseHelper.PLANNING_TIME, mo.getTimeStringWithSec());
             values.put(DataBaseHelper.PLANNING_DATE, mo.getDateString());
-            //    values.put(DataBaseHelper.PLANNING_TIME, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()));
+            values.put(DataBaseHelper.PLANNING_ALARMTIME, mo.getAlarmTimeStringWithSec());
+            values.put(DataBaseHelper.PLANNING_ALARMDATE, mo.getAlarmDateString());
             values.put(DataBaseHelper.PLANNING_TYPE, mo.getType());
 
             long result = database.update(DataBaseHelper.PLANNING_TABLENAME,
@@ -72,8 +74,11 @@ public class PlanningDAO extends  DBDAO{
         }
 
     public void insertOrUpdate(List<PlanningTask> tasks){
+        List<PlanningTask> tlist = getPlanningTasks();
         database.delete(DataBaseHelper.PLANNING_TABLENAME, null, null);
         for(PlanningTask task : tasks){
+            PlanningTask t = returnTask(tlist,task);
+            if(t!=null) task.setAlarmTime(t.getAlarmTime());
             ContentValues values = new ContentValues();
             values.put(DataBaseHelper.PLANNING_ID, task.getID());
             values.put(DataBaseHelper.PLANNING_AUTHOR, task.getAuthor());
@@ -81,11 +86,20 @@ public class PlanningDAO extends  DBDAO{
             values.put(DataBaseHelper.PLANNING_DESTINATION, task.getDestination());
             values.put(DataBaseHelper.PLANNING_TIME, task.getTimeStringWithSec());
             values.put(DataBaseHelper.PLANNING_DATE, task.getDateString());
+            values.put(DataBaseHelper.PLANNING_ALARMTIME, task.getAlarmTimeStringWithSec());
+            values.put(DataBaseHelper.PLANNING_ALARMDATE, task.getAlarmDateString());
             values.put(DataBaseHelper.PLANNING_TYPE, task.getType());
-            long ret = database.insert(DataBaseHelper.PLANNING_TABLENAME, null, values);
-            ret++;
+            database.insert(DataBaseHelper.PLANNING_TABLENAME, null, values);
         }
     }
+
+    PlanningTask returnTask(List<PlanningTask> tasks, PlanningTask task){
+        for(PlanningTask t : tasks)
+            if(t.getID().equals(task.getID()))
+                return t;
+        return null;
+    }
+
 
 
         public List<PlanningTask> getPlanningTasks() {
@@ -98,7 +112,10 @@ public class PlanningDAO extends  DBDAO{
                             DataBaseHelper.PLANNING_DESTINATION,
                             DataBaseHelper.PLANNING_TYPE,
                             DataBaseHelper.PLANNING_TIME,
-                            DataBaseHelper.PLANNING_DATE},
+                            DataBaseHelper.PLANNING_DATE,
+                            DataBaseHelper.PLANNING_ALARMTIME,
+                            DataBaseHelper.PLANNING_ALARMDATE
+                    },
                     null, null, DataBaseHelper.PLANNING_DATE, null,null);
 
 
@@ -117,7 +134,7 @@ public class PlanningDAO extends  DBDAO{
                 mo.setDestination(cursor.getString(3));
                 mo.setType(cursor.getString(4));
                 mo.setPlannedTime(cursor.getString(6), cursor.getString(5));
-              //  mo.setTime(parseDate(cursor.getString(6)));
+                mo.setAlarmTime(cursor.getString(8),cursor.getString(7));
                 list.add(mo);
             }
             if(cursor != null)
@@ -136,7 +153,9 @@ public class PlanningDAO extends  DBDAO{
                         DataBaseHelper.PLANNING_DESTINATION,
                         DataBaseHelper.PLANNING_TYPE,
                         DataBaseHelper.PLANNING_TIME,
-                        DataBaseHelper.PLANNING_DATE},
+                        DataBaseHelper.PLANNING_DATE,
+                        DataBaseHelper.PLANNING_ALARMTIME,
+                        DataBaseHelper.PLANNING_ALARMDATE},
                 DataBaseHelper.PLANNING_DATE, null, DataBaseHelper.PLANNING_DATE, null,null);
 
 
@@ -154,7 +173,8 @@ public class PlanningDAO extends  DBDAO{
             mo.setDescription(cursor.getString(2));
             mo.setDestination(cursor.getString(3));
             mo.setType(cursor.getString(4));
-            mo.setPlannedTime(cursor.getString(6),cursor.getString(5));
+            mo.setPlannedTime(cursor.getString(6), cursor.getString(5));
+            mo.setAlarmTime(cursor.getString(8), cursor.getString(7));
             list.add(mo);
         }
         return list;
@@ -176,7 +196,9 @@ public class PlanningDAO extends  DBDAO{
                         DataBaseHelper.PLANNING_DESTINATION,
                         DataBaseHelper.PLANNING_TYPE,
                         DataBaseHelper.PLANNING_TIME,
-                        DataBaseHelper.PLANNING_DATE},
+                        DataBaseHelper.PLANNING_DATE,
+                        DataBaseHelper.PLANNING_ALARMTIME,
+                        DataBaseHelper.PLANNING_ALARMDATE},
                 DataBaseHelper.PLANNING_DATE + " = " + "'" + PlanningTask.getOnlyDate(date) +"'", null, null, null,null, null);
 
         List<PlanningTask> list = new LinkedList<>();
@@ -188,6 +210,7 @@ public class PlanningDAO extends  DBDAO{
             mo.setDestination(cursor.getString(3));
             mo.setType(cursor.getString(4));
             mo.setPlannedTime(cursor.getString(6),cursor.getString(5));
+            mo.setAlarmTime(cursor.getString(8),cursor.getString(7));
             list.add(mo);
         }
         return list;

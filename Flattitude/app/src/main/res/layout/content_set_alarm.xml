@@ -8,10 +8,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/LightGreen"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.aseupc.flattitude.Activities.NewTaskActivity"
-    tools:showIn="@layout/activity_new_task">
+    tools:context="com.aseupc.flattitude.Activities.SetAlarmActivity"
+    tools:showIn="@layout/activity_set_alarm">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -32,45 +31,11 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true">
 
-
-
-            <TextView
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Type:"
-                android:id="@+id/type_label"
-                android:textSize="20dp"
-                android:textColor="@color/white"/>
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:id="@+id/type"
-                android:layout_weight="0.08"
-                android:textSize="17dp"
-                android:layout_gravity="center_horizontal" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Description"
-                android:id="@+id/description_label"
-                android:textSize="20dp"
-                android:textColor="@color/white"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:id="@+id/description"
-                android:layout_weight="0.08"
-                android:textSize="17dp"/>
+                android:text="Reminder alarm"
+                android:id="@+id/alarmCheckBox" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -159,27 +124,20 @@
 
             </LinearLayout>
 
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:text="Confirm"
                 android:textColor="@color/white"
                 android:background="@color/colorPink"
-                android:id="@+id/add_button"
+                android:id="@+id/confirm_button"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="right"
                 android:layout_alignBottom="@+id/scrollView"
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="70dp" />
-
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
 </RelativeLayout>

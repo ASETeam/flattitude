@@ -71,49 +71,92 @@
                 android:layout_weight="0.08"
                 android:textSize="17dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Date:"
-                android:id="@+id/date_label"
-                android:textSize="20dp"
-                android:textColor="@color/white"/>
-
-            <EditText
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:inputType="date"
-                android:ems="10"
-                android:id="@+id/date"
-                android:layout_weight="0.08"
-                android:textSize="17dp"
-                android:editable="false"
-                android:focusable="false"/>
+                android:layout_gravity="center_horizontal"
+                android:weightSum="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Time:"
-                android:id="@+id/time_label"
-                android:textSize="20dp"
-                android:textColor="@color/white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Date:"
+                    android:id="@+id/date_label"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:layout_column="0"
+                    android:layout_weight="0.5" />
 
-            <EditText
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Time:"
+                    android:id="@+id/time_label"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
+                    android:layout_column="1"
+                    android:layout_weight="0.5" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:textColor="@color/black"
-                android:inputType="time"
-                android:ems="10"
-                android:id="@+id/time"
-                android:layout_weight="0.08"
-                android:textSize="17dp"
-                android:editable="false"
-                android:focusable="false"/>
+                android:layout_height="match_parent"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="1"
+                    android:layout_weight="0.5">
+
+                    <EditText
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:textColor="@color/black"
+                        android:inputType="date"
+                        android:ems="10"
+                        android:id="@+id/date"
+                        android:textSize="17dp"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_column="0" />
+
+                    <Space
+                        android:layout_width="fill_parent"
+                        android:layout_height="20px" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5">
+
+                    <EditText
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:textColor="@color/black"
+                        android:inputType="time"
+                        android:ems="10"
+                        android:id="@+id/time"
+                        android:textSize="17dp"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:layout_column="1" />
+
+                    <Space
+                        android:layout_width="fill_parent"
+                        android:layout_height="20px" />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <Button
                 android:layout_width="wrap_content"

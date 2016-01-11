@@ -58,6 +58,7 @@ public class PlanningActivity extends AppCompatActivity
 
     private static int ADD_CODE = 1;
     private static int EDIT_CODE = 2;
+    private static int SET_ALARM_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,7 @@ public class PlanningActivity extends AppCompatActivity
     private void loadActivityContent(){
         backgrounddates = new HashMap<>();
         computeCalendar();
+        caldroidFragment.refreshView(); //Force refresh
     }
 
     private void synchronize(){
@@ -139,7 +141,6 @@ public class PlanningActivity extends AppCompatActivity
 
     public void computeCalendar(){
         mCalendar = (CalendarView) findViewById(R.id.calendarView);
-
 
         PlanningDAO planDAO = new PlanningDAO(getApplicationContext());
         List<PlanningTask> tasks = planDAO.getPlanningTasks();
@@ -181,10 +182,15 @@ public class PlanningActivity extends AppCompatActivity
         }
 
         ListAdapter customAdapter = new ListAdapter(getApplicationContext(), R.layout.itemlistrow, planninTasks,
-                new ListAdapter.TaskDeletePressedListener() {
+                new ListAdapter.TaskButtonsListener() {
                     @Override
                     public void OnTaskDeletePressed(PlanningTask task) {
                         deleteTaskPressed(task);
+                    }
+
+                    @Override
+                    public void OnTaskSetAlarmPressed(PlanningTask task){
+                        setAlarmPressed(task);
                     }
                 });
         plans.setAdapter(customAdapter);
@@ -242,7 +248,14 @@ public class PlanningActivity extends AppCompatActivity
 
                 })
                 .setNegativeButton("No", null)
-                .show();    }
+                .show();
+    }
+
+    public void setAlarmPressed(PlanningTask task) {
+        Intent intent = new Intent(this, SetAlarmActivity.class);
+        intent.putExtra("task",task);
+        startActivityForResult(intent, SET_ALARM_CODE);
+    }
 
     public void deleteTaskConfirmed(PlanningTask task){
         //showProgress(true);
@@ -286,7 +299,7 @@ public class PlanningActivity extends AppCompatActivity
                 Date date2 = new Date(date.getYear(), date.getMonth(), date.getDate());
                 addElementOnDate(date2);
                 if(currentSelected != null) {
-                    previous = currentSelected.getTime();
+                    //previous = currentSelected.getTime();
                     dateSelected(currentSelected.getTime());
                 }
             } else if (requestCode == EDIT_CODE) {
@@ -299,7 +312,15 @@ public class PlanningActivity extends AppCompatActivity
                 date2 = new Date(date.getYear(), date.getMonth(), date.getDate());
                 removeElementFromDate(date2);
                 if(currentSelected != null) {
-                    previous = currentSelected.getTime();
+                    //previous = currentSelected.getTime();
+                    dateSelected(currentSelected.getTime());
+                }
+                if(task.getAlarmTime()!= null && task.getPlannedTime().getTimeInMillis() < task.getAlarmTime().getTimeInMillis())
+                    unsetAlarm(task);
+            }
+            else if(requestCode == SET_ALARM_CODE){
+                if(currentSelected != null) {
+                    //previous = currentSelected.getTime();
                     dateSelected(currentSelected.getTime());
                 }
             }
@@ -340,8 +361,16 @@ public class PlanningActivity extends AppCompatActivity
         removeElementFromDate(date2);
         if(currentSelected != null)
             dateSelected(currentSelected.getTime());
+        if(task.getAlarmTime()!= null && task.getPlannedTime().getTimeInMillis() < task.getAlarmTime().getTimeInMillis())
+            unsetAlarm(task);
 
         //showProgress(false);
+    }
+
+    private void unsetAlarm(PlanningTask task){
+        task.setAlarmTime(null);
+        PlanningDAO dao = new PlanningDAO(this);
+        dao.update(task);
     }
 
     private void addElementOnDate(Date date){

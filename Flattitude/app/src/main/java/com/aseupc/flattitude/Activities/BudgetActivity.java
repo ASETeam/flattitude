@@ -58,17 +58,11 @@ public class BudgetActivity extends AppCompatActivity {
 
         setTitle("Budget Management");
 
-        // Get and display the budget balance of the flat
-        double flatBalance = IDs.getInstance(context).getBalance();
-        TextView flatBalanceView = (TextView) findViewById(R.id.commonBudgetBalance);
-        flatBalanceView.setText(flatBalance + "€");
-
-        // Get and display the personal budget balance
-        double personalBalance = IDs.getInstance(context).getPersonalExpense();
+        // Update the background of the personal budget balance
         TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
         GradientDrawable bgPersonalShape = (GradientDrawable)personalBalanceView.getBackground();
         bgPersonalShape.setColor(Color.parseColor("#d0e3e4"));
-        personalBalanceView.setText(personalBalance + "€");
+        updateBalances();
 
         // Add a click listener to the button
         Button newOperationButton = (Button) findViewById(R.id.new_budget_operation_button);
@@ -190,9 +184,18 @@ public class BudgetActivity extends AppCompatActivity {
      * @param description the description of the operation
      */
     private void createOperation(float amount, String description, boolean toCommon) {
-        BudgetOperation newOperation = new BudgetOperation(toCommon ? IDs.getInstance(context).getUser(context) : null,
-                IDs.getInstance(context).getFlat(context), new Date(), amount, description);
-
+        IDs ids = IDs.getInstance(context);
+        BudgetOperation newOperation = new BudgetOperation(toCommon ? ids.getUser(context) : null,
+                ids.getFlat(context), new Date(), amount, description);
+        if (toCommon) {
+            ids.setBalance(ids.getBalance() + amount);
+            ids.setPersonalExpense(ids.getPersonalExpense() + amount);
+        }
+        else {
+            ids.setBalance(ids.getBalance() - amount);
+            ids.setPersonalExpense(ids.getPersonalExpense() - ((int)(amount / 3 * 100))/100.0); //TODO To correct, here we suppose that there are only 3 roommates
+        }
+        updateBalances();
         list.add(0, putOperationInMap(newOperation));
         listAdapter.notifyDataSetChanged();
     }
@@ -213,6 +216,19 @@ public class BudgetActivity extends AppCompatActivity {
         element.put(keys[2], budgetOperation.getDescription());
 
         return element;
+    }
+
+    /**
+     * Update the display of the balance figures
+     */
+    private void updateBalances() {
+        double personalBalance = IDs.getInstance(context).getPersonalExpense();
+        TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
+        personalBalanceView.setText(personalBalance + "€");
+
+        double flatBalance = IDs.getInstance(context).getBalance();
+        TextView flatBalanceView = (TextView) findViewById(R.id.commonBudgetBalance);
+        flatBalanceView.setText(flatBalance + "€");
     }
 
     /**

@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent BudgetIntent = new Intent(view.getContext(), BudgetActivity.class);
                 startActivity(BudgetIntent);
-                CallAPI.makeToast(context, "Let's not go there. ");
             }
         });
 

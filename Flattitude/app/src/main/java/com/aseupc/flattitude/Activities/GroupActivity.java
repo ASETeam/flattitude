@@ -9,6 +9,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +54,17 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        ab.setSubtitle("A shared experience");
+        SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ab.setTitle(s);
+        setTitle(s);
+
         setContentView(R.layout.activity_group);
         UserDAO userDAO = new UserDAO(getApplicationContext());
         User user = userDAO.getUser();

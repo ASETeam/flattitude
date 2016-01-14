@@ -23,6 +23,7 @@ import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
+import com.aseupc.flattitude.databasefacade.BudgetFacade;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -234,13 +235,23 @@ public class BudgetActivity extends AppCompatActivity {
      * Update the display of the balance figures
      */
     private void updateBalances() {
-        double personalBalance = IDs.getInstance(context).getPersonalExpense();
-        TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
-        personalBalanceView.setText(personalBalance + "€");
+        IDs ids = IDs.getInstance(context);
+        Double balances [] = BudgetFacade.getBalances(ids.getFlatId(context), ids.getUserId(context));
+        if (balances != null) {
+            ids.setBalance(balances[0]);
+            ids.setPersonalExpense(balances[1]);
+        }
+        else {
+            balances = new Double[2];
+            balances[0] = ids.getBalance();
+            balances[1] = ids.getPersonalExpense();
+        }
 
-        double flatBalance = IDs.getInstance(context).getBalance();
         TextView flatBalanceView = (TextView) findViewById(R.id.commonBudgetBalance);
-        flatBalanceView.setText(flatBalance + "€");
+        flatBalanceView.setText(balances[0] + "€");
+
+        TextView personalBalanceView = (TextView) findViewById(R.id.personalBudgetBalance);
+        personalBalanceView.setText(balances[1] + "€");
     }
 
     /**

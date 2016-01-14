@@ -39,16 +39,8 @@ public class IDs {
         this.password = password;
     }
 
-    public String getFlatname() {
-        return flatname;
-    }
-
     public void setFlatname(String flatname) {
         this.flatname = flatname;
-    }
-
-    public void setFlatId(String flatId) {
-        this.flatId = flatId;
     }
 
     public void setHaveInternet(boolean haveInternet) {
@@ -81,8 +73,8 @@ public class IDs {
         userToken = null;
         flatId = null;
         newUser = false;
-        personalExpense = -112.23;
-        balance = 2343;
+        personalExpense = 0;
+        balance = 0;
         smackChat = null;
 
         UserDAO uDAO = new UserDAO(context);

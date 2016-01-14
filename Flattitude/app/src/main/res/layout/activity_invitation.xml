@@ -24,18 +24,19 @@
             android:layout_alignParentStart="true" />
 
         <info.hoang8f.widget.FButton
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Invite"
+            android:textSize="16dp"
+            android:textColor="@color/white"
             android:id="@+id/send_invitation"
             android:layout_gravity="right|bottom"
-            fbutton:buttonColor="@color/fbutton_color_emerald"
+            fbutton:buttonColor="@color/colorPink"
             fbutton:shadowEnabled="true"
             />
 
         <EditText
-            android:layout_width="245dp"
+            android:layout_width="238dp"
             android:layout_height="wrap_content"
             android:id="@+id/invitee"
             android:layout_gravity="left|bottom"

@@ -1,6 +1,10 @@
 package com.aseupc.flattitude.databasefacade;
 
+import com.aseupc.flattitude.Models.BudgetOperation;
+import com.aseupc.flattitude.Models.BudgetOperationDBAdapter;
 import com.aseupc.flattitude.database.Budget_Web_Service;
+
+import java.util.ArrayList;
 
 /**
  * Created by Vavou on 13/01/2016.
@@ -12,7 +16,11 @@ public class BudgetFacade {
         return new Budget_Web_Service().getBalances(flatId, userId);
     }
 
-    public static boolean putMoneyOnCommon(String flatId, String userId, String amount, String description) {
-        return new Budget_Web_Service().putMoneyOnCommon(flatId, userId, amount, description);
+    public static boolean addBudgetOperation(BudgetOperation bo) {
+        return new Budget_Web_Service().addBudgetOperation(bo);
+    }
+
+    public static ArrayList<BudgetOperationDBAdapter> retrieveBudgetOperations(String flatId) {
+        return new Budget_Web_Service().retrieveBudgetOperations(flatId);
     }
 }

@@ -145,6 +145,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     ");";
 
 
+    //-------------- BUDGET OPERATION TABLE ----------------
+    public static final String BUDGET_OPERATION_TABLENAME = "budget_operation";
+
+    public static final String BUDGET_OPERATION_ID = "budgetoperationid";
+    public static final String BUDGET_OPERATION_USER = "user";
+    public static final String BUDGET_OPERATION_FLAT = "flat";
+    public static final String BUDGET_OPERATION_AMOUNT = "amount";
+    public static final String BUDGET_OPERATION_DESCRIPTION = "description";
+    public static final String BUDGET_OPERATION_DATE = "date";
+
+    private static final String BUDGET_OPERATION_TABLE_CREATE =
+            "CREATE TABLE " + BUDGET_OPERATION_TABLENAME + " (" +
+                    BUDGET_OPERATION_ID + " INT PRIMARY KEY NOT NULL, " +
+                    BUDGET_OPERATION_USER + " STRING, " +
+                    BUDGET_OPERATION_FLAT + " STRING NOT NULL, " +
+                    BUDGET_OPERATION_AMOUNT + " REAL NOT NULL, " +
+                    BUDGET_OPERATION_DESCRIPTION + " STRING, " +
+                    BUDGET_OPERATION_DATE + " DATETIME NOT NULL" +
+                    ");";
+
 
     //--------------PLANNING TABLE----------------
     public static final String PLANNING_TABLENAME = "planning";
@@ -194,6 +214,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(MAPOBJECT_TABLE_CREATE);
         db.execSQL(NOTIFICATIONS_TABLE_CREATE);
         db.execSQL(PLANNING_TABLE_CREATE);
+        db.execSQL(BUDGET_OPERATION_TABLE_CREATE);
     }
 
 

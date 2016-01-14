@@ -7,11 +7,18 @@ import java.util.Date;
  */
 public class BudgetOperation {
 
+    private int id;
+
     /**
      * The user who have done the budget operation
      * If null, it means that it comes from the common budget of the flat
      */
     private User user;
+
+    /**
+     * The user who have done the transaction
+     */
+    private User userSource;
 
     /**
      * The flat concerned by the budget operation
@@ -32,6 +39,14 @@ public class BudgetOperation {
      * The date of the budget operation
      */
     private Date date;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public User getUser() {
         return user;
@@ -73,8 +88,27 @@ public class BudgetOperation {
         this.date = date;
     }
 
-    public BudgetOperation(User user, Flat flat, Date date, double amount, String description) {
+    public User getUserSource() {
+        return userSource;
+    }
+
+    public void setUserSource(User userSource) {
+        this.userSource = userSource;
+    }
+
+    public BudgetOperation(User user, User userSource, Flat flat, Date date, double amount, String description) {
         this.user = user;
+        this.userSource = userSource;
+        this.flat = flat;
+        this.date = date;
+        this.amount = amount;
+        this.description = description;
+    }
+
+    public BudgetOperation(int id, User user, User userSource, Flat flat, Date date, double amount, String description) {
+        this.id = id;
+        this.user = user;
+        this.userSource = userSource;
         this.flat = flat;
         this.date = date;
         this.amount = amount;

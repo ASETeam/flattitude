@@ -11,6 +11,10 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +49,14 @@ public class AlarmActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);*/
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+        SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new ForegroundColorSpan(Color.rgb(33, 33, 33)), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setTitle(s);
+
+
 
         TextView type = (TextView) findViewById(R.id.type);
         TextView description = (TextView) findViewById(R.id.description);

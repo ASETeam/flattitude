@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
@@ -96,12 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
-        android.support.v7.app.ActionBar ab = getSupportActionBar();
-        ab.setSubtitle("A shared experience");
         SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new ForegroundColorSpan(Color.rgb(33, 33, 33)),0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ab.setTitle(s);
         setTitle(s);
 
 

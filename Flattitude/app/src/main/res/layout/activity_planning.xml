@@ -18,21 +18,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="#e8fff8">
+        android:background="@color/white">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"
+            android:text="Add Task"
+            android:textSize="13dp"
+            android:textColor="#1c433b"
             android:id="@+id/button"
             android:layout_gravity="right|top"
-            android:background="#9be3ff" />
+            android:background="#a8dacf" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Planned activites"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:textColor="#1c433b"
+            android:text="  Planned Activites"
             android:id="@+id/textView14"
             android:layout_gravity="left|center_vertical" />
     </FrameLayout>
@@ -41,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/plans_listview"
-        android:background="@color/caldroid_holo_blue_light"
+        android:background="#084e5a"
         style="@style/Base.Theme.AppCompat.Light"
         android:divider="@color/white" />
     <ProgressBar

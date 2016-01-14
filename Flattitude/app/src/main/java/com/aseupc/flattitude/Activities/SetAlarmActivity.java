@@ -12,13 +12,18 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.DateFormat;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,6 +68,14 @@ public class SetAlarmActivity extends AppCompatActivity
         setContentView(R.layout.activity_set_alarm);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_logo_app);
+        SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new ForegroundColorSpan(Color.rgb(33, 33, 33)), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setTitle(s);
 
         task = (PlanningTask) getIntent().getSerializableExtra("task");
         calendar = Calendar.getInstance();

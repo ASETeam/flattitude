@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +43,14 @@ public class InvitationActivity extends AppCompatActivity {
         context = this;
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
-        setTitle("Invite people to your flat ");
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        SpannableString s = new SpannableString("Flattitude");
+        s.setSpan(new ForegroundColorSpan(Color.rgb(33, 33, 33)),0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        s.setSpan(new TypefaceSpan("Montserrat-Bold.ttf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setTitle(s);
+
         mInvitee = (EditText) findViewById(R.id.invitee);
 
         ArrayList<String> resultStr = new ArrayList<String>();

@@ -52,14 +52,17 @@ public class ListAdapter extends ArrayAdapter<PlanningTask> {
 
             if (tt1 != null) {
                 tt1.setText(p.getType());
+                tt1.setTextSize(15);
             }
 
             if (tt2 != null) {
                 tt2.setText(PlanningTask.getCleanDate(p.getPlannedTime()));
+                tt2.setTextSize(11);
             }
 
             if (tt3 != null) {
                 tt3.setText(p.getDescription());
+                tt3.setTextSize(11);
             }
         /*    if (tt4 != null) {
                 tt3.setText(p.getAuthor());

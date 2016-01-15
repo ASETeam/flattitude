@@ -37,7 +37,6 @@ public class EditObjectFragment extends Fragment {
      *
      * @return A new instance of fragment NewObjectFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EditObjectFragment newInstance() {
         EditObjectFragment fragment = new EditObjectFragment();
         Bundle args = new Bundle();
@@ -111,12 +110,6 @@ public class EditObjectFragment extends Fragment {
 
     public void setEditedObject(MapObject object){
         this.object = object;
-       /* if(view != null) {
-            EditText objectNameTE = (EditText) view.findViewById(R.id.objectName);
-            objectNameTE.setText(object.getName(),TextView.BufferType.EDITABLE);
-            EditText descTE = (EditText) view.findViewById(R.id.objectDescription);
-            descTE.setText(object.getDescription(), TextView.BufferType.EDITABLE);
-        }*/
     }
     /**
      * This interface must be implemented by activities that contain this

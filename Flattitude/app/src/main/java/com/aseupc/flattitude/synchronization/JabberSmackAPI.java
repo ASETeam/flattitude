@@ -3,17 +3,11 @@ package com.aseupc.flattitude.synchronization;
 import android.util.Log;
 
 import com.aseupc.flattitude.Activities.ChatActivity;
-import com.aseupc.flattitude.ChatArrayAdapter;
-import com.aseupc.flattitude.Models.ChatMessage;
 
 import java.util.*;
-import java.io.*;
-import android.util.Log;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
@@ -24,10 +18,8 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration.Builder;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.muc.RoomInfo;
 
 public class JabberSmackAPI {
 

@@ -23,7 +23,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Intent i = new Intent(context, AlarmActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("task",intent.getSerializableExtra("task"));
-        //i.putExtra("date",currentSelected);
         context.startActivity(i);
     }
 

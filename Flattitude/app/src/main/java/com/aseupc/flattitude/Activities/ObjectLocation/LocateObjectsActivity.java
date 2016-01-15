@@ -175,7 +175,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         // Add the fragment to the 'menufragment_container' FrameLayout
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.menufragment_container, newObjectFragment);
-        //transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -196,7 +195,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         editObjectFragment.setEditedObject(editionObject);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.menufragment_container, editObjectFragment);
-        //transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -284,7 +282,6 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitNewObjectFragment();
-        //showProgress(true);
     }
 
     @Override
@@ -303,7 +300,6 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitEditObjectFragment();
-        //showProgress(true);
     }
 
 
@@ -334,7 +330,6 @@ public class LocateObjectsActivity extends AppCompatActivity
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
         quitEditObjectFragment();
-        //showProgress(true);
     }
 
 
@@ -424,14 +419,12 @@ public class LocateObjectsActivity extends AppCompatActivity
         markerIdToObject.put(marker.getId(), of);
         objectIdToMarker.put(of.getId(), marker);
         adapter.notifyDataSetChanged();
-        //showProgress(false);
         editionObject = null;
 
     }
 
     @Override
     public void onAddFail() {
-        //showProgress(false);
         showObjectNotAdded();
         editionObject = null;
     }
@@ -446,7 +439,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         marker.setPosition(newObject.getPosition());
         adapter.notifyDataSetChanged();
         editionObject = null;
-        //showProgress(false);
     }
 
     @Override
@@ -455,7 +447,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
         marker.setAnchor(flagXAnchor, flagXAnchor);
         marker.setPosition(editionObject.getPosition());
-        //showProgress(false);
         showObjectNotEdited();
         editionObject = null;
     }
@@ -469,7 +460,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
         marker.remove();
         editionObject = null;
-        //showProgress(false);
     }
 
     @Override
@@ -478,7 +468,6 @@ public class LocateObjectsActivity extends AppCompatActivity
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.flag));
         marker.setAnchor(flagXAnchor, flagXAnchor);
         marker.setPosition(editionObject.getPosition());
-        //showProgress(false);
         editionObject = null;
         showObjectNotRemoved();
     }
@@ -622,7 +611,6 @@ public class LocateObjectsActivity extends AppCompatActivity
                     });
                 }
             });
-            //showProgress(false);
         }
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

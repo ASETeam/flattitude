@@ -2,13 +2,13 @@
 
     <!-- These settings headers are only used on tablets. -->
 
-    <header android:fragment="com.aseupc.flattitude.SettingsActivity$GeneralPreferenceFragment"
+    <header android:fragment="com.aseupc.flattitude.Activities.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
-    <header android:fragment="com.aseupc.flattitude.SettingsActivity$NotificationPreferenceFragment"
+    <header android:fragment="com.aseupc.flattitude.Activities.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
 
-    <header android:fragment="com.aseupc.flattitude.SettingsActivity$DataSyncPreferenceFragment"
+    <header android:fragment="com.aseupc.flattitude.Activities.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

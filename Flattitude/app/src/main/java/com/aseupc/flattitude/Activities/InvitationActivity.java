@@ -1,7 +1,6 @@
 package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,14 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.aseupc.flattitude.InternalDatabase.DAO.FlatDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.databasefacade.FlatFacade;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
 import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.etsy.android.grid.StaggeredGridView;

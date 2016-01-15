@@ -1,4 +1,4 @@
-package com.aseupc.flattitude.utility_REST;
+package com.aseupc.flattitude.Activities;
 
 import android.content.ClipData;
 import android.content.Context;

@@ -80,7 +80,6 @@ public class ChangeUI extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, timeout); // 1 second * 1000
-       // handler.postDelayed(sendUpdatesToUI, 10000); // 1 second
         return START_STICKY;
     }
 
@@ -160,11 +159,9 @@ public class ChangeUI extends Service {
 
                 {
                     thisNotif.setSeennotification("false");
-                   // thisNotif.setId(new Random().nextInt(4000000));
                     thisNotif.setUser(IDs.getInstance(getApplicationContext()).getUserId(getApplicationContext()));
                     not_Dao.save(thisNotif);
                     Timestamp tstamp  = new Timestamp(System.currentTimeMillis());
-                  //  UserFacade.retrievedNotifications(thisNotif.getServerID() + "", tstamp.toString());
                     nothing = 1;
                 }
             }
@@ -198,7 +195,6 @@ public class ChangeUI extends Service {
             sendBroadcast(intent);
         }  catch (Exception e) {
             e.printStackTrace();
-        //    CallAPI.makeToast(getApplicationContext(), "Time expired for request, try again");
         }
     }
 

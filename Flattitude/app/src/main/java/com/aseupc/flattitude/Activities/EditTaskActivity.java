@@ -142,7 +142,6 @@ public class EditTaskActivity extends AppCompatActivity
     }
 
     private void editTask(){
-        //showProgress(true);
         task.setPlannedTime(calendar);
         task.setDescription(description.getText().toString());
         task.setType(type.getSelectedItem().toString());
@@ -174,14 +173,12 @@ public class EditTaskActivity extends AppCompatActivity
             async.execute();
         }
         else {
-            //showProgress(false);
             showTaskNotEdited();
         }
     }
 
     @Override
     public void OnEditedOnDatabase(PlanningTask task) {
-        //showProgress(false);
         Intent returnIntent = new Intent();
         returnIntent.putExtra("originalDate",originalDate);
         returnIntent.putExtra("task",task);

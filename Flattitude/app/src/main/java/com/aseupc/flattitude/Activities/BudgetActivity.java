@@ -224,7 +224,6 @@ public class BudgetActivity extends AppCompatActivity {
                 ids.getFlat(context), new Date(), amount, description);
 
         if (BudgetFacade.addBudgetOperation(newOperation)) {
-            // TODO Register locally
             mapList.add(0, putOperationInMap(new BudgetOperationDBAdapter(newOperation)));
             listAdapter.notifyDataSetChanged();
             updateBalances();

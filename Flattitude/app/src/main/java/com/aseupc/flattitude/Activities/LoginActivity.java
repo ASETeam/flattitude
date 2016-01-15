@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
@@ -253,12 +252,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 3;
     }
 
@@ -376,7 +373,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
             // AUTHENTICATION HERE
             if (CallAPI.isNetworkAvailable(context) == false) {
@@ -392,17 +388,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else
                 return false;
 
-
-          /*  for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
-
-            // TODO: register the new account here.
-
         }
 
         @Override
@@ -412,11 +397,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String chatID = getCurrentUser().getServerid();
             String password = mPassword;
 
-            // Button loginB = (Button) findViewById(R.id.email_sign_in_button);
             Button loginB = (Button) findViewById(R.id.login_button);
             Context context = loginB.getContext();
             if (success) {
-                // finish();
                 // Put user in local DB
 
                 UserDAO userDAO = new UserDAO(context);
@@ -452,11 +435,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 chatID = getCurrentUser().getServerid();
                 password = mPassword;
                 IDs.getInstance(context).setPassword(mPassword);
-               /* if (flat != null)
-                  call.execute(chatID, password, flat.getName());
-                else
-                   call.execute(chatID, password, "");
-*/
+
                 Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(mainIntent);
 

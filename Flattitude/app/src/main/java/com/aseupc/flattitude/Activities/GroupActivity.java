@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,17 +27,13 @@ import com.aseupc.flattitude.InternalDatabase.DAO.NotificationsDAO;
 import com.aseupc.flattitude.InternalDatabase.DAO.UserDAO;
 import com.aseupc.flattitude.Models.Flat;
 import com.aseupc.flattitude.Models.IDs;
-import com.aseupc.flattitude.Models.Notification;
 import com.aseupc.flattitude.Models.User;
 import com.aseupc.flattitude.R;
 import com.aseupc.flattitude.databasefacade.UserFacade;
-import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
-import com.aseupc.flattitude.utility_REST.CallAPI;
 import com.aseupc.flattitude.utility_REST.ResultContainer;
 import com.asha.ChromeLikeSwipeLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GroupActivity extends AppCompatActivity {
     private ListView invitations;
@@ -100,12 +95,7 @@ public class GroupActivity extends AppCompatActivity {
 
         } );
         invitations = (ListView) findViewById(R.id.invitations);
-        List<String> population = new ArrayList<String>();
-       // population.add("foo");
-
         consultInfo callConsult = new consultInfo();
-        ArrayList<Flat> result = new ArrayList<Flat>();
-
         callConsult.execute(user.getServerid());
     }
 
@@ -166,11 +156,9 @@ public class GroupActivity extends AppCompatActivity {
 
             if (thisUser != null)
             {
-                // UserFacade.logoutUser(thisUser.getServerid(), thisUser.getToken());
 
                 userDAO.deleteDept(thisUser);
                 userDAO.deleteAll();
-                //   Log.i("AfterDeletion", userDAO.getUser().getEmail());
                 FlatDAO flatDAO = new FlatDAO(getApplicationContext());
                 Flat thisFlat = flatDAO.getFlat();
 

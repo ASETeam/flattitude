@@ -83,7 +83,7 @@ public class PlanningTask implements Serializable{
         String theDay = date.get(Calendar.HOUR_OF_DAY) + ":" + date.get(Calendar.MINUTE) + ":" + date.get(Calendar.SECOND);
         return theDay;
     }
-    //TODO : Test of todo
+
     public void setID(String ID) {
         this.ID = ID;
     }

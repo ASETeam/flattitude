@@ -50,7 +50,7 @@ public class DBDAO {
 
     protected SimpleDateFormat parseSimpleDate(String date){
         SimpleDateFormat df = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
-        return df; //It have to be verified which format the database returns!
+        return df;
     }
     protected int formatBoolean(boolean b){
         return b ? 1 : 0;

@@ -1,10 +1,6 @@
 package com.aseupc.flattitude.Activities;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -18,23 +14,12 @@ import android.text.style.TypefaceSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.aseupc.flattitude.InternalDatabase.DAO.PlanningDAO;
-import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.Models.PlanningTask;
 import com.aseupc.flattitude.R;
-import com.aseupc.flattitude.utility_REST.ArrayAdapterWithIcon;
-
-import java.util.ArrayList;
 
 public class AlarmActivity extends AppCompatActivity {
     private Ringtone ringtone;
@@ -43,10 +28,6 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        /*getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);*/
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_logo_app);
         SpannableString s = new SpannableString("Flattitude");

@@ -34,7 +34,6 @@ public class NewObjectFragment extends Fragment {
      *
      * @return A new instance of fragment NewObjectFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewObjectFragment newInstance() {
         NewObjectFragment fragment = new NewObjectFragment();
         Bundle args = new Bundle();

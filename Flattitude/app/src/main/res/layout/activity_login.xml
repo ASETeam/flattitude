@@ -68,7 +68,7 @@
                     android:singleLine="true"
                     android:textSize="19dp"
                     android:textColor="@color/black"
-                    android:text="test@test.com" />
+                    android:text="" />
             </android.support.design.widget.TextInputLayout>
 
             <TextView
@@ -97,7 +97,7 @@
                     android:singleLine="true"
                     android:textSize="19dp"
                     android:textColor="@color/black"
-                    android:text="test" />
+                    android:text="" />
 
             </android.support.design.widget.TextInputLayout>
 

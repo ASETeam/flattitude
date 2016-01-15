@@ -52,9 +52,7 @@ public class Notifications_Web_Services {
 
 
         } catch (Exception e) {
-            //   System.out.println(e.getMessage());
         }
-        // resultToDisplay = (String) in.toString();
         try {
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {

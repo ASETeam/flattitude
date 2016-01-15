@@ -9,7 +9,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.aseupc.flattitude.ChatArrayAdapter;
 import com.aseupc.flattitude.Models.ChatMessage;
 import com.aseupc.flattitude.Models.IDs;
 import com.aseupc.flattitude.R;
@@ -44,7 +42,6 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         context = this;
         chatSmack = IDs.getInstance(context).getSmackChat(context);
-        //Log.i("Jak chatsmak", chatSmack.getUserName());
         setTitle("Chat");
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -122,8 +119,6 @@ public class ChatActivity extends AppCompatActivity {
         JabberSmackAPI smackChat = IDs.getInstance(context).getSmackChat(context);
 
         smackChat.sendGroupMessage(messageTextField.getText().toString());
-
-        //adapter.add(new ChatMessage(messageTextField.getText().toString()));
 
         messageTextField.setText("");
         return true;

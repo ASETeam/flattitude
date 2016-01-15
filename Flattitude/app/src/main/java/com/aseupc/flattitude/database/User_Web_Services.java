@@ -88,10 +88,6 @@ public class User_Web_Services {
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
-           /* urlConnection.setRequestMethod("GET");
-            urlConnection.setInstanceFollowRedirects(true);
-            HttpURLConnection.setFollowRedirects(true);*/
-
 
             in = new BufferedInputStream(urlConnection.getInputStream());
 
@@ -162,8 +158,6 @@ public class User_Web_Services {
                 }
                 else if (success == "false"){
                     resultContainer.setSuccess(false);
-                   // String reason = mainObject.getString("reason");
-                  //  resultContainer.addReason(reason);
                 }
 
             } catch (JSONException e) {
@@ -189,15 +183,7 @@ public class User_Web_Services {
         user.setFirstname(firstname);
         user.setPhonenbr(phonenumber);
         String FinalizeThread ="Call not executed";
-       /* try {
-             FinalizeThread = call.execute(user).get(50000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }*/
+
         String response = "";
         String urlStr = "https://flattiserver-flattitude.rhcloud.com/flattiserver/user/create";
         HashMap<String, String> values = new HashMap<>();
@@ -392,14 +378,11 @@ public class User_Web_Services {
 
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.connect();
-               // urlConnection.setRequestProperty("Auth", token);
                 in = new BufferedInputStream(urlConnection.getInputStream());
 
 
             } catch (Exception e) {
-                //   System.out.println(e.getMessage());
             }
-            // resultToDisplay = (String) in.toString();
             try {
                 resultToDisplay = ParseResults.getStringFromInputStream(in);
             } catch (IOException e) {
@@ -426,9 +409,6 @@ public class User_Web_Services {
 
         @Override
         protected void onPostExecute(ResultContainer<User> response) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
-
 
         }
     }
@@ -454,9 +434,7 @@ public class User_Web_Services {
                 in = new BufferedInputStream(conn.getInputStream());
 
             } catch (Exception e) {
-                //   System.out.println(e.getMessage());
             }
-            // resultToDisplay = (String) in.toString();
             try {
                 resultToDisplay = ParseResults.getStringFromInputStream(in);
             } catch (IOException e) {

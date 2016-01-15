@@ -159,7 +159,6 @@ public class CreateFlat extends AppCompatActivity {
                 JabberSmackAPI smackChat = IDs.getInstance(context).getSmackChat(context);
 
                 //Join to room after flat creation.
-                Log.i("Anas 3", params[0] + "  -  "+ params[1]);
                 smackChat.joinMUC(params[0], params[1]);
 
             } catch (Exception ex ) {

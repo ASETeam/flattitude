@@ -99,8 +99,6 @@ public class Invitation_Web_Services {
                 String success = mainObject.getString("success");
                 if (success == "true") {
                     resultContainer.setSuccess(true);
-                    // Temporary solution : dummy user
-                    // resultContainer.setTemplate(CallAPI.getUser(userId));
 
                 }
                 else if (success == "false"){
@@ -130,10 +128,6 @@ public class Invitation_Web_Services {
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
-           /* urlConnection.setRequestMethod("GET");
-            urlConnection.setInstanceFollowRedirects(true);
-            HttpURLConnection.setFollowRedirects(true);*/
-
 
             in = new BufferedInputStream(urlConnection.getInputStream());
 
@@ -145,9 +139,7 @@ public class Invitation_Web_Services {
             System.out.println("Redirected URL: " + con.getURL());
             is.close();
         } catch (Exception e) {
-            //   System.out.println(e.getMessage());
         }
-        // resultToDisplay = (String) in.toString();
         try {
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {
@@ -165,7 +157,6 @@ public class Invitation_Web_Services {
                 {
                     if (invites.get(i) != null) {
                         JSONObject flat = invites.getJSONObject(i);
-                      //  int id = new Random().nextInt(200000);
                         String address = flat.getString("address");
                         String name = flat.getString("name");
                         String postcode = flat.getString("postcode");

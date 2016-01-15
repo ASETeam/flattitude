@@ -1,4 +1,4 @@
-package com.aseupc.flattitude.utility_REST;
+package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

@@ -58,7 +58,6 @@ public class Flat_Web_Services {
             e.printStackTrace();
         }
 
-        // resultToDisplay = (String) in.toString();
         try {
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {
@@ -128,8 +127,6 @@ public class Flat_Web_Services {
                     String flatID = mainObject.getString("id");
                     flat.setServerid(flatID);
                     resultContainer.setSuccess(true);
-                    // Temporary solution : dummy user
-                    // resultContainer.setTemplate(CallAPI.getUser(userId));
 
                 } else if (success == "false") {
                     resultContainer.setSuccess(false);
@@ -180,7 +177,6 @@ public class Flat_Web_Services {
                 e.printStackTrace();
             }
 
-            // resultToDisplay = (String) in.toString();
             try {
                 resultToDisplay = ParseResults.getStringFromInputStream(in);
             } catch (IOException e) {

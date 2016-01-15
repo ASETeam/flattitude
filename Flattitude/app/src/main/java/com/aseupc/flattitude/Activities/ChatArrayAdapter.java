@@ -1,4 +1,4 @@
-package com.aseupc.flattitude;
+package com.aseupc.flattitude.Activities;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aseupc.flattitude.Models.ChatMessage;
+import com.aseupc.flattitude.R;
 
 import java.util.ArrayList;
 import java.util.List;

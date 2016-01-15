@@ -24,7 +24,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String USER_PHONENBR = "phonenbr";
     public static final String USER_BIRTHDATE = "birthdate";
     public static final String USER_IBAN = "iban";
-    //public static final String USER_PICTURE = "picture";
     public static final String USER_LOGGEDIN = "loggedin";
     public static final String USER_TOKEN = "token";
 
@@ -38,7 +37,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     USER_PHONENBR + " TEXT," +
                     USER_BIRTHDATE + " DATETIME," +
                     USER_IBAN + " TEXT," +
-//                    USER_PICTURE + " TEXT," +
                     USER_LOGGEDIN + " INT, " +
                     USER_TOKEN + " TEXT" +
                     ");";
@@ -90,7 +88,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     MATE_LASTNAME + " TEXT NOT NULL," +
                     MATE_PHONENBR + " TEXT NOT NULL," +
                     MATE_BIRTHDATE + " DATETIME" +
-//                    MATE_PICTURE + " TEXT," +
                     ");";
 
 

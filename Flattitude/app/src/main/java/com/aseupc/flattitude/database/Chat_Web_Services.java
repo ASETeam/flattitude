@@ -55,7 +55,6 @@ public class Chat_Web_Services {
             e.printStackTrace();
         }
 
-        // resultToDisplay = (String) in.toString();
         try {
             resultToDisplay = ParseResults.getStringFromInputStream(in);
         } catch (IOException e) {
@@ -122,12 +121,9 @@ public class Chat_Web_Services {
                 JSONObject mainObject = new JSONObject(FinalizeThread);
                 String success = mainObject.getString("success");
                 if (success == "true") {
-                    //String userId = mainObject.getString("id");
                     String flatID = mainObject.getString("id");
                     flat.setServerid(flatID);
                     resultContainer.setSuccess(true);
-                    // Temporary solution : dummy user
-                    // resultContainer.setTemplate(CallAPI.getUser(userId));
 
                 } else if (success == "false") {
                     resultContainer.setSuccess(false);
@@ -176,7 +172,6 @@ public class Chat_Web_Services {
                 e.printStackTrace();
             }
 
-            // resultToDisplay = (String) in.toString();
             try {
                 resultToDisplay = ParseResults.getStringFromInputStream(in);
             } catch (IOException e) {
